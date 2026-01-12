@@ -1,5 +1,8 @@
 async function getData() {
-  const res = await fetch("/api/proxy/health", {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL || "http://127.0.0.1:3000";
+
+  const res = await fetch(`${baseUrl}/api/proxy/health`, {
     cache: "no-store",
   });
 
