@@ -114,7 +114,8 @@ export default function HospitalInteriorImagesSection({
       )}
 
       <p className="text-xs text-gray-400">
-        ※ 실제 병원 내부 사진만 업로드해주세요.
+        ※ 실제 병원 내부 사진만 업로드해주세요. 용량은 1메가바이트 이하로 업로드 바랍니다.<br></br>
+        업로드가 되지 않을 시, 페이지를 새로고침 해주세요.
       </p>
     </section>
   );

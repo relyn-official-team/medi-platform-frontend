@@ -248,12 +248,12 @@ const reservationId = res.data.reservationId;
       전체 보기</button>
    </DialogTrigger>
 
-  <DialogContent className="max-w-md sm:max-w-lg">
+  <DialogContent className="max-w-md sm:max-w-lg max-h-[80vh]">
     <DialogHeader>
       <DialogTitle>시술 및 가격</DialogTitle>
     </DialogHeader>
 
-    <div className="mt-2 space-y-3 max-h-[70vh] overflow-y-auto">
+    <div className="mt-2 space-y-3 overflow-y-auto max-h-[calc(80vh-64px)]">
       {data.pricingItems.map((item) => (
         <div
           key={item.id}

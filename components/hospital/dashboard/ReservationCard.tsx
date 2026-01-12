@@ -351,6 +351,11 @@ const handleCloseHistory = () => {
   setHistoryOpen(false);
 };
 
+const [detailOpen, setDetailOpen] = useState(false);
+const [detailType, setDetailType] =
+   useState<"PROCEDURE" | "MEMO" | null>(null);
+
+
 
 return (
   <div
@@ -480,15 +485,45 @@ return (
 
             {/* 희망시술 */}
             <div className="flex items-center gap-2">
-              <span className="text-gray-400 w-14">희망시술</span>
-              <span className="font-medium line-clamp-2">{reservation.procedureName}</span>
+              <span className="text-gray-400 w-14 shrink-0 whitespace-nowrap">희망시술</span>
+ <Button
+   size="sm"
+   variant="subtle"
+  className="
+    text-orange-600 bg-orange-50 hover:bg-orange-100
+    px-2 py-1 h-auto text-left
+    whitespace-nowrap overflow-hidden text-ellipsis line-clamp-1
+    max-w-full
+  "
+   onClick={() => {
+     setDetailType("PROCEDURE");
+     setDetailOpen(true);
+   }}
+ >
+   {reservation.procedureName}
+ </Button>
             </div>
 
             {/* 메모 */}
             {reservation.memo && (
               <div className="flex items-start gap-2">
-                <span className="text-gray-400 w-14">메모</span>
-                <span className="whitespace-pre-line line-clamp-2">{reservation.memo}</span>
+                <span className="text-gray-400 w-14 shrink-0 whitespace-nowrap">메모</span>
+   <Button
+     size="sm"
+    variant="subtle"
+     className="
+  text-orange-600 bg-orange-50 hover:bg-orange-100
+  px-2 py-1 h-auto text-left
+  whitespace-nowrap overflow-hidden text-ellipsis line-clamp-1
+  max-w-full
+"
+     onClick={() => {
+       setDetailType("MEMO");
+       setDetailOpen(true);
+     }}
+   >
+     {reservation.memo}
+   </Button>
               </div>
             )}
           </div>
@@ -1200,6 +1235,33 @@ return (
   </DialogContent>
 </Dialog>
 
+<Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+  <DialogContent className="max-w-md">
+    <DialogHeader>
+      <DialogTitle>
+        {detailType === "PROCEDURE" ? "희망시술" : "메모"}
+      </DialogTitle>
+    </DialogHeader>
+
+    <div className="mt-2 rounded-md bg-gray-50 border border-gray-200
+                    p-3 text-sm text-gray-800 whitespace-pre-line">
+      {detailType === "PROCEDURE"
+        ? reservation.procedureName
+        : reservation.memo}
+    </div>
+
+    <DialogFooter className="mt-4 flex justify-end">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setDetailOpen(false)}
+      >
+        닫기
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
 
 
       {/* 에이전시 연락처 모달 */}
@@ -1250,7 +1312,8 @@ return (
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>)}
+      </Dialog>
+    )}
     </div>
     
   );

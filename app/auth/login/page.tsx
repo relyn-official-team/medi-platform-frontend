@@ -113,7 +113,7 @@ export default function LoginPage() {
         </button>
 
         <div className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-900">
-          ※ 회원가입은 담장자와 소통을 진행해주세요. </div>
+          ※ 회원가입은 담당자와 소통을 진행해주세요. </div>
         
         </div>
       </form>

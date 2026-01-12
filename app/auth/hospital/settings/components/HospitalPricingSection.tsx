@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -77,6 +77,7 @@ export default function HospitalPricingSection({
   items: PriceItem[];
   onChange: () => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [localItems, setLocalItems] = useState<PriceItem[]>([]);
 const [editingId, setEditingId] = useState<number | null>(null);
  const [editingField, setEditingField] =
@@ -146,15 +147,12 @@ const handleExcelUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
+  e.target.value = "";
   onChange();
 };
 
 const handleExcelDownload = () => {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-
-  // 인증 쿠키/헤더 유지된 상태로 파일 다운로드
-  window.open(`${baseUrl}/hospital/pricing/excel`, "_blank");
+    window.open("/api/hospital/pricing/excel", "_blank");
 };
 
 const getDiscountRate = (item: PriceItem) => {
@@ -221,15 +219,24 @@ const saveEdit = async (id: number) => {
        전체 삭제
      </Button>
 
-     <Button size="sm" variant="outline" type="button">
-       엑셀 업로드
-       <input
-         type="file"
-         accept=".xlsx,.xls"
-         className="hidden"
-         onChange={handleExcelUpload}
-       />
-     </Button>
+{/* 숨겨진 파일 input */}
+<input
+  ref={fileInputRef}
+  type="file"
+  accept=".xlsx,.xls"
+  className="hidden"
+  onChange={handleExcelUpload}
+/>
+
+<Button
+  size="sm"
+  variant="outline"
+  type="button"
+  onClick={() => fileInputRef.current?.click()}
+>
+  엑셀 업로드
+</Button>
+
 
      <Button
    size="sm"
