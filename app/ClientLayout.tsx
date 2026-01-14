@@ -24,17 +24,8 @@ export default function ClientLayout({
      // secure context 필수 (https / localhost)
      if (!window.isSecureContext) return;
 
-  // 0️⃣ Service Worker 등록 (필수)
-  if ("serviceWorker" in navigator) {
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    const alreadyRegistered = registrations.some(
-      r => r.active?.scriptURL.includes("firebase-messaging-sw.js")
-    );
-
-    if (!alreadyRegistered) {
-      await navigator.serviceWorker.register(SW_PATH);
-    }
-  }
+ if (!("serviceWorker" in navigator)) return;
+ const registration = await navigator.serviceWorker.register(SW_PATH);
 
       // 1️⃣ 브라우저 + FCM 지원 여부 체크
       const supported = await isSupported();
@@ -60,13 +51,9 @@ export default function ClientLayout({
      // 2️⃣ Service Worker 등록
      if (!("serviceWorker" in navigator)) return;
 
-     const registration = await navigator.serviceWorker.register(SW_PATH);
-     // 3️⃣ ready 보장
-     const swReady = await navigator.serviceWorker.ready;
-
-       const token = await getToken(messaging, {
+ const token = await getToken(messaging, {
    vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-   serviceWorkerRegistration: swReady,
+   serviceWorkerRegistration: registration,
  });
 
       if (!token) return;
