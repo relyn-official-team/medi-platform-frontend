@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import Image from "next/image";
-import { registerPushToken } from "@/lib/push";
+import { getToken } from "firebase/messaging";
+import { messaging } from "@/lib/firebase";
 
 // 백엔드: return res.json({ token, role: user.role });
 interface LoginResponse {
@@ -38,24 +39,37 @@ export default function LoginPage() {
 
       // TODO: 로그인 성공 후 FCM 토큰 발급 및 등록
 // 🔔 FCM 토큰 발급 & 서버 등록 (실패해도 로그인 영향 없음)
-try {
-  const fcmToken = await registerPushToken();
-  if (fcmToken) {
-    const platform: "web" | "android" | "ios" =
-      /iphone|ipad|ipod/i.test(navigator.userAgent)
-        ? "ios"
-        : /android/i.test(navigator.userAgent)
-        ? "android"
-        : "web";
+ try {
+   if (!("Notification" in window)) return;
 
-    await api.post("/push/subscribe", {
-      fcmToken,
-      platform,
-    });
+   let permission = Notification.permission;
+   if (permission === "default") {
+     permission = await Notification.requestPermission();
   }
-} catch (e) {
-  console.warn("FCM token registration skipped:", e);
-}
+   if (permission !== "granted") return;
+
+    if (!messaging) return
+
+   const fcmToken = await getToken(messaging, {
+     vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+   });
+
+   if (fcmToken) {
+     const platform: "web" | "android" | "ios" =
+       /iphone|ipad|ipod/i.test(navigator.userAgent)
+         ? "ios"
+         : /android/i.test(navigator.userAgent)
+         ? "android"
+         : "web";
+
+     await api.post("/push/subscribe", {
+       fcmToken,
+       platform,
+     });
+   }
+ } catch (e) {
+   console.warn("FCM token registration skipped:", e);
+ }
 
       // 역할별 라우팅
       if (role === "HOSPITAL") {

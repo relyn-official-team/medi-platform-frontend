@@ -34,8 +34,8 @@ messaging.onBackgroundMessage(function (payload) {
 
   const notificationOptions = {
     body: payload.data?.body || "",
-    icon: "/icon-192x192.png",
-    badge: "/badge-72x72.png",
+    icon: "/relyn_logo_push.jpg",
+    badge: "/relyn_logo_push.jpg",
    data: {
      link: payload.data?.link,
    },
