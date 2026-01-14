@@ -13,6 +13,8 @@ export interface AgencyHospitalListItem {
 
   priceMin: number | null;
   priceMax: number | null;
+  priceMinDisplay: number | null;
+  priceMaxDisplay: number | null;
 
   topProcedures: string[];
 

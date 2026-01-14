@@ -70,6 +70,8 @@ useEffect(() => {
 
       const priceMin = prices.length ? Math.min(...prices) : null;
       const priceMax = prices.length ? Math.max(...prices) : null;
+      const priceMinDisplay = prices.length ? Math.min(...prices) : null;
+      const priceMaxDisplay = prices.length ? Math.max(...prices) : null;
 
       setHospital({
         id: d.id,
@@ -83,6 +85,8 @@ useEffect(() => {
         // ✅ 이제 스코프에 존재
         priceMin,
         priceMax,
+        priceMinDisplay,
+        priceMaxDisplay,
 
         topProcedures:
           d.pricingItems?.slice(0, 3).map((p) => p.procedureName) ?? [],

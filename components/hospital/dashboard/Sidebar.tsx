@@ -10,6 +10,7 @@ import {
   Building2,
   BarChart3,
   Wallet2,
+  Bell,
   Users2,
   PanelLeftOpen,
   PanelLeftClose,
@@ -27,6 +28,7 @@ const menu = [
   { label: "정산 내역", href: "/auth/hospital/settlements", icon: Wallet2 },
   { label: "병원 기본 정보", href: "/auth/hospital/settings", icon: Users2 },
   { label: "충전관리&사업자정보", href: "/auth/hospital/business", icon: Building2 },
+  { label: "알림 기능 설정", href: "/auth/hospital/notifications", icon: Bell },
 ];
 
 

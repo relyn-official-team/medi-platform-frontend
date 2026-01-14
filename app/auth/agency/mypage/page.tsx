@@ -6,6 +6,7 @@ import api from "@/lib/api";
 import { User, BarChart3 } from "lucide-react";
 import { Wallet } from "lucide-react";
 import { KeyRound } from "lucide-react";
+import { Bell } from "lucide-react";
 
 export default function AgencyMyPage() {
   const logout = async () => {
@@ -89,18 +90,20 @@ export default function AgencyMyPage() {
    <span className="font-medium">비밀번호 변경</span>
  </Link>
 
+<Link
+  href="/auth/agency/mypage/notifications"
+  className="
+    flex items-center gap-3
+    p-4 bg-white rounded-xl
+    shadow-sm border
+    hover:shadow-md hover:bg-gray-50
+    transition
+  "
+>
+  <Bell className="w-5 h-5 text-gray-600" />
+  <span className="font-medium">알림 기능 설정</span>
+</Link>
 
-        <button
-          disabled
-          className="
-            flex items-center gap-3
-            w-full p-4
-            bg-gray-100 rounded-xl
-            text-gray-400 cursor-not-allowed
-          "
-        >
-          고객센터 (준비중)
-        </button>
 
         {/* Mobile only */}
         <button

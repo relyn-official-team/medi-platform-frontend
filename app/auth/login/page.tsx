@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import Image from "next/image";
+import { registerPushToken } from "@/lib/push";
 
 // 백엔드: return res.json({ token, role: user.role });
 interface LoginResponse {
@@ -34,6 +35,27 @@ export default function LoginPage() {
       const { role } = res.data;
       // ✅ JWT는 서버에서 httpOnly 쿠키로 자동 저장됨 → 프론트에서 저장 불필요
       //    여기서는 role 기반 라우팅만 처리하면 됨
+
+      // TODO: 로그인 성공 후 FCM 토큰 발급 및 등록
+// 🔔 FCM 토큰 발급 & 서버 등록 (실패해도 로그인 영향 없음)
+try {
+  const fcmToken = await registerPushToken();
+  if (fcmToken) {
+    const platform =
+      /iphone|ipad|ipod/i.test(navigator.userAgent)
+        ? "ios"
+        : /android/i.test(navigator.userAgent)
+        ? "android"
+        : "pc";
+
+    await api.post("/push/subscribe", {
+      fcmToken,
+      platform,
+    });
+  }
+} catch (e) {
+  console.warn("FCM token registration skipped:", e);
+}
 
       // 역할별 라우팅
       if (role === "HOSPITAL") {

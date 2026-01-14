@@ -7,6 +7,15 @@ interface Props {
   hospital: AgencyHospitalListItem;
 }
 
+ // 만원 단위 절삭 (백원 단위 버림, 소숫점 1자리, 반올림 금지)
+ const formatManWon = (value: number) => {
+   const man = value / 10000;
+   const truncated = Math.floor(man * 10) / 10;
+   return truncated % 1 === 0
+     ? truncated.toFixed(0)
+     : truncated.toFixed(1);
+ };
+
 export default function HospitalCard({ hospital }: Props) {
   return (
 <Link
@@ -66,10 +75,10 @@ export default function HospitalCard({ hospital }: Props) {
  <div className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-900">
    <div className="text-xs text-blue-600 mb-0.5">가격 범위</div>
    {hospital.priceMin !== null && hospital.priceMax !== null ? (
-     <>
-       {(hospital.priceMin / 10000).toLocaleString()}만 ~{" "}
-       {(hospital.priceMax / 10000).toLocaleString()}만원
-     </>
+   <>
+     {formatManWon(hospital.priceMin)}만 ~{" "}
+     {formatManWon(hospital.priceMax)}만
+   </>
    ) : (
      <span className="text-blue-300">수가 정보 없음</span>
    )}
