@@ -5,6 +5,8 @@ import { getToken, isSupported } from "firebase/messaging";
 import { messaging } from "@/lib/firebase";
 import api from "@/lib/api";
 
+const SW_PATH = "/firebase-messaging-sw.js";
+
 export default function ClientLayout({
   children,
 }: {
@@ -13,11 +15,27 @@ export default function ClientLayout({
   const initializedRef = useRef(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     // 중복 실행 방지 (React StrictMode / route change 대응)
     if (initializedRef.current) return;
     initializedRef.current = true;
 
     const initFCM = async () => {
+     // secure context 필수 (https / localhost)
+     if (!window.isSecureContext) return;
+
+  // 0️⃣ Service Worker 등록 (필수)
+  if ("serviceWorker" in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    const alreadyRegistered = registrations.some(
+      r => r.active?.scriptURL.includes("firebase-messaging-sw.js")
+    );
+
+    if (!alreadyRegistered) {
+      await navigator.serviceWorker.register(SW_PATH);
+    }
+  }
+
       // 1️⃣ 브라우저 + FCM 지원 여부 체크
       const supported = await isSupported();
       if (!supported) return;
@@ -39,9 +57,16 @@ export default function ClientLayout({
 
       // 4️⃣ FCM 토큰 발급
       if (!messaging) return;
+     // 2️⃣ Service Worker 등록
+     if (!("serviceWorker" in navigator)) return;
+
+     const registration = await navigator.serviceWorker.register(SW_PATH);
+     // 3️⃣ ready 보장
+     const swReady = await navigator.serviceWorker.ready;
 
        const token = await getToken(messaging, {
    vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+   serviceWorkerRegistration: swReady,
  });
 
       if (!token) return;
@@ -49,6 +74,7 @@ export default function ClientLayout({
       // 5️⃣ 서버에 토큰 등록 (중복 허용 → 서버에서 unique 처리)
       await api.post("/push/subscribe", {
         fcmToken: token,
+        platform: "web",
       });
     };
 
