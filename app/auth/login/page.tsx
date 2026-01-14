@@ -41,12 +41,12 @@ export default function LoginPage() {
 try {
   const fcmToken = await registerPushToken();
   if (fcmToken) {
-    const platform =
+    const platform: "web" | "android" | "ios" =
       /iphone|ipad|ipod/i.test(navigator.userAgent)
         ? "ios"
         : /android/i.test(navigator.userAgent)
         ? "android"
-        : "pc";
+        : "web";
 
     await api.post("/push/subscribe", {
       fcmToken,

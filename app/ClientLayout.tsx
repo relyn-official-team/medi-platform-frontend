@@ -60,11 +60,7 @@ export default function ClientLayout({
 
       if (!token) return;
 
-      // 5️⃣ 서버에 토큰 등록 (중복 허용 → 서버에서 unique 처리)
-      await api.post("/push/subscribe", {
-        fcmToken: token,
-        platform: "web",
-      });
+
     };
 
     initFCM().catch(err => {
