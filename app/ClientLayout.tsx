@@ -24,8 +24,10 @@ export default function ClientLayout({
      // secure context 필수 (https / localhost)
      if (!window.isSecureContext) return;
 
- if (!("serviceWorker" in navigator)) return;
- const registration = await navigator.serviceWorker.register(SW_PATH);
+ const registration = await navigator.serviceWorker.register(
+   "/firebase-messaging-sw.js",
+   { scope: "/" }
+ );
 
       // 1️⃣ 브라우저 + FCM 지원 여부 체크
       const supported = await isSupported();

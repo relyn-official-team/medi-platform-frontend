@@ -28,14 +28,17 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function (payload) {
   console.log("[firebase-messaging-sw] Background message ", payload);
 
-  const notificationTitle =
-    payload.notification?.title || "RELYN 알림";
+ const notificationTitle =
+   payload.data?.title || "RELYN 알림";
+
 
   const notificationOptions = {
-    body: payload.notification?.body || "",
+    body: payload.data?.body || "",
     icon: "/icon-192x192.png",
     badge: "/badge-72x72.png",
-    data: payload.data || {},
+   data: {
+     link: payload.data?.link,
+   },
   };
 
   self.registration.showNotification(
