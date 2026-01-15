@@ -40,44 +40,51 @@ export default function LoginPage() {
       // TODO: 로그인 성공 후 FCM 토큰 발급 및 등록
 // 🔔 FCM 토큰 발급 & 서버 등록 (실패해도 로그인 영향 없음)
  try {
-   if (!("Notification" in window)) return;
+        // iOS/Safari 등에서 Notification/권한이 제한적이어도
+        // 로그인 라우팅은 반드시 진행해야 하므로 handleSubmit을 종료(return)하지 않는다.
+        if (!("Notification" in window)) {
+          // skip push registration
+        } else {
 
-   let permission = Notification.permission;
-   if (permission === "default") {
-     permission = await Notification.requestPermission();
-  }
-   if (permission !== "granted") return;
+          let permission = Notification.permission;
+          if (permission === "default") {
+            permission = await Notification.requestPermission();
+          }
+          if (permission !== "granted") {
+            // skip
+          } else if (!messaging) {
+            // skip
+          } else {
 
-    if (!messaging) return
+            const fcmToken = await getToken(messaging, {
+              vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+            });
+            if (fcmToken) {
+              const platform: "web" | "android" | "ios" =
+                /iphone|ipad|ipod/i.test(navigator.userAgent)
+                  ? "ios"
+                  : /android/i.test(navigator.userAgent)
+                  ? "android"
+                  : "web";
 
-   const fcmToken = await getToken(messaging, {
-     vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-   });
-
-   if (fcmToken) {
-     const platform: "web" | "android" | "ios" =
-       /iphone|ipad|ipod/i.test(navigator.userAgent)
-         ? "ios"
-         : /android/i.test(navigator.userAgent)
-         ? "android"
-         : "web";
-
-     await api.post("/push/subscribe", {
-       fcmToken,
-       platform,
-     });
-   }
+              await api.post("/push/subscribe", {
+                fcmToken,
+                platform,
+              });
+            }
+          }
+        }
  } catch (e) {
    console.warn("FCM token registration skipped:", e);
  }
 
       // 역할별 라우팅
       if (role === "HOSPITAL") {
-        router.push("/auth/hospital/dashboard");
+        router.replace("/auth/hospital/dashboard");
       } else if (role === "AGENCY") {
-        router.push("/auth/agency/dashboard");
+        router.replace("/auth/agency/dashboard");
       } else if (role === "ADMIN") {
-        router.push("/auth/admin/charge-requests");
+        router.replace("/auth/admin/charge-requests");
       } else {
         // 알 수 없는 역할일 경우 로그인 페이지 유지
         setError("지원하지 않는 역할입니다.");
