@@ -26,6 +26,20 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+
+    <head>
+      {/* PWA / iOS Web Push 필수 */}
+      <link rel="manifest" href="/manifest.json" />
+
+      {/* iOS Web App 인식용 */}
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content="RELYN" />
+
+      {/* iOS 아이콘 (없어도 동작은 하지만 권장) */}
+      <link rel="apple-touch-icon" href="/relyn_logo_push.jpg" />
+    </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

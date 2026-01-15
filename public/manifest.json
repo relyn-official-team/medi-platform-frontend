@@ -1,0 +1,20 @@
+{
+  "name": "RELYN",
+  "short_name": "RELYN",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/relyn_logo_push.jpg",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    },
+    {
+      "src": "/relyn_logo_push.jpg",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ]
+}
