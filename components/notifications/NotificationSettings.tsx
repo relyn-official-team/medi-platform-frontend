@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
+import { getToken } from "firebase/messaging";
+import { messaging } from "@/lib/firebase";
 
 interface MeResponse {
   pushEnabled: boolean;
@@ -10,6 +12,48 @@ interface MeResponse {
 export default function NotificationSettings() {
   const [enabled, setEnabled] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
+
+  // 🔔 iOS 알림 ON (사용자 클릭 전용)
+  const enableIOSNotification = async () => {
+    // iOS Safari / WebApp 정책상 반드시 클릭 이벤트 내부
+    if (!("Notification" in window)) {
+      alert("이 기기는 알림을 지원하지 않습니다.");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      alert("알림이 허용되지 않았습니다.");
+      return;
+    }
+
+    if (!messaging) {
+      alert("메시징 초기화 실패");
+      return;
+    }
+
+    const fcmToken = await getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+    });
+
+   if (!fcmToken) {
+      alert("알림 토큰 발급 실패");
+      return;
+    }
+
+    await api.post("/push/subscribe", {
+      fcmToken,
+      platform: "ios",
+    });
+
+    await api.patch("/me/notification", {
+      pushEnabled: true,
+    });
+
+    setEnabled(true);
+    alert("iOS 알림이 활성화되었습니다.");
+  };
 
   useEffect(() => {
  api.get<MeResponse>("/me").then(res => {
@@ -50,13 +94,21 @@ export default function NotificationSettings() {
         </button>
       </div>
 
+      {/* iOS 알림 ON 버튼 */}
+      <button
+        onClick={enableIOSNotification}
+        className="w-full rounded-lg border border-blue-600 px-4 py-3 text-sm font-semibold text-blue-600 hover:bg-blue-50"
+      >
+        iOS(아이폰) 알림 ON
+      </button>
+
       {/* Safari 안내 */}
       <div className="rounded-lg bg-yellow-50 p-4 text-sm text-yellow-800">
         <p className="font-semibold mb-1">📌 Safari 사용 시 주의</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>iOS: 설정 → Safari → 알림 → 허용 필요</li>
-          <li>macOS: Safari → 설정 → 웹사이트 → 알림</li>
-          <li>사설모드에서는 푸시 수신 불가</li>
+          <li>iOS: Safari 접속 → 페이지 홈 추가 → 홈 추가한 앱으로 실행 → iOS(아이폰) 알림 ON 버튼 클릭 → 허용 필요</li>
+          <li>macOS: Safari 접속 → 페이지 홈 추가 → 홈 추가한 앱으로 실행 → iOS(아이폰) 알림 ON 버튼 클릭 → 허용 필요</li>
+          <li>iOS는 크롬, 카카오앱 등 다른 브라우저에서는 푸시 수신 불가</li>
         </ul>
       </div>
     </div>
