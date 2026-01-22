@@ -240,7 +240,7 @@ const reservationId = res.data.reservationId;
   <section className="mx-auto max-w-3xl px-4 mt-4">
     <div className="bg-white border border-gray-200 rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
-        <div className="font-semibold">수가표</div>
+        <div className="font-semibold">[Price list]</div>
 
     <Dialog>
    <DialogTrigger asChild>

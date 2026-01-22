@@ -226,6 +226,24 @@ const uploadSignatureImage = async (file: File) => {
     platformFlatAmount: 0,
   });
 
+// ===== 에이전시 수수료율 등급 계산 =====
+const getAgencyCommissionGrade = (rate: number) => {
+  if (rate >= 24) {
+    return { stars: 5, label: "에이전시 최우선 선택" };
+  }
+  if (rate >= 20) {
+    return { stars: 4, label: "에이전시 적극 제안" };
+  }
+  if (rate >= 18) {
+    return { stars: 3, label: "에이전시 평균 유입" };
+  }
+  if (rate >= 16) {
+    return { stars: 2, label: "에이전시 유입 제한" };
+  }
+  return { stars: 1, label: "실질 유입 거의 없음" };
+};
+
+
   const LANGUAGE_OPTIONS = [
   "영어",
   "일본어",
@@ -885,15 +903,62 @@ const WEEK_DAYS = [
             {form.settlementCalcType === "PERCENTAGE" && (
             <div className="flex-1">
               <label className="block text-xs text-gray-500 mb-1">에이전시 수수료율 (%)</label>
+              {(() => {
+  const grade = getAgencyCommissionGrade(form.agencyCommissionRate);
+
+  return (
+    <div className="mt-2 inline-flex items-center gap-2
+                    rounded-full border border-gray-300
+                    bg-gray-50 px-3 py-1 text-xs">
+      {/* 별 영역 */}
+      <div className="flex items-center">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span
+            key={i}
+            className={
+              i < grade.stars
+                ? "text-yellow-400"
+                : "text-gray-300"
+            }
+          >
+            ★
+          </span>
+        ))}
+      </div>
+
+      {/* 문구 */}
+      <span className="text-gray-700 font-medium">
+        {grade.label}
+      </span>
+    </div>
+  );
+})()}
+
               <div className="flex items-center gap-2">
-                <Input
-                  type="number"
-                  className="w-28"
-                  value={form.agencyCommissionRate}
-                  onChange={(e) =>
-                    setForm({ ...form, agencyCommissionRate: Number(e.target.value) })
-                  }
-                />
+<Input
+  type="number"
+  className="w-28"
+  max={30}
+  min={0}
+  value={form.agencyCommissionRate}
+  onChange={(e) => {
+    const value = Number(e.target.value);
+
+    if (value > 30) {
+      setError("에이전시 수수료율은 30%를 초과할 수 없습니다.");
+      return;
+    }
+
+    setError(null);
+    setForm({
+      ...form,
+      agencyCommissionRate: value,
+    });
+  }}
+/>
+<div className="mt-1 text-[11px] text-gray-400">
+  수수료율은 최대 30%까지만 설정할 수 있습니다.
+</div>
                 <span className="text-sm text-gray-500">%</span>
               </div>
             </div>
