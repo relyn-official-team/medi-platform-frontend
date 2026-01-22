@@ -28,6 +28,32 @@ body {
     BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+/* =========================
+ * Mobile input color fix
+ * ========================= */
+@media (max-width: 768px) {
+  input,
+  textarea {
+    color: #111111 !important;
+    -webkit-text-fill-color: #111111; /* iOS Safari */
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af; /* gray-400 */
+  }
+}
+
+/* =========================
+ * Mobile chat background fix
+ * ========================= */
+@media (max-width: 768px) {
+  body:has([data-chat-page]) {
+    background: #ffffff;
+  }
+}
+
+
 /* Figma 타이포 스펙 기반 line-height 적용 */
 h1,
 h2,

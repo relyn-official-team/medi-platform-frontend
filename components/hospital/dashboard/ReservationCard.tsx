@@ -325,16 +325,40 @@ useEffect(() => {
  }, [settleOpen, reservation.paymentAmount]);
 
 
-const isMobile = window.innerWidth < 768;
-
 const handleChatClick = () => {
-  const url = `/auth/chat/${reservation.id}`;
+  if (typeof window === "undefined") return;
 
+  const url = `/auth/chat/${reservation.id}`;
+  const isMobile = window.innerWidth < 768;
+
+  // 모바일 → 같은 탭
   if (isMobile) {
     router.push(url);
-  } else {
-    window.open(url, "_blank");
+    return;
   }
+
+  // PC → 채팅 전용 새 창 (재사용)
+  const CHAT_WINDOW_NAME = "relyn-chat-window";
+
+  const width = 420;
+  const height = Math.min(800, window.screen.height - 120);
+
+  const left = window.screenX + window.innerWidth - width - 24;
+  const top = window.screenY + 80;
+
+  window.open(
+    url,
+    CHAT_WINDOW_NAME,
+    [
+      "popup=yes",
+      `width=${width}`,
+      `height=${height}`,
+      `left=${left}`,
+      `top=${top}`,
+      "resizable=yes",
+      "scrollbars=yes",
+    ].join(",")
+  );
 };
 
 const settlementTypeLabel = useMemo(() => {

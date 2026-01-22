@@ -109,11 +109,31 @@ useEffect(() => {
         onSelect={(reservationId) => {
     const url = `/auth/chat/${reservationId}`;
 
-    // PC (md 이상) → 새 탭
-    if (typeof window !== "undefined" && window.innerWidth >= 768) {
-      window.open(url, "_blank", "noopener,noreferrer");
-      return;
-    }
+  // PC (md 이상) → 채팅 전용 새 "창"
+  if (typeof window !== "undefined" && window.innerWidth >= 768) {
+    const CHAT_WINDOW_NAME = "relyn-chat-window";
+
+   const width = 420;   // 👉 스크린샷 비율 기준 (조정 가능)
+    const height = Math.min(800, window.screen.height - 120);
+
+    const left = window.screenX + window.innerWidth - width - 24;
+    const top = window.screenY + 80;
+
+    window.open(
+      url,
+      CHAT_WINDOW_NAME,
+      [
+        "popup=yes",
+       `width=${width}`,
+        `height=${height}`,
+        `left=${left}`,
+        `top=${top}`,
+        "resizable=yes",
+        "scrollbars=yes",
+      ].join(",")
+    );
+    return;
+  }
 
     // 모바일 → 같은 탭
     router.push(url);

@@ -403,7 +403,10 @@ useEffect(() => {
 
 
   return (
-    <div className="relative flex flex-col h-screen">
+   <div
+     data-chat-page
+     className="relative flex flex-col h-screen bg-white"
+   >
     {/* 🔒 상단 예약정보 카드 (Sticky) */}
     <div className="sticky top-0 z-40 bg-white border-b">
       <div className="px-4 py-3">
