@@ -53,6 +53,20 @@ body {
   }
 }
 
+/* =========================
+ * Mobile heading color fix
+ * ========================= */
+@media (max-width: 768px) {
+  h1,
+ h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #111111 !important;
+  }
+}
+
 
 /* Figma 타이포 스펙 기반 line-height 적용 */
 h1,

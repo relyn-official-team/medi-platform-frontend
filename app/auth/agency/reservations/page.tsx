@@ -236,8 +236,8 @@ const loadHospitalContact = async (hospitalId: string) => {
 
 
               {open && contact && (
-  <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-    <div className="bg-white rounded-lg w-full max-w-sm p-4">
+  <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center" onClick={() => setOpen(false)}>
+    <div className="bg-white rounded-lg w-full max-w-sm p-4" onClick={(e) => e.stopPropagation()}>
       <h2 className="font-semibold mb-3">병원 연락처</h2>
 
       <div className="space-y-2 text-sm">

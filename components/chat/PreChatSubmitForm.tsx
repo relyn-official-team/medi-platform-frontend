@@ -42,7 +42,7 @@ useEffect(() => {
   });
 }, [initialData]);
 
-const [opened, setOpened] = useState(mode === "submit");
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -103,20 +103,8 @@ const [opened, setOpened] = useState(mode === "submit");
   };
 
   return (
-    <div className="border-t bg-white p-4 space-y-3">
-<div className="text-sm font-semibold">
- <button
-   type="button"
-   onClick={() => setOpened(v => !v)}
-   className="text-xs text-gray-500"
- >
-   {opened ? "숨기기" : "예약정보 수정"}
- </button>
-
-</div>
-{opened && (
-  <div className="w-full md:max-w-[720px] mx-auto">
-    <div className="rounded-xl border border-gray-200 bg-white p-4 md:p-6 shadow-sm">
+    <div className="space-y-4">
+      <div className="rounded-xl border border-gray-200 bg-white p-4 md:p-6 shadow-sm">
 
         {/* ⚠️ 안내 문구 */}
   <div className="mb-4 rounded-md border border-yellow-200 bg-yellow-50 px-3 py-2 text-center">
@@ -228,11 +216,7 @@ const [opened, setOpened] = useState(mode === "submit");
           {mode === "submit" ? "예약 신청하기" : "예약 정보 수정"}
         </button>
       </div>
-
-    </div>
-  </div>
-)}
-
+      </div>
     </div>
   );
 }

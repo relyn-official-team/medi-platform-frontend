@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
  } from "@/constants/reservationStatus";
  import { isSettlementPendingView } from "@/utils/isSettlementPendingView";
  import { ReservationCardView } from "@/types/reservation";
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,} from "@/components/ui/dialog";
+
 
 
 const formatDate = (iso: string) => iso.slice(0, 10);
@@ -43,6 +45,8 @@ const [counterpartName, setCounterpartName] = useState<string | null>(null);
  const [initialFormData, setInitialFormData] =
    useState<PreChatFormDraft | null>(null);
    const [editable, setEditable] = useState(false);
+const [editModalOpen, setEditModalOpen] = useState(false);
+const [editDoneModalOpen, setEditDoneModalOpen] = useState(false);
   
   const lastMessageSigRef = useRef<string | null>(null);
   
@@ -494,6 +498,18 @@ useEffect(() => {
           {ReservationStatusLabel[displayStatus]}
         </Badge>
       )}
+
+{editable &&
+  reservationStatus !== "CANCELLED" &&
+  reservationStatus !== "SETTLED" && (
+    <button
+      onClick={() => setEditModalOpen(true)}
+      className="mt-2 block text-xs text-blue-600 hover:underline"
+    >
+      예약정보 수정
+    </button>
+  )}
+
     </div>
   </div>
 </div>
@@ -549,14 +565,7 @@ useEffect(() => {
   />
 )}
 
-{!isHospitalDirectChat && editable && initialFormData && (
-  <PreChatSubmitForm
-    reservationId={reservationId}
-    mode="edit"
-    initialData={initialFormData}
-    onUpdated={handlePreChatUpdated}
-  />
-)}
+
 
 
 
@@ -582,6 +591,54 @@ useEffect(() => {
       : "메시지를 입력할 수 없습니다"
   }
    />
+
+{/* 예약정보 수정 모달 */}
+<Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+  <DialogContent className="max-w-xl">
+    <DialogHeader>
+      <DialogTitle>예약정보 수정</DialogTitle>
+      <DialogDescription>
+        상대방과 협의 후 수정해주세요.
+      </DialogDescription>
+    </DialogHeader>
+
+    {initialFormData && (
+      <PreChatSubmitForm
+        reservationId={reservationId}
+        mode="edit"
+        initialData={initialFormData}
+        onUpdated={async () => {
+          setEditModalOpen(false);
+         setEditDoneModalOpen(true);
+          await handlePreChatUpdated();
+        }}
+      />
+    )}
+  </DialogContent>
+</Dialog>
+
+{/* 예약정보 수정 완료 모달 */}
+<Dialog open={editDoneModalOpen} onOpenChange={setEditDoneModalOpen}>
+  <DialogContent>
+   <DialogHeader>
+      <DialogTitle>수정 완료</DialogTitle>
+      <DialogDescription>
+        예약정보가 정상적으로 수정되었습니다.
+      </DialogDescription>
+    </DialogHeader>
+
+    <DialogFooter>
+     <button
+        onClick={() => setEditDoneModalOpen(false)}
+        className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white"
+      >
+        확인
+      </button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+
  </div>
     </div>
   );

@@ -27,6 +27,8 @@ import {
   DialogDescription,
   DialogFooter,
   DialogTrigger,
+  DialogOverlay,
+  DialogPortal,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ReservationCardView, ReservationStatus } from "@/types/reservation";
@@ -1289,55 +1291,61 @@ return (
 
 
       {/* 에이전시 연락처 모달 */}
-       {isHospital && (
- <Dialog open={contactOpen} onOpenChange={setContactOpen}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>
-   {isHospital ? "에이전시 연락처" : "병원 연락처"}
- </DialogTitle>
-          </DialogHeader>
-          {reservation.agencyContact ? (
-            <div className="space-y-2 text-sm text-gray-700">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">연락처</span>
-                <span>{reservation.agencyContact?.phone ?? "-"}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">이메일</span>
-                <span>{reservation.agencyContact?.email ?? "-"}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">WhatsApp</span>
-                <span>{reservation.agencyContact?.whatsapp ?? "-"}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">WeChat</span>
-                <span>{reservation.agencyContact?.wechat ?? "-"}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">LINE</span>
-                <span>{reservation.agencyContact?.line ?? "-"}</span>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500">
-              에이전시 연락처 정보를 불러오는 중이거나, 등록된 정보가 없습니다.
-            </p>
-          )}
-          <DialogFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              type="button"
-              onClick={() => setContactOpen(false)}
-            >
-              닫기
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    )}
+{isHospital && (
+  <Dialog open={contactOpen} onOpenChange={setContactOpen}>
+    <DialogContent
+      className="max-w-sm"
+      onPointerDownOutside={() => setContactOpen(false)}
+      onEscapeKeyDown={() => setContactOpen(false)}
+    >
+      <DialogHeader>
+        <DialogTitle>
+          {isHospital ? "에이전시 연락처" : "병원 연락처"}
+        </DialogTitle>
+      </DialogHeader>
+
+      {reservation.agencyContact ? (
+        <div className="space-y-2 text-sm text-gray-700">
+          <div className="flex justify-between">
+            <span className="text-gray-500">연락처</span>
+            <span>{reservation.agencyContact.phone ?? "-"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">이메일</span>
+            <span>{reservation.agencyContact.email ?? "-"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">WhatsApp</span>
+            <span>{reservation.agencyContact.whatsapp ?? "-"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">WeChat</span>
+            <span>{reservation.agencyContact.wechat ?? "-"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">LINE</span>
+            <span>{reservation.agencyContact.line ?? "-"}</span>
+          </div>
+        </div>
+      ) : (
+        <p className="text-sm text-gray-500">
+          에이전시 연락처 정보를 불러오는 중이거나, 등록된 정보가 없습니다.
+        </p>
+      )}
+
+      <DialogFooter>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setContactOpen(false)}
+        >
+          닫기
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+)}
+
     </div>
     
   );
