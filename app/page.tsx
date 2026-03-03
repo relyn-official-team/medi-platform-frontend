@@ -93,20 +93,19 @@ export default function Page() {
           : `[에이전시제휴문의] (${orgName.trim()})`;
 
       // NOTE: Resend 등 메일 발송은 서버에서만 호출 가능하므로 /api/contact 라우트에서 처리하세요.
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: inquiryType,
-          subject,
-          payload: {
-            [nameLabel]: orgName.trim(),
-            성함: personName.trim(),
-            연락처: phone.trim(),
-          },
-          to: 'relyn.official.team@gmail.com',
-        }),
-      });
+const res = await fetch('/api/lead', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    type: inquiryType,
+    orgName: orgName.trim(),
+    name: personName.trim(),
+    phone: phone.trim(),
+  }),
+});
+
+const data = await res.json().catch(() => null);
+if (!res.ok) throw new Error(data?.error ?? 'request_failed');
 
       if (!res.ok) throw new Error('request_failed');
       setSubmitDone('success');
