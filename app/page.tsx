@@ -415,6 +415,11 @@ if (!res.ok) throw new Error(data?.error ?? 'request_failed');
           <footer className="mt-10 pb-3 text-center text-[11px] leading-5 text-neutral-500">
             <div>주식회사 렐린 | 대표이사 장기석 | 사업자등록번호 299-03-03608</div>
             <div>서울특별시 강남구 역삼로 512, 5층 603(대치동, 인테크빌딩)</div>
+            <div className="mt-2">
+              <Link href="/privacy" className="font-semibold text-blue-600 hover:underline">
+              개인정보처리방침
+              </Link>
+            </div>
           </footer>
         </section>
       </div>
