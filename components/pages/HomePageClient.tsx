@@ -39,7 +39,7 @@ declare global {
 
 type InquiryType = 'HOSPITAL' | 'AGENCY';
 
-const GOOGLE_ADS_SEND_TO = 'AW-17991152486/REPLACE_WITH_CONVERSION_LABEL';
+const GOOGLE_ADS_SEND_TO = 'AW-17991152486/4dzyCIKP3oUcEObm7IJD';
 
 export default function Page() {
   const [typeSelectOpen, setTypeSelectOpen] = React.useState(false);
