@@ -67,8 +67,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HomePageClient />
-      
+            
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=AW-17991152486"
         strategy="afterInteractive"
