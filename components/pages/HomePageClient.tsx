@@ -30,8 +30,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import LottieHero from "@/components/common/LottieHero";
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 
 type InquiryType = 'HOSPITAL' | 'AGENCY';
+
+const GOOGLE_ADS_SEND_TO = 'AW-17991152486/REPLACE_WITH_CONVERSION_LABEL';
 
 export default function Page() {
   const [typeSelectOpen, setTypeSelectOpen] = React.useState(false);
@@ -43,6 +51,17 @@ export default function Page() {
   const [phone, setPhone] = React.useState('');
   const [submitting, setSubmitting] = React.useState(false);
   const [submitDone, setSubmitDone] = React.useState<'success' | 'error' | null>(null);
+
+    const trackGoogleAdsConversion = () => {
+    if (typeof window === 'undefined') return;
+    if (typeof window.gtag !== 'function') return;
+
+    window.gtag('event', 'conversion', {
+      send_to: GOOGLE_ADS_SEND_TO,
+      value: 1.0,
+      currency: 'KRW',
+    });
+  };
 
   const openInquiryFlow = () => {
     setSubmitDone(null);
@@ -107,8 +126,8 @@ const res = await fetch('/api/lead', {
 const data = await res.json().catch(() => null);
 if (!res.ok) throw new Error(data?.error ?? 'request_failed');
 
-      if (!res.ok) throw new Error('request_failed');
-      setSubmitDone('success');
+trackGoogleAdsConversion();
+setSubmitDone('success');
     } catch {
       setSubmitDone('error');
     } finally {
