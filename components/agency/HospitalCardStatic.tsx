@@ -6,6 +6,9 @@ interface Props {
 }
 
 export default function HospitalCardStatic({ hospital }: Props) {
+  const displayRate =
+    hospital.displayAgencyCommissionRate ?? hospital.agencyCommissionRate;
+
   return (
     <div
       className="
@@ -32,9 +35,16 @@ export default function HospitalCardStatic({ hospital }: Props) {
       {/* 정보 영역 */}
       <div className="flex-1 p-3 space-y-1 text-sm">
         {/* 병원명 */}
-        <div className="font-semibold text-gray-900">
-          {hospital.name}
-        </div>
+<div className="flex items-center gap-2 font-semibold text-gray-900">
+  <span>{hospital.name}</span>
+{/*
+   {hospital.isGuaranteed && (
+    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
+      보장성
+    </span>
+  )}
+*/}
+</div>
 
         {/* 위치 */}
         {hospital.location && (
@@ -79,12 +89,17 @@ export default function HospitalCardStatic({ hospital }: Props) {
         )}
 
         {/* 수수료 */}
-        <div className="pt-1 text-[11px] text-gray-600">
-          수수료&nbsp;
-          <span className="font-medium text-gray-900">
-            정률 {hospital.agencyCommissionRate}% / 정액{" "}
+<div className="pt-1 text-[11px] text-gray-600">
+  수수료&nbsp;
+  <span className="font-medium text-gray-900">
+    정률 {displayRate}% 
+  </span>
+
+{/*
+            / 정액{" "}
             {hospital.settlementFlatAmount.toLocaleString()}원
-          </span>
+ */}
+          
         </div>
       </div>
     </div>

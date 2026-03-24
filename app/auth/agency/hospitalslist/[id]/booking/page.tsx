@@ -73,27 +73,31 @@ useEffect(() => {
       const priceMinDisplay = prices.length ? Math.min(...prices) : null;
       const priceMaxDisplay = prices.length ? Math.max(...prices) : null;
 
-      setHospital({
-        id: d.id,
-        name: d.name,
-        location: d.location ?? null,
-        consultLanguages: d.consultLanguages ?? [],
-        businessHours: d.businessHours ?? undefined,
-        coverImageUrl:
-          d.images?.find((i) => i.isCover)?.url ?? null,
+setHospital({
+  id: d.id,
+  name: d.name,
+  location: d.location ?? null,
+  consultLanguages: d.consultLanguages ?? [],
+  businessHours: d.businessHours ?? undefined,
+  coverImageUrl:
+    d.images?.find((i) => i.isCover)?.url ?? null,
 
-        // ✅ 이제 스코프에 존재
-        priceMin,
-        priceMax,
-        priceMinDisplay,
-        priceMaxDisplay,
+  priceMin,
+  priceMax,
+  priceMinDisplay,
+  priceMaxDisplay,
 
-        topProcedures:
-          d.pricingItems?.slice(0, 3).map((p) => p.procedureName) ?? [],
-        agencyCommissionRate: d.agencyCommissionRate,
-        settlementCalcType: d.settlementCalcType,
-        settlementFlatAmount: d.settlementFlatAmount,
-      });
+  topProcedures:
+    d.pricingItems?.slice(0, 3).map((p) => p.procedureName) ?? [],
+  agencyCommissionRate: d.agencyCommissionRate,
+  settlementCalcType: d.settlementCalcType,
+  settlementFlatAmount: d.settlementFlatAmount,
+
+platformFeeExposureType: d.platformFeeExposureType,
+vatInputMode: d.vatInputMode,
+displayAgencyCommissionRate: d.displayAgencyCommissionRate,
+isGuaranteed: d.isGuaranteed,
+});
     } catch (e) {
       console.error("Failed to load hospital card info", e);
     }
@@ -209,11 +213,24 @@ useEffect(() => {
     <MobileHeader title="예약 신청" />
 
     <div className="pt-14 space-y-4 pb-24">
-    {/* 병원 카드 (고정 헤더 아래 영역) */}
+{/* 병원 카드 (고정 헤더 아래 영역) */}
 {hospital && (
-  <div className="bg-gray-50">
-    <div className="max-w-5xl mx-auto px-4 py-2">
-      <HospitalCardStatic hospital={hospital} />
+  <div className="space-y-2">
+    <div className="bg-gray-50">
+      <div className="max-w-5xl mx-auto px-4 py-2">
+        <HospitalCardStatic hospital={hospital} />
+      </div>
+    </div>
+
+    <div className="max-w-5xl mx-auto px-4">
+      <div className="rounded-md border border-orange-200 bg-orange-50 px-3 py-2 text-xs text-orange-900">
+        매출 정산 기준:{" "}
+        <span className="font-semibold">
+          {hospital.vatInputMode === "VAT_EXCLUDED"
+            ? "부가세 제외"
+            : "부가세 포함"}
+        </span>
+      </div>
     </div>
   </div>
 )}

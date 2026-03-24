@@ -60,9 +60,11 @@ interface HospitalSettings {
 
   settlementCalcType: "PERCENTAGE" | "PER_RESERVATION";
   settlementFlatAmount: number;
-  platformCommissionRate: number;
-  platformFlatAmount: number;
-  agencyCommissionRate: number;
+platformCommissionRate: number;
+platformFlatAmount: number;
+platformFeeExposureType: "EXCLUDED" | "INCLUDED";
+vatInputMode: "VAT_INCLUDED" | "VAT_EXCLUDED";
+agencyCommissionRate: number;
   chargeBalance: number;
 
   specialties?: {
@@ -212,19 +214,23 @@ const uploadSignatureImage = async (file: File) => {
 
   type CalcType = "PERCENTAGE" | "PER_RESERVATION";
 
-  const [form, setForm] = useState<{
-    settlementCalcType: CalcType;
-    agencyCommissionRate: number;
-    settlementFlatAmount: number;
-    platformCommissionRate: number;
-    platformFlatAmount: number;
-  }>({
-    settlementCalcType: "PERCENTAGE",
-    agencyCommissionRate: 0,
-    settlementFlatAmount: 0,
-    platformCommissionRate: 0,
-    platformFlatAmount: 0,
-  });
+const [form, setForm] = useState<{
+  settlementCalcType: CalcType;
+  agencyCommissionRate: number;
+  settlementFlatAmount: number;
+  platformCommissionRate: number;
+  platformFlatAmount: number;
+  platformFeeExposureType: "EXCLUDED" | "INCLUDED";
+  vatInputMode: "VAT_INCLUDED" | "VAT_EXCLUDED";
+}>({
+  settlementCalcType: "PERCENTAGE",
+  agencyCommissionRate: 0,
+  settlementFlatAmount: 0,
+  platformCommissionRate: 0,
+  platformFlatAmount: 0,
+  platformFeeExposureType: "EXCLUDED",
+  vatInputMode: "VAT_INCLUDED",
+});
 
 // ===== 에이전시 수수료율 등급 계산 =====
 const getAgencyCommissionGrade = (rate: number) => {
@@ -243,6 +249,11 @@ const getAgencyCommissionGrade = (rate: number) => {
   return { stars: 1, label: "실질 유입 거의 없음" };
 };
 
+const displayAgencyCommissionRateForPlatformExposure = Math.max(
+  0,
+  Number(form.agencyCommissionRate || 0) -
+    Number(form.platformCommissionRate || 0)
+).toFixed(2);
 
   const LANGUAGE_OPTIONS = [
   "영어",
@@ -337,13 +348,15 @@ setSignatureCare(
 );
 
 
-      setForm({
-        settlementCalcType: data.settlementCalcType,
-        agencyCommissionRate: data.agencyCommissionRate,
-        settlementFlatAmount: data.settlementFlatAmount,
-        platformCommissionRate: data.platformCommissionRate,
-        platformFlatAmount: data.platformFlatAmount,
-      });
+setForm({
+  settlementCalcType: data.settlementCalcType,
+  agencyCommissionRate: data.agencyCommissionRate,
+  settlementFlatAmount: data.settlementFlatAmount,
+  platformCommissionRate: data.platformCommissionRate,
+  platformFlatAmount: data.platformFlatAmount,
+  platformFeeExposureType: data.platformFeeExposureType ?? "EXCLUDED",
+  vatInputMode: data.vatInputMode ?? "VAT_INCLUDED",
+});
     } catch (err) {
       console.error("Failed to load hospital profile", err);
       setError("병원 정보를 불러오지 못했습니다.");
@@ -414,10 +427,14 @@ const handleSaveSettings = async () => {
   try {
     setSaving(true);
 
-    await api.patch("/hospital/settings", {
-      settlementCalcType: form.settlementCalcType,
-      agencyCommissionRate: form.agencyCommissionRate,
-      settlementFlatAmount: form.settlementFlatAmount,
+await api.patch("/hospital/settings", {
+  settlementCalcType: form.settlementCalcType,
+  agencyCommissionRate: form.agencyCommissionRate,
+  settlementFlatAmount: form.settlementFlatAmount,
+  platformCommissionRate: form.platformCommissionRate,
+  platformFlatAmount: form.platformFlatAmount,
+  platformFeeExposureType: form.platformFeeExposureType,
+  vatInputMode: form.vatInputMode,
 
  // =========================
  // 의료 서비스 설정
@@ -428,19 +445,18 @@ const handleSaveSettings = async () => {
  signatureCares: signatureCare.map((item) => ({
    title: item.title,
    description: item.description,
-    images: item.images
-   .map((img) => img.url)
-   .filter(Boolean),
+   images: item.images
+     .map((img) => img.url)
+     .filter(Boolean),
  })),
 
-
-      businessName: profile?.businessName,
-      businessAddress: profile?.businessAddress,
-      businessLicenseUrl: profile?.businessLicenseUrl,
-      refundBankName: profile?.refundBankName,
-      refundAccountNumber: profile?.refundAccountNumber,
-      refundAccountHolder: profile?.refundAccountHolder,
-    });
+  businessName: profile?.businessName,
+  businessAddress: profile?.businessAddress,
+  businessLicenseUrl: profile?.businessLicenseUrl,
+  refundBankName: profile?.refundBankName,
+  refundAccountNumber: profile?.refundAccountNumber,
+  refundAccountHolder: profile?.refundAccountHolder,
+});
 
 
     await fetchProfile();  // ← 추가
@@ -844,11 +860,12 @@ const WEEK_DAYS = [
         <h2 className="text-sm font-semibold mb-2">에이전시 수수료 설정</h2>
         
         <section className="mb-8">
-          
+       
  <div className="mb-3 rounded-lg bg-green-50 border border-green-200 px-3 py-3 text-xs text-green-800">
    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-     {/* 좌측: 에이전시 수수료 */}
+
+     {/* 좌측: 에이전시 수수료 
      <div className="rounded-md bg-white/60 border border-green-200 px-3 py-2">
        <div className="text-green-700 font-medium mb-1">
          정액 수수료 현재 설정 (환자 결제 금액 50만원 이하)
@@ -865,18 +882,26 @@ const WEEK_DAYS = [
            {profile?.platformFlatAmount.toLocaleString()}원
          </span>
        </div>
-     </div>
+     </div> */}
 
      {/* 우측: 플랫폼 수수료 */}
      <div className="rounded-md bg-white/60 border border-green-200 px-3 py-2">
        <div className="text-green-700 font-medium mb-1">
-         정률 수수료 현재 설정 (환자 결제 금액 50만원 초과)
+         정률 수수료 현재 설정 {/* (환자 결제 금액 50만원 초과) */}
        </div>
         <div>
-         · 에이전시 수수료 정률&nbsp;
-         <span className="font-semibold">
-           {profile?.agencyCommissionRate.toFixed(1)}%
-         </span>
+· 에이전시 수수료 정률&nbsp;
+<span className="font-semibold">
+  {(
+    profile?.platformFeeExposureType === "INCLUDED"
+      ? Math.max(
+          0,
+          (profile?.agencyCommissionRate ?? 0) -
+            (profile?.platformCommissionRate ?? 0)
+        )
+      : profile?.agencyCommissionRate ?? 0
+  ).toFixed(1)}%
+</span>
        </div>
       <div>
          · 플랫폼 수수료 정률&nbsp;
@@ -884,20 +909,19 @@ const WEEK_DAYS = [
            {profile?.platformCommissionRate.toFixed(1)}%
          </span>
        </div>
-       
-     </div>
+      </div>
 
    </div>
  </div>
 
-          <p className="text-xs text-gray-500 mb-3">
+          {/*<p className="text-xs text-gray-500 mb-3">
           ✅본 플랫폼은 원활한 환자유치를 위해 정률 단일 구조를 사용하지 않습니다.<br />
           ✅건당 수수료는 고액 환자 비용 절감을 위한 제도가 아닙니다. 저액 환자 유치를 가능하게 하기 위한 시장 안정 장치입니다.<br /><br />
 
           결제 금액 기준으로 자동 분기됩니다.<br />
           ⚠️환자 결제 금액 50만원 이하: 에이전시 정액(원) + 플랫폼 12,000원<br />
           ⚠️환자 결제 금액 50만원 초과: 에이전시 정률(%) + 플랫폼 매출의 2.5%
-        </p>
+        </p>*/}
 
           <div className="rounded-xl border border-gray-200 bg-white p-4">
             {form.settlementCalcType === "PERCENTAGE" && (
@@ -971,8 +995,153 @@ const WEEK_DAYS = [
                 {form.platformCommissionRate} %
               </div>
             </div>
-            
 
+<div className="mt-4 space-y-3">
+  <label className="text-xs text-gray-500">매출 입력 기준</label>
+
+  <div className="flex flex-col gap-2 text-sm text-gray-700">
+    <label className="flex items-center gap-2">
+      <input
+        type="radio"
+        name="vatInputMode"
+        value="VAT_INCLUDED"
+        checked={form.vatInputMode === "VAT_INCLUDED"}
+        onChange={() =>
+          setForm((prev) => ({
+            ...prev,
+            vatInputMode: "VAT_INCLUDED",
+          }))
+        }
+      />
+      <span>매출 입력 부가세 포함</span>
+    </label>
+
+    <label className="flex items-center gap-2">
+      <input
+        type="radio"
+        name="vatInputMode"
+        value="VAT_EXCLUDED"
+        checked={form.vatInputMode === "VAT_EXCLUDED"}
+        onChange={() =>
+          setForm((prev) => ({
+            ...prev,
+            vatInputMode: "VAT_EXCLUDED",
+          }))
+        }
+      />
+      <span>매출 입력 부가세 미포함</span>
+    </label>
+  </div>
+</div>
+
+            
+<div className="mt-4 space-y-3">
+  <label className="text-xs text-gray-500">플랫폼 수수료 측정 방식</label>
+<div className="mt-3 rounded-lg border border-orange-200 bg-orange-50 px-3 py-3 text-xs text-orange-900">
+  <div className="flex items-start gap-2">
+    <div className="flex-1">
+      에이전시에게 매출 정산 기준이{" "}
+      <span className="font-semibold">
+        {form.vatInputMode === "VAT_INCLUDED"
+          ? "부가세 포함"
+          : "부가세 제외"}
+      </span>
+      으로 안내됩니다.
+    </div>
+
+    <div className="group relative">
+      <button
+        type="button"
+        className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-orange-300 bg-white text-[11px] font-semibold text-orange-700"
+      >
+        ?
+      </button>
+
+      <div className="invisible absolute right-0 top-6 z-20 w-[320px] rounded-md border border-gray-200 bg-white p-3 text-[11px] text-gray-700 shadow-lg group-hover:visible">
+        <div className="font-semibold text-gray-900 mb-2">매출 정산 기준 안내</div>
+        <div>
+          현재 설정:{" "}
+          {form.vatInputMode === "VAT_INCLUDED"
+            ? "매출 정산 부가세 포함"
+            : "매출 정산 부가세 제외"}
+        </div>
+        <div className="mt-2 text-gray-500">
+          부가세 포함/제외는 매출 입력 기준만 구분되며,<br></br>
+          수수료액수는 부가세 포함 기준으로 계산됩니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div className="flex flex-col gap-2 text-sm text-gray-700">
+    <label className="flex items-center gap-2">
+      <input
+        type="radio"
+        name="platformFeeExposureType"
+        value="EXCLUDED"
+        checked={form.platformFeeExposureType === "EXCLUDED"}
+        onChange={() =>
+          setForm((prev) => ({
+            ...prev,
+            platformFeeExposureType: "EXCLUDED",
+          }))
+        }
+      />
+      <span>플랫폼 수수료 미포함 측정</span>
+    </label>
+
+    <label className="flex items-center gap-2">
+      <input
+        type="radio"
+        name="platformFeeExposureType"
+        value="INCLUDED"
+        checked={form.platformFeeExposureType === "INCLUDED"}
+        onChange={() =>
+          setForm((prev) => ({
+            ...prev,
+            platformFeeExposureType: "INCLUDED",
+          }))
+        }
+      />
+      <span>플랫폼 수수료 포함 측정</span>
+    </label>
+  </div>
+</div>
+
+{form.platformFeeExposureType === "INCLUDED" && (
+  <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-3 text-xs text-blue-900">
+    <div className="flex items-start gap-2">
+      <div className="flex-1">
+        에이전시에게 투명성을 위해 노출되는 수수료율은{" "}
+        <span className="font-semibold">
+          {displayAgencyCommissionRateForPlatformExposure}%
+        </span>{" "}
+        로 보여집니다.
+      </div>
+
+      <div className="group relative">
+        <button
+          type="button"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-blue-300 bg-white text-[11px] font-semibold text-blue-700"
+        >
+          ?
+        </button>
+
+        <div className="invisible absolute right-0 top-6 z-20 w-[280px] rounded-md border border-gray-200 bg-white p-3 text-[11px] text-gray-700 shadow-lg group-hover:visible">
+          <div className="font-semibold text-gray-900 mb-2">노출 예시</div>
+          <div>설정 수수료율: {Number(form.agencyCommissionRate).toFixed(2)}%</div>
+          <div>플랫폼 수수료율: {Number(form.platformCommissionRate).toFixed(2)}%</div>
+          <div>에이전시 노출 수수료율: {displayAgencyCommissionRateForPlatformExposure}%</div>
+          <div className="mt-2 text-gray-500">
+            플랫폼 수수료 포함 측정 시, 에이전시에게는 플랫폼 수수료를 제외한 값이 노출됩니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+            
+{/*
             <div className="mt-4 flex-1">
               <div className="mt-4 space-y-4">
 
@@ -993,6 +1162,7 @@ const WEEK_DAYS = [
 
               </div>
             </div>
+*/}
 
             <div className="flex items-center justify-between mt-3">
               <div className="text-xs text-gray-400">

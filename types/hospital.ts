@@ -18,9 +18,13 @@ export interface AgencyHospitalListItem {
 
   topProcedures: string[];
 
-  agencyCommissionRate: number;
-  settlementCalcType: "PERCENTAGE" | "PER_RESERVATION";
-  settlementFlatAmount: number;
+agencyCommissionRate: number;
+settlementCalcType: "PERCENTAGE" | "PER_RESERVATION";
+settlementFlatAmount: number;
+platformFeeExposureType?: "EXCLUDED" | "INCLUDED";
+vatInputMode?: "VAT_INCLUDED" | "VAT_EXCLUDED";
+displayAgencyCommissionRate?: number;
+isGuaranteed?: boolean;
 
   // ⭐ 병원 별점 요약
   ratingAvg?: number;     // 예: 4.9
@@ -96,11 +100,15 @@ export interface AgencyHospitalDetail {
   canSelectDirector?: boolean;
 
   // 수수료
-  agencyCommissionRate: number;
-  settlementCalcType: "PERCENTAGE" | "PER_RESERVATION";
-  settlementFlatAmount: number;
-  platformCommissionRate?: number;
-  platformFlatAmount?: number;
+agencyCommissionRate: number;
+settlementCalcType: "PERCENTAGE" | "PER_RESERVATION";
+settlementFlatAmount: number;
+platformCommissionRate?: number;
+platformFlatAmount?: number;
+platformFeeExposureType?: "EXCLUDED" | "INCLUDED";
+vatInputMode?: "VAT_INCLUDED" | "VAT_EXCLUDED";
+displayAgencyCommissionRate?: number;
+isGuaranteed?: boolean;
 
   location?: {
     city: string;

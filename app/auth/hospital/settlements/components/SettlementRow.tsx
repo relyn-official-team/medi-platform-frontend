@@ -36,7 +36,9 @@ function formatMoney(n: number) {
 
 export default function SettlementRow({ item }: { item: SettlementItem }) {
   const amountClass =
-    item.amount > 0
+    item.type === "CHARGE_REJECTED"
+      ? "text-purple-600"
+      : item.amount > 0
       ? "text-blue-600"
       : item.amount < 0
       ? "text-red-600"

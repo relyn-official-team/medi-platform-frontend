@@ -17,6 +17,9 @@ interface Props {
  };
 
 export default function HospitalCard({ hospital }: Props) {
+  const displayRate =
+    hospital.displayAgencyCommissionRate ?? hospital.agencyCommissionRate;
+
   return (
 <Link
   href={`/auth/agency/hospitalslist/${hospital.id}`}
@@ -43,10 +46,29 @@ export default function HospitalCard({ hospital }: Props) {
 
       <div className="p-4 space-y-2">
         {/* 병원명 / 위치 */}
-        <div>
-          <div className="text-base font-semibold text-gray-900">
-            {hospital.name}
-          </div>
+<div>
+  <div className="flex items-center gap-2 text-base font-semibold text-gray-900">
+    <span>{hospital.name}</span>
+
+    <span
+      className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+        hospital.vatInputMode === "VAT_EXCLUDED"
+          ? "bg-orange-50 text-orange-700"
+          : "bg-sky-50 text-sky-700"
+      }`}
+    >
+      {hospital.vatInputMode === "VAT_EXCLUDED"
+        ? "매출 측정 부가세 제외"
+        : "매출 측정 부가세 포함"}
+    </span>
+
+{/*     {hospital.isGuaranteed && (
+      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
+        보장성
+      </span>
+    )}
+*/}
+  </div>
           {hospital.location && (
             <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
               <MapPin className="h-3 w-3" />
@@ -109,12 +131,17 @@ export default function HospitalCard({ hospital }: Props) {
       </div>
 
       {/* 수수료 영역 */}
-      <div className="px-4 pb-4 pt-2 text-xs text-gray-600">
-       수수료:&nbsp;
-        <span className="font-medium text-gray-900">
-          정률 {hospital.agencyCommissionRate}% / 정액{" "}
+<div className="px-4 pb-4 pt-2 text-xs text-gray-600">
+ 수수료:&nbsp;
+  <span className="font-medium text-gray-900">
+    정률 {displayRate}% 
+  </span>
+
+{/*
+          / 정액{" "}
           {hospital.settlementFlatAmount.toLocaleString()}원
-        </span>
+*/}
+        
       </div>
 
     </Link>

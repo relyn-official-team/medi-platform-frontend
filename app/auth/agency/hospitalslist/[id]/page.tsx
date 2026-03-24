@@ -28,7 +28,7 @@ import StarRating from "@/components/common/StarRating";
 
 
 export default function AgencyHospitalDetailPage() {
-
+  
   const params = useParams();
   const id = String(params.id);
   const router = useRouter();
@@ -112,6 +112,9 @@ const reservationId = res.data.reservationId;
 
   if (!data) return <div>Loading...</div>;
 
+  const displayRate =
+  data.displayAgencyCommissionRate ?? data.agencyCommissionRate;
+
 
 
   return (
@@ -158,7 +161,28 @@ const reservationId = res.data.reservationId;
      {/* Basic Info */}
      <section className="mx-auto max-w-3xl px-4 mt-4">
        <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-2">
-        <div className="text-lg font-semibold">{data.name}</div>
+<div className="flex items-center gap-2 text-lg font-semibold">
+  <span>{data.name}</span>
+
+  <span
+    className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+      data.vatInputMode === "VAT_EXCLUDED"
+        ? "bg-orange-50 text-orange-700"
+        : "bg-sky-50 text-sky-700"
+    }`}
+  >
+    {data.vatInputMode === "VAT_EXCLUDED"
+      ? "매출 측정 부가세 제외"
+      : "매출 측정 부가세 포함"}
+  </span>
+
+{/*   {data.isGuaranteed && (
+    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
+      보장성
+    </span>
+  )}
+*/}
+</div>
 
 {typeof (data as any).ratingAvg === "number" && typeof (data as any).ratingCount === "number" && (
   <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
@@ -194,15 +218,18 @@ const reservationId = res.data.reservationId;
      </section>
 
      {/* Commission */}
-     <section className="mx-auto max-w-3xl px-4 mt-3">
-       <div className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-900">
-         수수료:&nbsp;
-<span className="font-medium">
-  정률 {data.agencyCommissionRate}% / 정액{" "}
-  {data.settlementFlatAmount.toLocaleString()}원
-</span>
-       </div>
-     </section>
+<section className="mx-auto max-w-3xl px-4 mt-3">
+  <div className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-900">
+    수수료:&nbsp;
+    <span className="font-medium">
+      정률 {displayRate}%
+{/*
+      / 정액{" "}
+      {data.settlementFlatAmount.toLocaleString()}원
+*/}
+    </span>
+  </div>
+</section>
 
 {/* 의료진옵션 */}
 {(data.hasSpecialist || data.canSelectDirector) && (

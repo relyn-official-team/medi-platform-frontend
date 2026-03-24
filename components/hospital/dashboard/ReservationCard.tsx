@@ -56,6 +56,8 @@ interface HospitalSettings {
   platformCommissionRate: number;
   platformFlatAmount: number;
   agencyCommissionRate: number;
+  platformFeeExposureType?: "EXCLUDED" | "INCLUDED";
+  vatInputMode?: "VAT_INCLUDED" | "VAT_EXCLUDED";
 }
 
 interface ReservationCardProps {
@@ -162,7 +164,7 @@ const canCancel =
       if (!parsed || parsed <= 0) return null;
 
       const total = Math.floor(parsed);
-      const THRESHOLD = 500_000;
+      const THRESHOLD = 0;
  const PLATFORM_FLAT_FEE =
    reservation.platformSettlementAmount ??
    hospitalSettings?.platformFlatAmount ??
@@ -365,7 +367,7 @@ const handleChatClick = () => {
 
 const settlementTypeLabel = useMemo(() => {
   if (!reservation.paymentAmount) return null;
-  return reservation.paymentAmount <= 500_000 ? "정액" : "정률";
+  return reservation.paymentAmount <= 0 ? "정액" : "정률";
 }, [reservation.paymentAmount]);
 
 const [agencyConfirmOpen, setAgencyConfirmOpen] = useState(false);
@@ -617,6 +619,7 @@ return (
         ? "적용된 수수료 기준"
         : "예상 수수료 기준 (정산 시 확정)"}
     </div>
+    
 
     <div className="space-y-0.5">
       <div>
@@ -631,35 +634,40 @@ return (
       </div>
 
 <div>
-  에이전시:&nbsp;
+  에이전시 수수료율:&nbsp;
   {(reservation.agencyCommissionRate ?? reservation.expectedAgencyCommissionRate) != null && (
     <span className="font-medium">
       정률 {reservation.agencyCommissionRate ?? reservation.expectedAgencyCommissionRate}%
     </span>
   )}
+{/*
   {(reservation.agencySettlementAmount ?? reservation.expectedAgencySettlementAmount) != null && (
     <span className="font-medium">
       {" "} / 정액 {(reservation.agencySettlementAmount ?? reservation.expectedAgencySettlementAmount)!.toLocaleString()}원
     </span>
   )}
+*/}
 </div>
 
 
          {(isHospital || isAdmin) && (   // 🔥 이 조건만 추가
       <div>
-        플랫폼:&nbsp;
+        플랫폼 수수료율:&nbsp;
         {(reservation.platformCommissionRate ?? reservation.expectedPlatformCommissionRate) != null && (
           <span className="font-medium">
             정률 {reservation.platformCommissionRate ?? reservation.expectedPlatformCommissionRate}%
           </span>
         )}
+{/*
         {(reservation.platformSettlementAmount ?? reservation.expectedPlatformSettlementAmount) != null && (
           <span className="font-medium">
            {" "} / 정액 {(reservation.platformSettlementAmount ?? reservation.expectedPlatformSettlementAmount)!.toLocaleString()}원
           </span>
         )}
+*/}
       </div>
          )}
+
     </div>
   </div>
 )}
@@ -693,9 +701,11 @@ return (
       rounded-md bg-gray-900 px-2 py-1.5 text-[10px] text-white opacity-0
       group-hover:opacity-100 transition-opacity">
       <div className="leading-relaxed">
-        결제 금액 기준으로 자동 분기됩니다.<br />
+        매출 금액 기준으로 수수료 액수가 계산됩니다.<br />
+{/* 
         · 50만원 이하: 정액<br />
         · 50만원 초과: 정률
+*/}
       </div>
     </div>
   </div>
@@ -817,11 +827,20 @@ return (
                   <DialogContent className="max-w-md">
                     <DialogHeader>
                       <DialogTitle>정산 처리</DialogTitle>
-                      <DialogDescription>
-                        에이전시 확인 후 정산을 완료합니다.<br />
-                        ⚠️VAT(부가세) 포함 매출액수로 작성 부탁드립니다.<br />
-                        ⚠️오기입 시, 세액계산에 문제가 발생 할 수 있습니다.<br />
-                      </DialogDescription>
+<DialogDescription>
+  에이전시 확인 후 정산을 완료합니다.<br />
+  {hospitalSettings?.vatInputMode === "VAT_EXCLUDED" ? (
+    <>
+      ⚠️VAT(부가세) 제외 매출액수로 작성 부탁드립니다.<br />
+      ⚠️수수료율은 병원 설정값 그대로 적용됩니다.<br />
+    </>
+  ) : (
+    <>
+      ⚠️VAT(부가세) 포함 매출액수로 작성 부탁드립니다.<br />
+      ⚠️수수료율은 병원 설정값 그대로 적용됩니다.<br />
+    </>
+  )}
+</DialogDescription>
                       
  {hasExistingPayment && (
    <div className="mt-2 rounded-md border border-yellow-300 bg-yellow-50 px-3 py-2 text-xs text-yellow-800">
