@@ -65,6 +65,7 @@ platformFlatAmount: number;
 platformFeeExposureType: "EXCLUDED" | "INCLUDED";
 vatInputMode: "VAT_INCLUDED" | "VAT_EXCLUDED";
 agencyCommissionRate: number;
+additionalCommissionRates?: number[];
   chargeBalance: number;
 
   specialties?: {
@@ -219,6 +220,7 @@ const uploadSignatureImage = async (file: File) => {
 const [form, setForm] = useState<{
   settlementCalcType: CalcType;
   agencyCommissionRate: number;
+  additionalCommissionRates: number[];
   settlementFlatAmount: number;
   platformCommissionRate: number;
   platformFlatAmount: number;
@@ -227,6 +229,7 @@ const [form, setForm] = useState<{
 }>({
   settlementCalcType: "PERCENTAGE",
   agencyCommissionRate: 0,
+  additionalCommissionRates: [],
   settlementFlatAmount: 0,
   platformCommissionRate: 0,
   platformFlatAmount: 0,
@@ -251,11 +254,18 @@ const getAgencyCommissionGrade = (rate: number) => {
   return { stars: 1, label: "실질 유입 거의 없음" };
 };
 
-const displayAgencyCommissionRateForPlatformExposure = Math.max(
-  0,
-  Number(form.agencyCommissionRate || 0) -
-    Number(form.platformCommissionRate || 0)
-).toFixed(2);
+const getDisplayedCommissionRate = (rawRate: number) => {
+  if (form.platformFeeExposureType === "INCLUDED") {
+    return Math.max(
+      0,
+      Number(rawRate || 0) - Number(form.platformCommissionRate || 0)
+    );
+  }
+  return Number(rawRate || 0);
+};
+
+const displayAgencyCommissionRateForPlatformExposure =
+  getDisplayedCommissionRate(Number(form.agencyCommissionRate || 0)).toFixed(2);
 
   const LANGUAGE_OPTIONS = [
   "영어",
@@ -353,6 +363,12 @@ setSignatureCare(
 setForm({
   settlementCalcType: data.settlementCalcType,
   agencyCommissionRate: data.agencyCommissionRate,
+  additionalCommissionRates: Array.isArray(data.additionalCommissionRates)
+    ? data.additionalCommissionRates
+        .map((v: any) => Number(v))
+        .filter((v: number) => Number.isFinite(v) && v > 0)
+        .slice(0, 5)
+    : [],
   settlementFlatAmount: data.settlementFlatAmount,
   platformCommissionRate: data.platformCommissionRate,
   platformFlatAmount: data.platformFlatAmount,
@@ -377,6 +393,16 @@ const handleSaveBasicInfo = async () => {
   try {
     setError(null);
     setSuccess(null);
+
+    if (profile?.location?.city && !profile?.location?.district) {
+      setError("시/군/구를 선택해주세요.");
+      return;
+    }
+
+    if (!profile?.location?.city && profile?.location?.district) {
+      setError("광역시/도를 선택해주세요.");
+      return;
+    }
 
     let finalConsultLanguages = [...(profile.consultLanguages ?? [])];
 
@@ -432,6 +458,7 @@ const handleSaveSettings = async () => {
 await api.patch("/hospital/settings", {
   settlementCalcType: form.settlementCalcType,
   agencyCommissionRate: form.agencyCommissionRate,
+  additionalCommissionRates: form.additionalCommissionRates,
   settlementFlatAmount: form.settlementFlatAmount,
   platformCommissionRate: form.platformCommissionRate,
   platformFlatAmount: form.platformFlatAmount,
@@ -686,8 +713,7 @@ const WEEK_DAYS = [
 {profile?.consultLanguages?.includes("기타") && (
   <div className="mt-2 flex gap-2">
     
-{profile?.consultLanguages?.includes("기타") && (
-  <div className="mt-2 space-y-1">
+
     <Input
       placeholder="예: 러시아어, 아랍어, 스페인어"
       value={customLanguagesInput}
@@ -699,8 +725,6 @@ const WEEK_DAYS = [
   </div>
 )}
 
-  </div>
-)}
 
 </div>
 
@@ -960,33 +984,100 @@ const WEEK_DAYS = [
   );
 })()}
 
-              <div className="flex items-center gap-2">
-<Input
-  type="number"
-  className="w-28"
-  max={30}
-  min={0}
-  value={form.agencyCommissionRate}
-  onChange={(e) => {
-    const value = Number(e.target.value);
+<div className="space-y-3">
+  <div className="flex items-center gap-2">
+    <Input
+      type="number"
+      className="w-28"
+      max={30}
+      min={0}
+      value={form.agencyCommissionRate}
+      onChange={(e) => {
+        const value = Number(e.target.value);
 
-    if (value > 30) {
-      setError("에이전시 수수료율은 30%를 초과할 수 없습니다.");
-      return;
-    }
+        if (value > 30) {
+          setError("에이전시 수수료율은 30%를 초과할 수 없습니다.");
+          return;
+        }
 
-    setError(null);
-    setForm({
-      ...form,
-      agencyCommissionRate: value,
-    });
-  }}
-/>
-<div className="mt-1 text-[11px] text-gray-400">
-  수수료율은 최대 30%까지만 설정할 수 있습니다.
+        setError(null);
+        setForm((prev) => ({
+          ...prev,
+          agencyCommissionRate: value,
+        }));
+      }}
+    />
+    <span className="text-sm text-gray-500">%</span>
+  </div>
+
+  <div className="text-[11px] text-gray-400">
+    수수료율은 최대 30%까지만 설정할 수 있습니다.
+  </div>
+
+  <div className="mt-4 space-y-2">
+    <p className="text-sm text-gray-500">
+      추가 수수료율 설정 (%): 최대 5개 까지 설정가능합니다.
+    </p>
+
+    {form.additionalCommissionRates.map((rate, idx) => (
+      <div key={idx} className="flex items-center gap-2">
+        <Input
+          type="number"
+          step="0.1"
+          value={rate}
+          onChange={(e) => {
+            const value = Number(e.target.value || 0);
+
+            if (value > 30) {
+              setError("추가 수수료율은 30%를 초과할 수 없습니다.");
+              return;
+            }
+
+            setError(null);
+
+            const next = [...form.additionalCommissionRates];
+            next[idx] = value;
+
+            setForm((prev) => ({
+              ...prev,
+              additionalCommissionRates: next,
+            }));
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => {
+            setForm((prev) => ({
+              ...prev,
+              additionalCommissionRates: prev.additionalCommissionRates.filter(
+                (_, i) => i !== idx
+              ),
+            }));
+          }}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white"
+        >
+          -
+        </button>
+      </div>
+    ))}
+
+    <button
+      type="button"
+      disabled={form.additionalCommissionRates.length >= 5}
+      onClick={() => {
+        if (form.additionalCommissionRates.length >= 5) return;
+
+        setForm((prev) => ({
+          ...prev,
+          additionalCommissionRates: [...prev.additionalCommissionRates, 0],
+        }));
+      }}
+      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white disabled:opacity-50"
+    >
+      +
+    </button>
+  </div>
 </div>
-                <span className="text-sm text-gray-500">%</span>
-              </div>
             </div>
             )}
 

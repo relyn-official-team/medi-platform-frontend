@@ -42,6 +42,9 @@ interface HospitalSettings {
   platformCommissionRate: number;
   platformFlatAmount: number;
   agencyCommissionRate: number;
+  additionalCommissionRates?: number[];
+  platformFeeExposureType?: "EXCLUDED" | "INCLUDED";
+  vatInputMode?: "VAT_INCLUDED" | "VAT_EXCLUDED";
 }
 
 export default function HospitalDashboardPage() {

@@ -56,6 +56,7 @@ interface HospitalSettings {
   platformCommissionRate: number;
   platformFlatAmount: number;
   agencyCommissionRate: number;
+  additionalCommissionRates?: number[];
   platformFeeExposureType?: "EXCLUDED" | "INCLUDED";
   vatInputMode?: "VAT_INCLUDED" | "VAT_EXCLUDED";
 }
@@ -100,8 +101,17 @@ function formatPatientBirthOrAge(value?: number | null) {
   }: ReservationCardProps) {
     const router = useRouter();
     const [contactOpen, setContactOpen] = useState(false);
-    const [settleOpen, setSettleOpen] = useState(false);
-    const [inputAmount, setInputAmount] = useState<string>("");
+const [settleOpen, setSettleOpen] = useState(false);
+
+type SettlementInputRow = {
+  rawCommissionRate: string;
+  paymentAmount: string;
+  memo: string;
+};
+
+const [settlementRows, setSettlementRows] = useState<SettlementInputRow[]>([
+  { rawCommissionRate: "", paymentAmount: "", memo: "" },
+]);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [cancelOpen, setCancelOpen] = useState(false);
     const [cancelReason, setCancelReason] = useState("");
@@ -174,51 +184,84 @@ const patientBirthOrAgeLabel = useMemo(() => {
       });
     }, [reservation.reservationDate]);
 
-    const amount = useMemo(() => {
-      const parsed = Number(String(inputAmount).replace(/,/g, ""));
-      if (!parsed || parsed <= 0) return null;
+const availableCommissionRates = useMemo(() => {
+  const rawRates = [
+    Number(hospitalSettings?.agencyCommissionRate ?? 0),
+    ...(
+      hospitalSettings?.additionalCommissionRates ??
+      reservation.additionalCommissionRates ??
+      []
+    ),
+  ]
+    .map((v) => Number(v))
+    .filter((v) => Number.isFinite(v) && v > 0);
 
-      const total = Math.floor(parsed);
-      const THRESHOLD = 0;
- const PLATFORM_FLAT_FEE =
-   reservation.platformSettlementAmount ??
-   hospitalSettings?.platformFlatAmount ??
-   12_000;
+  return Array.from(new Set(rawRates));
+}, [reservation.additionalCommissionRates, hospitalSettings]);
 
- const PLATFORM_RATE =
-   reservation.platformCommissionRate ??
-   hospitalSettings?.platformCommissionRate ??
-   2.5;
+const getDisplayedRate = (rawRate: number) => {
+  const platformRate = Number(
+    reservation.platformCommissionRate ??
+      hospitalSettings?.platformCommissionRate ??
+      0
+  );
 
-const agencyRate =
- reservation.agencyCommissionRate ??
- reservation.expectedAgencyCommissionRate ??
- 0;
+  const exposureType =
+    hospitalSettings?.platformFeeExposureType ?? "EXCLUDED";
 
-const agencyFlat =
- reservation.agencySettlementAmount ??
- reservation.expectedAgencySettlementAmount ??
- 0;
+  return exposureType === "INCLUDED"
+    ? Math.max(0, rawRate - platformRate)
+    : rawRate;
+};
 
+const canAddSettlementRow =
+  availableCommissionRates.length > 1 && settlementRows.length < 5;
 
-      const agencyFee =
-        total <= THRESHOLD
-          ? Math.max(0, Math.floor(agencyFlat))
-          : Math.max(0, Math.floor(total * (agencyRate / 100)));
+const settlementPreview = useMemo(() => {
+  const platformRate = Number(
+    reservation.platformCommissionRate ??
+      hospitalSettings?.platformCommissionRate ??
+      0
+  );
 
-      const platformFee =
-        total <= THRESHOLD
-          ? PLATFORM_FLAT_FEE
-          : Math.max(0, Math.floor(total * (PLATFORM_RATE / 100)));
+  const rows = settlementRows
+    .map((row) => {
+      const rawRate = Number(row.rawCommissionRate);
+      const total = Number(String(row.paymentAmount).replace(/,/g, ""));
 
+      if (!rawRate || !total || total <= 0) return null;
 
+      const displayedRate = getDisplayedRate(rawRate);
+      const agencyFee = Math.max(0, Math.floor(total * (displayedRate / 100)));
+      const platformFee = Math.max(0, Math.floor(total * (platformRate / 100)));
 
       return {
-        total,
-        platformFee,
+        rawCommissionRate: rawRate,
+        commissionRate: displayedRate,
+        paymentAmount: Math.floor(total),
+        memo: row.memo?.trim() || null,
         agencyFee,
+        platformFee,
       };
-    }, [inputAmount, hospitalSettings]);
+    })
+    .filter(Boolean) as {
+      rawCommissionRate: number;
+      commissionRate: number;
+      paymentAmount: number;
+      memo: string | null;
+      agencyFee: number;
+      platformFee: number;
+    }[];
+
+  if (!rows.length) return null;
+
+  return {
+    rows,
+    totalAmount: rows.reduce((sum, row) => sum + row.paymentAmount, 0),
+    agencyFee: rows.reduce((sum, row) => sum + row.agencyFee, 0),
+    platformFee: rows.reduce((sum, row) => sum + row.platformFee, 0),
+  };
+}, [settlementRows, reservation, hospitalSettings]);
 
 
   // 이미 정산이 끝났다면, 기존 값 기준으로 표기용 계산
@@ -264,26 +307,32 @@ const handleCancel = async () => {
 
 // 병원: 매출 입력 → SETTLEMENT
 const handleHospitalSettle = async () => {
-  if (!amount) return;
+  if (!settlementPreview) return;
 
   try {
-  await api.patch(
-    `/reservations/status/${reservation.id}/settle`,
-    { paymentAmount: amount.total }
-  );
+    await api.patch(
+      `/reservations/status/${reservation.id}/settle`,
+      {
+        items: settlementPreview.rows.map((row) => ({
+          rawCommissionRate: row.rawCommissionRate,
+          paymentAmount: row.paymentAmount,
+          memo: row.memo,
+        })),
+      }
+    );
 
-  setSettleOpen(false);
-  setInputAmount("");
-  await onRefresh?.();
+    setSettleOpen(false);
+    setSettlementRows([{ rawCommissionRate: "", paymentAmount: "", memo: "" }]);
+    await onRefresh?.();
+  } catch (e: any) {
+    const msg =
+      e?.response?.data?.message ??
+      "정산 처리 중 오류가 발생했습니다.";
 
- } catch (e: any) {
-   const msg =
-     e?.response?.data?.message ??
-     "정산 처리 중 오류가 발생했습니다.";
-
-   alert(msg);
- }
+    alert(msg);
+  }
 };
+
 
 // 에이전시: 정산 확인 → SETTLED
 const handleAgencyConfirmSettlement = async () => {
@@ -338,10 +387,49 @@ useEffect(() => {
 }, [historyOpen, reservation.id]);
 
 useEffect(() => {
-   if (settleOpen && reservation.paymentAmount) {
-     setInputAmount(String(reservation.paymentAmount));
-   }
- }, [settleOpen, reservation.paymentAmount]);
+  if (!settleOpen) return;
+
+  if (
+    reservation.settlementDetails &&
+    reservation.settlementDetails.length > 0
+  ) {
+    setSettlementRows(
+      reservation.settlementDetails.map((item) => ({
+        rawCommissionRate: String(item.rawCommissionRate),
+        paymentAmount: String(item.paymentAmount),
+        memo: item.memo ?? "",
+      }))
+    );
+    return;
+  }
+
+  if (reservation.paymentAmount && availableCommissionRates.length > 0) {
+    setSettlementRows([
+      {
+        rawCommissionRate: String(availableCommissionRates[0]),
+        paymentAmount: String(reservation.paymentAmount),
+        memo: "",
+      },
+    ]);
+    return;
+  }
+
+  setSettlementRows([
+    {
+      rawCommissionRate:
+        availableCommissionRates.length > 0
+          ? String(availableCommissionRates[0])
+          : "",
+      paymentAmount: "",
+      memo: "",
+    },
+  ]);
+}, [
+  settleOpen,
+  reservation.paymentAmount,
+  reservation.settlementDetails,
+  availableCommissionRates,
+]);
 
 
 const handleChatClick = () => {
@@ -739,15 +827,36 @@ return (
 
               
               
-              <div className="flex flex-col gap-1 pl-5">
-                <span>결제금액: {settledAmount.total.toLocaleString()}원</span>
-                <span>에이전시 수수료: {settledAmount.agencyFee.toLocaleString()}원</span>
- {(isHospital || isAdmin) && (
-   <span>
-     플랫폼 수수료: {settledAmount.platformFee.toLocaleString()}원
-   </span>
- )}
-              </div>
+<div className="flex flex-col gap-1 pl-5">
+  {Array.isArray(reservation.settlementDetails) &&
+  reservation.settlementDetails.length > 0 ? (
+    reservation.settlementDetails.map((row, idx) => (
+      <div key={idx} className="mb-2 last:mb-0">
+        <span>결제금액: {row.paymentAmount.toLocaleString()}원</span>
+        <br />
+        <span>
+          에이전시 수수료: {row.agencyFee.toLocaleString()}원 ({row.commissionRate}%)
+        </span>
+        <br />
+        {(isHospital || isAdmin) && (
+          <>
+            <span>플랫폼 수수료: {row.platformFee.toLocaleString()}원</span>
+            <br />
+          </>
+        )}
+        {row.memo && <span>메모: {row.memo}</span>}
+      </div>
+    ))
+  ) : (
+    <>
+      <span>결제금액: {settledAmount.total.toLocaleString()}원</span>
+      <span>에이전시 수수료: {settledAmount.agencyFee.toLocaleString()}원</span>
+      {(isHospital || isAdmin) && (
+        <span>플랫폼 수수료: {settledAmount.platformFee.toLocaleString()}원</span>
+      )}
+    </>
+  )}
+</div>
             </div>
           )}
 
@@ -982,20 +1091,107 @@ return (
 
 
                         {/* 결제 금액 입력 */}
-                        <Input
-                          placeholder="결제 금액 입력 (원)"
-                          value={inputAmount}
-                          onChange={(e) => setInputAmount(e.target.value)}
-                        />
+<div className="space-y-2">
+  {settlementRows.map((row, idx) => (
+    <div key={idx} className="grid grid-cols-[110px_1fr_1fr_auto] gap-2">
+      <select
+        value={row.rawCommissionRate}
+        onChange={(e) => {
+          const next = [...settlementRows];
+          next[idx].rawCommissionRate = e.target.value;
+          setSettlementRows(next);
+        }}
+        className="h-10 rounded-md border px-2 text-sm"
+      >
+        <option value="">수수료율 선택</option>
+        {availableCommissionRates.map((rate) => (
+          <option key={rate} value={rate}>
+            {getDisplayedRate(rate)}%
+          </option>
+        ))}
+      </select>
+
+      <Input
+        value={row.paymentAmount}
+        onChange={(e) => {
+          const next = [...settlementRows];
+          next[idx].paymentAmount = e.target.value.replace(/[^\d]/g, "");
+          setSettlementRows(next);
+        }}
+        placeholder="결제 금액 입력 (원)"
+      />
+
+      <Input
+        value={row.memo}
+        onChange={(e) => {
+          const next = [...settlementRows];
+          next[idx].memo = e.target.value;
+          setSettlementRows(next);
+        }}
+        placeholder="결제 내용 작성 (필수 아님)"
+      />
+
+      {settlementRows.length > 1 && (
+        <button
+          type="button"
+          onClick={() => {
+            setSettlementRows((prev) => prev.filter((_, i) => i !== idx));
+          }}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-white"
+        >
+          -
+        </button>
+      )}
+    </div>
+  ))}
+
+  {canAddSettlementRow && (
+    <button
+      type="button"
+      onClick={() => {
+        if (settlementRows.length >= 5) return;
+        setSettlementRows((prev) => [
+          ...prev,
+          {
+  rawCommissionRate:
+    availableCommissionRates.length > 0
+      ? String(availableCommissionRates[0])
+      : "",
+  paymentAmount: "",
+  memo: "",
+}
+        ]);
+      }}
+      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white"
+    >
+      +
+    </button>
+  )}
+</div>
 
                         {/* 정산 금액 요약 */}
-                        {isHospital && amount && (
-                          <div className="text-xs text-gray-700 space-y-1">
-                            <p>결제금액: {amount.total.toLocaleString()}원</p>
-                            <p>플랫폼 수수료: {amount.platformFee.toLocaleString()}원</p>
-                            <p>에이전시 수수료: {amount.agencyFee.toLocaleString()}원</p>
-                          </div>
-                        )}
+{isHospital && settlementPreview && (
+  <div className="text-xs text-gray-700 space-y-1">
+    <p>
+      결제금액:{" "}
+      {settlementPreview.rows
+        .map((row) => `${row.paymentAmount.toLocaleString()}원`)
+        .join(" + ")}
+    </p>
+    <p>
+      플랫폼 수수료:{" "}
+      {settlementPreview.rows
+        .map((row) => `${row.platformFee.toLocaleString()}원`)
+        .join(" + ")}
+    </p>
+    <p>
+      에이전시 수수료:{" "}
+      {settlementPreview.rows
+        .map((row) => `${row.agencyFee.toLocaleString()}원`)
+        .join(" + ")}
+    </p>
+  </div>
+)}
                       </div>
 
 

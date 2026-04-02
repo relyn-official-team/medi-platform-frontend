@@ -16,6 +16,15 @@ export interface AgencyContact {
   line?: string | null;
 }
 
+export interface SettlementDetailItem {
+  rawCommissionRate: number;
+  commissionRate: number;
+  paymentAmount: number;
+  memo: string | null;
+  agencyFee: number;
+  platformFee: number;
+}
+
 export interface ReservationStatusHistoryView {
   id: number;
   status: ReservationStatus;
@@ -77,6 +86,8 @@ export interface Reservation {
  expectedAgencySettlementAmount?: number | null;
  expectedPlatformCommissionRate?: number | null;
  expectedPlatformSettlementAmount?: number | null;
+ additionalCommissionRates?: number[] | null;
+settlementDetails?: SettlementDetailItem[] | null;
 }
 
 // 요약 카드용
@@ -139,6 +150,8 @@ export interface ReservationCardView {
  expectedAgencySettlementAmount?: number | null;
  expectedPlatformCommissionRate?: number | null;
  expectedPlatformSettlementAmount?: number | null;
+ additionalCommissionRates?: number[] | null;
+settlementDetails?: SettlementDetailItem[] | null;
 }
 
 // ==================================================
@@ -195,6 +208,8 @@ reservationTime: r.reservationTime ?? "",
    expectedAgencySettlementAmount: r.expectedAgencySettlementAmount ?? null,
    expectedPlatformCommissionRate: r.expectedPlatformCommissionRate ?? null,
    expectedPlatformSettlementAmount: r.expectedPlatformSettlementAmount ?? null,
+   additionalCommissionRates: r.additionalCommissionRates ?? [],
+settlementDetails: r.settlementDetails ?? null,
   };
 }
 
