@@ -15,7 +15,8 @@ import { Select } from "@/components/ui/select";
 
 type ReservationCopyResponse = {
   patientName: string;
-  patientAge: number;
+  patientAge: number | null;
+  patientGender: string | null;
   patientNationality: string;
   procedureName: string;
   reservationDate: string; // ISO
@@ -37,7 +38,8 @@ export default function AgencyBookingPage() {
   const [hospital, setHospital] = useState<AgencyHospitalListItem | null>(null);
 
   const [patientName, setPatientName] = useState("");
-  const [patientAge, setPatientAge] = useState<number>(0);
+  const [patientAge, setPatientAge] = useState("");
+  const [patientGender, setPatientGender] = useState<"MALE" | "FEMALE" | "">("");
   const [patientNationality, setPatientNationality] = useState("");
   const [procedureName, setProcedureName] = useState("");
   const [reservationDate, setReservationDate] = useState(""); // YYYY-MM-DD
@@ -116,7 +118,12 @@ useEffect(() => {
       const d = res.data;
 
       setPatientName(d.patientName);
-      setPatientAge(d.patientAge);
+      setPatientAge(d.patientAge != null ? String(d.patientAge) : "");
+      setPatientGender(
+        d.patientGender === "MALE" || d.patientGender === "FEMALE"
+          ? d.patientGender
+          : ""
+      );
       setPatientNationality(d.patientNationality);
       setProcedureName(d.procedureName);
       setReservationDate(d.reservationDate.slice(0, 10));
@@ -136,12 +143,22 @@ useEffect(() => {
 
 
   const submit = async () => {
+   if (!patientGender) {
+     alert("성별을 선택해주세요.");
+     return;
+   }
+  const normalizedBirth = patientAge.replace(/\D/g, "");
+    if (!/^\d{8}$/.test(normalizedBirth)) {
+      alert("생년월일을 8자리로 입력해주세요. 예: 19900324");
+      return;
+    }
     setSubmitting(true);
     try {
       const payload = {
         hospitalId,
         patientName,
-        patientAge,
+        patientAge: normalizedBirth,
+        patientGender,
         patientNationality,
         procedureName,
         memo: memo || undefined,
@@ -249,14 +266,38 @@ useEffect(() => {
             <div className="text-sm mb-1">환자명</div>
             <Input value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="한국 발음도 포함하여 작성해주세요. 예: Tom(톰)" />
           </div>
-          <div>
-            <div className="text-sm mb-1">나이</div>
-            <Input
-              type="number"
-              value={patientAge}
-              onChange={(e) => setPatientAge(Number(e.target.value))}
-            />
+        <div>
+          <div className="text-sm mb-1">생년월일</div>
+          <Input
+            type="text"
+            inputMode="numeric"
+            maxLength={8}
+            value={patientAge}
+            onChange={(e) =>
+              setPatientAge(e.target.value.replace(/\D/g, "").slice(0, 8))
+            }
+            placeholder="예: 19900324"
+          />
+          <div className="mt-1 text-xs text-gray-400">
+            여권 기준 생년월일 8자리 입력
           </div>
+        </div>
+         <div>
+           <div className="text-sm mb-1">성별</div>
+           <Select
+             className="w-full"
+             value={patientGender}
+             onChange={(e) =>
+               setPatientGender(e.target.value as "MALE" | "FEMALE" | "")
+             }
+           >
+            <option value="" disabled>
+               성별 선택
+             </option>
+             <option value="MALE">남자</option>
+             <option value="FEMALE">여자</option>
+           </Select>
+         </div>
           <div>
             <div className="text-sm mb-1">국적</div>
             <Input value={patientNationality} onChange={(e) => setPatientNationality(e.target.value)} placeholder="여권에 명시된 국적 기준으로 작성해주세요." />

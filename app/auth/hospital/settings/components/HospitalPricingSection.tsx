@@ -23,9 +23,11 @@ import { Button } from "@/components/ui/button";
 
 interface PriceItem {
   id: number;
+  category?: string | null;
   procedureName: string;
-  originalPrice: number;
+  originalPrice: number | null;
   discountPrice: number;
+  commissionRate?: number | null;
 }
 
  function SortableRow({
@@ -47,7 +49,7 @@ interface PriceItem {
    <div
      ref={setNodeRef}
      style={style}
-     className="grid grid-cols-[32px_2fr_1fr_1fr_auto] items-center gap-2 p-2"
+     className="grid grid-cols-[28px_1.15fr_2.1fr_1.15fr_1.15fr_1fr_auto] items-center gap-2 p-2"
    >
      {children}
    </div>
@@ -81,15 +83,27 @@ export default function HospitalPricingSection({
   const [localItems, setLocalItems] = useState<PriceItem[]>([]);
 const [editingId, setEditingId] = useState<number | null>(null);
  const [editingField, setEditingField] =
-   useState<"procedureName" | "originalPrice" | "discountPrice" | null>(null);
+  useState<
+    | "category"
+    | "procedureName"
+    | "originalPrice"
+    | "discountPrice"
+    | "commissionRate"
+    | null
+  >(null);
 const [editValue, setEditValue] = useState<{
+  category: string;
   procedureName: string;
   originalPrice: string;
   discountPrice: string;
+  commissionRate: string;
 } | null>(null);
+
+  const [category, setCategory] = useState("");
   const [name, setName] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
   const [discountPrice, setDiscountPrice] = useState("");
+  const [commissionRate, setCommissionRate] = useState("");
 
    const sensors = useSensors(
    useSensor(PointerSensor)
@@ -99,17 +113,21 @@ const [editValue, setEditValue] = useState<{
    setLocalItems(items);
  }, [items]);
   const addItem = async () => {
-    if (!name || !originalPrice || !discountPrice) return;
+    if (!name || !discountPrice) return;
 
     await api.post("/hospital/pricing", {
+      category: category.trim() || null,
       procedureName: name.trim(),
-      originalPrice: Number(originalPrice),
+      originalPrice: originalPrice ? Number(originalPrice) : null,
       discountPrice: Number(discountPrice),
+      commissionRate: commissionRate ? Number(commissionRate) : null,
     });
 
+    setCategory("");
     setName("");
     setOriginalPrice("");
     setDiscountPrice("");
+    setCommissionRate("");
     onChange();
   };
 
@@ -165,11 +183,24 @@ const getDiscountRate = (item: PriceItem) => {
 const saveEdit = async (id: number) => {
   if (!editValue) return;
 
-  await api.patch(`/hospital/pricing/${id}`, {
-    procedureName: editValue.procedureName,
-    originalPrice: Number(editValue.originalPrice),
+  const payload: Record<string, any> = {
+    procedureName: editValue.procedureName.trim(),
     discountPrice: Number(editValue.discountPrice),
-  });
+  };
+
+  if (editValue.category !== "") {
+    payload.category = editValue.category.trim();
+  } else {
+    payload.category = null;
+  }
+
+  payload.originalPrice =
+    editValue.originalPrice !== "" ? Number(editValue.originalPrice) : null;
+
+  payload.commissionRate =
+    editValue.commissionRate !== "" ? Number(editValue.commissionRate) : null;
+    
+  await api.patch(`/hospital/pricing/${id}`, payload);
 
   setEditingId(null);
   setEditingField(null);
@@ -186,7 +217,12 @@ const saveEdit = async (id: number) => {
         <br></br><br></br>⚠️붉은색으로 표시되는 수가표는 할인율 50% 이상 적용된 수가표 입니다. 할인율 49%이하로 가격 수정 바랍니다.⚠️
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
+  <Input
+    placeholder="카테고리"
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+  />
         <Input
           placeholder="시술명"
           value={name}
@@ -203,6 +239,13 @@ const saveEdit = async (id: number) => {
           placeholder="할인가 (원)"
           value={discountPrice}
           onChange={(e) => setDiscountPrice(e.target.value)}
+        />
+        <Input
+          type="number"
+          step="0.1"
+          placeholder="수수료율 (%)"
+          value={commissionRate}
+          onChange={(e) => setCommissionRate(e.target.value)}
         />
         <Button type="button" onClick={addItem}>
           추가
@@ -282,18 +325,49 @@ const saveEdit = async (id: number) => {
    return (
      <SortableRow key={it.id} item={it}>
       <DragHandle id={it.id} />
+<div
+  className={`rounded-md px-2 py-2 shadow-sm text-xs whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer
+    ${highlight ? "bg-pink-100 text-red-600" : "bg-gray-100 text-gray-800"}`}
+  onClick={() => {
+    setEditingId(it.id);
+    setEditingField("category");
+    setEditValue({
+      category: it.category ?? "",
+      procedureName: it.procedureName,
+      originalPrice: String(it.originalPrice ?? ""),
+      discountPrice: String(it.discountPrice),
+      commissionRate: String(it.commissionRate ?? ""),
+    });
+  }}
+>
+  {editingId === it.id && editingField === "category" ? (
+    <input
+      className="w-full bg-transparent outline-none"
+      value={editValue?.category ?? ""}
+      onChange={(e) =>
+        setEditValue((v) => v && { ...v, category: e.target.value })
+      }
+      onBlur={() => saveEdit(it.id)}
+      autoFocus
+    />
+  ) : (
+    it.category || "-"
+  )}
+</div>
       
 {/* 시술명 */}
 <div
-  className={`rounded-md px-3 py-2 shadow-sm text-sm cursor-pointer
+  className={`rounded-md px-2 py-2 shadow-sm text-xs whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer
     ${highlight ? "bg-pink-100 text-red-600" : "bg-gray-100 text-gray-800"}`}
   onClick={() => {
     setEditingId(it.id);
     setEditingField("procedureName");
     setEditValue({
-      procedureName: it.procedureName,
-      originalPrice: String(it.originalPrice),
-      discountPrice: String(it.discountPrice),
+  category: it.category ?? "",
+  procedureName: it.procedureName,
+  originalPrice: String(it.originalPrice ?? ""),
+  discountPrice: String(it.discountPrice),
+  commissionRate: String(it.commissionRate ?? ""),
     });
   }}
 >
@@ -314,15 +388,17 @@ const saveEdit = async (id: number) => {
 
 {/* 정가 */}
 <div
-  className={`rounded-md px-3 py-2 shadow-sm text-sm text-right cursor-pointer
+  className={`rounded-md px-2 py-2 shadow-sm text-xs text-right whitespace-nowrap cursor-pointer
     ${highlight ? "bg-pink-100 text-red-500 line-through" : "bg-gray-100 text-gray-400 line-through"}`}
    onClick={() => {
    setEditingId(it.id);
    setEditingField("originalPrice");
    setEditValue({
-     procedureName: it.procedureName,
-     originalPrice: String(it.originalPrice),
-     discountPrice: String(it.discountPrice),
+  category: it.category ?? "",
+  procedureName: it.procedureName,
+  originalPrice: String(it.originalPrice ?? ""),
+  discountPrice: String(it.discountPrice),
+  commissionRate: String(it.commissionRate ?? ""),
    });
  }}
 >
@@ -337,21 +413,23 @@ const saveEdit = async (id: number) => {
       onBlur={() => saveEdit(it.id)}
     />
   ) : (
-    `${it.originalPrice.toLocaleString()}원`
+    it.originalPrice != null ? `${it.originalPrice.toLocaleString()}원` : "-"
   )}
 </div>
 
 {/* 할인가 */}
 <div
-  className={`rounded-md px-3 py-2 shadow-sm text-sm font-semibold text-right cursor-pointer
+  className={`rounded-md px-2 py-2 shadow-sm text-xs font-semibold text-right whitespace-nowrap cursor-pointer
     ${highlight ? "bg-pink-100 text-red-600" : "bg-gray-100 text-gray-900"}`}
    onClick={() => {
    setEditingId(it.id);
    setEditingField("discountPrice");
    setEditValue({
-     procedureName: it.procedureName,
-     originalPrice: String(it.originalPrice),
-     discountPrice: String(it.discountPrice),
+  category: it.category ?? "",
+  procedureName: it.procedureName,
+  originalPrice: String(it.originalPrice ?? ""),
+  discountPrice: String(it.discountPrice),
+  commissionRate: String(it.commissionRate ?? ""),
    });
  }}
 >
@@ -369,11 +447,41 @@ const saveEdit = async (id: number) => {
     `${it.discountPrice.toLocaleString()}원`
   )}
 </div>
+<div
+  className={`rounded-md px-2 py-2 shadow-sm text-xs font-medium text-right whitespace-nowrap cursor-pointer
+    ${highlight ? "bg-pink-100 text-red-600" : "bg-gray-100 text-gray-900"}`}
+  onClick={() => {
+    setEditingId(it.id);
+    setEditingField("commissionRate");
+    setEditValue({
+      category: it.category ?? "",
+      procedureName: it.procedureName,
+      originalPrice: String(it.originalPrice ?? ""),
+      discountPrice: String(it.discountPrice),
+      commissionRate: String(it.commissionRate ?? ""),
+    });
+  }}
+>
+  {editingId === it.id && editingField === "commissionRate" ? (
+    <input
+      type="number"
+      step="0.1"
+      className="w-full bg-transparent outline-none text-right"
+      value={editValue?.commissionRate ?? ""}
+      onChange={(e) =>
+        setEditValue((v) => v && { ...v, commissionRate: e.target.value })
+      }
+      onBlur={() => saveEdit(it.id)}
+    />
+  ) : (
+    it.commissionRate != null ? `${it.commissionRate}%` : "-"
+  )}
+</div>
 
            <div className="text-right">
              <button
                type="button"
-               className="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-2 rounded-md shadow-sm"
+               className="bg-red-500 hover:bg-red-600 text-white text-[11px] px-3 py-2 rounded-md shadow-sm whitespace-nowrap"
                onClick={() => removeItem(it.id)}
              >
                삭제

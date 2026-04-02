@@ -76,6 +76,18 @@ interface ReservationCardProps {
   mode?: "HOSPITAL" | "AGENCY" | "ADMIN"; // 🔥 추가
 }
 
+function formatPatientBirthOrAge(value?: number | null) {
+  if (value == null) return null;
+
+  const raw = String(value);
+
+  if (/^\d{8}$/.test(raw)) {
+    return `${raw.slice(0, 4)}. ${raw.slice(4, 6)}. ${raw.slice(6, 8)}`;
+  }
+
+  return raw;
+}
+
   export default function ReservationCard({
     onRefresh,
     reservation,
@@ -148,6 +160,9 @@ const canCancel =
       : isAgency && isPending
   );
 
+const patientBirthOrAgeLabel = useMemo(() => {
+  return formatPatientBirthOrAge(reservation.patientAge);
+}, [reservation.patientAge]);
 
     const reservationDateLabel = useMemo(() => {
        if (!reservation.reservationDate) return "-";
@@ -342,7 +357,10 @@ const handleChatClick = () => {
   }
 
   // PC → 채팅 전용 새 창 (재사용)
-  const CHAT_WINDOW_NAME = "relyn-chat-window";
+  //const CHAT_WINDOW_NAME = "relyn-chat-window";
+
+  // PC → 예약별 채팅 전용 새 창 (같은 예약은 같은 창 재사용, 다른 예약은 별도 창으로 열림)
+  const CHAT_WINDOW_NAME = `relyn-chat-window-${reservation.id}`;
 
   const width = 420;
   const height = Math.min(800, window.screen.height - 120);
@@ -405,8 +423,14 @@ return (
               {reservation.patientName}
             </h2>
             <span className="text-xs text-gray-500">
-              만 {reservation.patientAge}세
+              {patientBirthOrAgeLabel}
             </span>
+
+           {reservation.patientGender && (
+             <span className="inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 text-[11px] text-gray-600">
+               {reservation.patientGender === "MALE" ? "남자" : "여자"}
+             </span>
+           )}
 
             {reservation.isUrgent && (
               <span className="flex items-center gap-1 text-xs text-red-600">
@@ -792,7 +816,10 @@ return (
                     <div className="space-y-2 text-sm text-gray-700">
                       <div className="flex justify-between">
                         <span className="text-gray-400">환자명</span>
-                        <span>{reservation.patientName} (만 {reservation.patientAge}세)</span>
+                        <span>
+  {reservation.patientName}
+  {patientBirthOrAgeLabel ? ` (${patientBirthOrAgeLabel})` : ""}
+</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-400">예약일시</span>
@@ -856,8 +883,15 @@ return (
   <div className="flex justify-between">
     <span className="text-gray-400">환자</span>
     <span>
-      {reservation.patientName} (만 {reservation.patientAge}세,{" "}
-      {reservation.patientNationality})
+ {reservation.patientName} (
+   {patientBirthOrAgeLabel ?? "-"},
+   {reservation.patientGender === "MALE"
+     ? "남자"
+     : reservation.patientGender === "FEMALE"
+     ? "여자"
+     : "-"},
+   {reservation.patientNationality}
+ )
     </span>
   </div>
 
@@ -1020,8 +1054,15 @@ return (
         <div className="flex justify-between">
           <span className="text-gray-400">환자</span>
           <span>
-            {reservation.patientName} (만 {reservation.patientAge}세,{" "}
-            {reservation.patientNationality})
+ {reservation.patientName} (
+   {patientBirthOrAgeLabel ?? "-"},
+   {reservation.patientGender === "MALE"
+     ? "남자"
+     : reservation.patientGender === "FEMALE"
+     ? "여자"
+     : "-"},
+   {reservation.patientNationality}
+ )
           </span>
         </div>
 

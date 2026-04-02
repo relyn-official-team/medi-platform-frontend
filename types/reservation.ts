@@ -35,6 +35,7 @@ export interface Reservation {
 
   patientName: string;
   patientAge: number;
+  patientGender?: string | null;
   patientNationality: string;
 
   createdAt?: string;
@@ -95,6 +96,7 @@ export interface ReservationCardView {
   hasUnreadHistory?: boolean;
   patientName: string;
   patientAge: number;
+  patientGender?: string | null;
   patientNationality: string;
 
   agencyName: string | null;
@@ -153,6 +155,7 @@ export function toReservationCardView(
 
     patientName: r.patientName,
     patientAge: r.patientAge,
+    patientGender: (r as any).patientGender ?? null,
     patientNationality: r.patientNationality,
 
     agencyName: r.agencyName ?? null,
@@ -202,6 +205,7 @@ export interface PreChatReservation {
   patientName: string;
 
   patientAge: null;
+  patientGender: null;
   patientNationality: null;
   procedureName: null;
 

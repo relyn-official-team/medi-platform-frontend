@@ -111,7 +111,9 @@ useEffect(() => {
 
   // PC (md 이상) → 채팅 전용 새 "창"
   if (typeof window !== "undefined" && window.innerWidth >= 768) {
-    const CHAT_WINDOW_NAME = "relyn-chat-window";
+    //const CHAT_WINDOW_NAME = "relyn-chat-window";
+           // 같은 예약은 같은 창 재사용, 다른 예약은 별도 창으로 열기
+           const CHAT_WINDOW_NAME = `relyn-chat-window-${reservationId}`;
 
    const width = 420;   // 👉 스크린샷 비율 기준 (조정 가능)
     const height = Math.min(800, window.screen.height - 120);

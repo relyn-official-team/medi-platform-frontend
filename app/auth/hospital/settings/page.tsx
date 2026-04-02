@@ -76,9 +76,11 @@ agencyCommissionRate: number;
 
  pricingItems?: {
   id: number;
+  category?: string | null;
   procedureName: string;
-  originalPrice: number;
+  originalPrice: number | null;
   discountPrice: number;
+  commissionRate?: number | null;
 }[];
 
 images?: {

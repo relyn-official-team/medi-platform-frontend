@@ -19,6 +19,7 @@ interface ChargeRequest {
   hospital: {
     id: string;
     name: string;
+    email?: string | null;
     chargeBalance: number;
   };
 }
@@ -217,6 +218,9 @@ export default function AdminChargeRequestsPage() {
                   <div className="font-semibold">
                     {req.hospital?.name ?? "알 수 없는 병원"}
                   </div>
+<div className="text-xs text-gray-500">
+  이메일: {req.hospital?.email || "-"}
+</div>
                     <Button
                     size="sm"
                     variant="outline"

@@ -15,6 +15,7 @@ type ReservationItem = ReservationCardView & {
   hospitalName: string;
   patientName: string;
   patientAge: number;
+  patientGender?: string | null;
   patientNationality: string;
   procedureName: string;
   reservationDate: string;

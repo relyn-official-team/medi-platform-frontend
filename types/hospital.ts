@@ -53,8 +53,10 @@ export interface HospitalImage {
 export interface HospitalPricingItem {
   id: string;
   procedureName: string;
+  category?: string | null;
   originalPrice: number | null;
   discountPrice: number | null;
+  commissionRate?: number | null;
   currency: string | null;
   note: string | null;
 }

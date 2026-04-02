@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import api from "@/lib/api";
@@ -36,6 +36,8 @@ export default function AgencyHospitalDetailPage() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [data, setData] = useState<AgencyHospitalDetail | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("전체");
+  const [priceSearch, setPriceSearch] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -109,6 +111,39 @@ const reservationId = res.data.reservationId;
     alert("채팅을 시작할 수 없습니다. 잠시 후 다시 시도해주세요.");
   }
 }, [id, router]);
+
+  const pricingCategories = useMemo(() => {
+    if (!data?.pricingItems?.length) return [];
+
+    return Array.from(
+      new Set(
+        data.pricingItems
+          .map((item) => (item.category ?? "").trim())
+          .filter(Boolean)
+      )
+    );
+ }, [data?.pricingItems]);
+
+  const filteredPricingItems = useMemo(() => {
+    if (!data?.pricingItems?.length) return [];
+
+    const keyword = priceSearch.trim().toLowerCase();
+
+    return data.pricingItems.filter((item) => {
+      const matchesCategory =
+        selectedCategory === "전체"
+          ? true
+          : (item.category ?? "").trim() === selectedCategory;
+
+      const matchesKeyword =
+       keyword.length === 0
+          ? true
+          : item.procedureName.toLowerCase().includes(keyword) ||
+            (item.category ?? "").toLowerCase().includes(keyword);
+
+      return matchesCategory && matchesKeyword;
+    });
+  }, [data?.pricingItems, priceSearch, selectedCategory]);
 
   if (!data) return <div>Loading...</div>;
 
@@ -310,19 +345,65 @@ const reservationId = res.data.reservationId;
 
   <DialogContent className="max-w-md sm:max-w-lg max-h-[80vh]">
     <DialogHeader>
-      <DialogTitle>시술 및 가격</DialogTitle>
+      <div className="flex items-center justify-between gap-3 pr-6">
+        <DialogTitle>시술 및 가격</DialogTitle>
+        <div className="relative w-28 sm:w-36">
+          <input
+            type="text"
+            value={priceSearch}
+            onChange={(e) => setPriceSearch(e.target.value)}
+            placeholder="검색"
+            className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-xs outline-none"
+          />
+        </div>
+      </div>
     </DialogHeader>
 
-    <div className="mt-2 space-y-3 overflow-y-auto max-h-[calc(80vh-64px)]">
-      {data.pricingItems.map((item) => (
+    <div className="mt-2 flex flex-wrap gap-2">
+      <button
+        type="button"
+        onClick={() => setSelectedCategory("전체")}
+        className={`rounded-md border px-3 py-1.5 text-xs font-medium ${
+          selectedCategory === "전체"
+            ? "bg-blue-600 text-white border-blue-600"
+            : "bg-white text-blue-600 border-blue-200"
+        }`}
+      >
+        전체
+      </button>
+
+      {pricingCategories.map((category) => (
+        <button
+          key={category}
+          type="button"
+          onClick={() => setSelectedCategory(category)}
+          className={`rounded-md border px-3 py-1.5 text-xs font-medium ${
+            selectedCategory === category
+              ? "bg-blue-600 text-white border-blue-600"
+              : "bg-white text-blue-600 border-blue-200"
+          }`}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
+
+    <div className="mt-3 space-y-3 overflow-y-auto max-h-[calc(80vh-140px)]">
+      {filteredPricingItems.map((item) => (
         <div
           key={item.id}
           className="flex items-start justify-between gap-3 border-b pb-2"
         >
-          <div>
-            <div className="text-sm font-medium">
+          <div className="min-w-0">
+            <div className="text-sm font-medium text-gray-900">
               {item.procedureName}
             </div>
+
+            {item.commissionRate != null && (
+              <div className="mt-0.5 text-xs font-medium text-blue-700">
+                수수료율 {item.commissionRate}%
+              </div>
+            )}
 
             {item.note && (
               <div className="text-xs text-gray-500 mt-0.5">
@@ -331,23 +412,29 @@ const reservationId = res.data.reservationId;
             )}
           </div>
 
-<div className="text-right whitespace-nowrap">
- {item.originalPrice != null && (
-   <div className="text-xs text-gray-400 line-through">
-     {item.originalPrice.toLocaleString()}원
-   </div>
- )}
-  <div className="text-sm text-blue-700 font-medium">
-    {item.discountPrice != null
-      ? `${item.discountPrice.toLocaleString()}원`
-      : "-"}
-  </div>
-</div>
-
+          <div className="text-right whitespace-nowrap">
+            {item.originalPrice != null && (
+              <div className="text-xs text-gray-400 line-through">
+                {item.originalPrice.toLocaleString()}원
+              </div>
+            )}
+            <div className="text-sm text-blue-700 font-medium">
+              {item.discountPrice != null
+                ? `${item.discountPrice.toLocaleString()}원`
+                : "-"}
+            </div>
+          </div>
         </div>
       ))}
+
+     {filteredPricingItems.length === 0 && (
+        <div className="py-8 text-center text-sm text-gray-400">
+          검색 결과가 없습니다.
+        </div>
+      )}
     </div>
   </DialogContent>
+
 </Dialog>
  </div> {/* header row */}
 
@@ -360,7 +447,12 @@ const reservationId = res.data.reservationId;
   >
   {/* 왼쪽: 시술명 */}
   <div className="text-gray-800">
-    {item.procedureName}
+    <div>{item.procedureName}</div>
+    {item.commissionRate != null && (
+      <div className="mt-0.5 text-xs text-blue-700 font-medium">
+        수수료율 {item.commissionRate}%
+      </div>
+    )}
   </div>
 
   {/* 오른쪽: 가격 */}

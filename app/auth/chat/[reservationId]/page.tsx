@@ -23,6 +23,18 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Dia
 
 const formatDate = (iso: string) => iso.slice(0, 10);
 
+const formatPatientBirthOrAge = (value?: number | null) => {
+  if (value == null) return null;
+
+  const raw = String(value);
+
+  if (/^\d{8}$/.test(raw)) {
+    return `${raw.slice(0, 4)}. ${raw.slice(4, 6)}. ${raw.slice(6, 8)}`;
+  }
+
+  return raw;
+};
+
 
 export default function ChatDetailPage() {
   const router = useRouter();
@@ -47,6 +59,7 @@ const [counterpartName, setCounterpartName] = useState<string | null>(null);
    const [editable, setEditable] = useState(false);
 const [editModalOpen, setEditModalOpen] = useState(false);
 const [editDoneModalOpen, setEditDoneModalOpen] = useState(false);
+const patientBirthOrAgeLabel = formatPatientBirthOrAge(reservation?.patientAge);
   
   const lastMessageSigRef = useRef<string | null>(null);
   
@@ -427,14 +440,19 @@ useEffect(() => {
     {/* 좌측 정보 */}
     <div className="min-w-0 flex flex-col gap-1">
 
-      {/* 환자명 + 나이 */}
+      {/* 환자명 + 나이 + 성별 */}
       <div className="flex items-center gap-2">
         <span className="text-sm font-semibold truncate">
           {reservation?.patientName ?? "예약 정보"}
         </span>
         {reservation?.patientAge != null && (
           <span className="text-xs text-gray-500">
-            만 {reservation.patientAge}세
+            {patientBirthOrAgeLabel}
+          </span>
+        )}
+        {reservation?.patientGender && (
+          <span className="inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 text-[11px] text-gray-600">
+            {reservation.patientGender === "MALE" ? "남자" : "여자"}
           </span>
         )}
       </div>

@@ -91,7 +91,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("로그인에 실패했습니다. 이메일/비밀번호를 확인해주세요.");
+      setError("로그인에 실패했습니다. 계정명/비밀번호를 확인해주세요.");
     } finally {
       setLoading(false);
     }
@@ -123,10 +123,11 @@ export default function LoginPage() {
 
         <div className="space-y-1">
           <label className="block text-sm font-medium text-gray-700">
-            이메일
+            계정명
           </label>
           <input
-            type="email"
+            type="text"
+            autoComplete="username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
