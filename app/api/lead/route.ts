@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 type Body =
-  | { type: 'HOSPITAL'; orgName: string; name: string; phone: string }
-  | { type: 'AGENCY'; orgName: string; name: string; phone: string };
+  | { type: 'HOSPITAL'; orgName: string; name: string; phone: string; email: string }
+  | { type: 'AGENCY'; orgName: string; name: string; phone: string; email: string };
 
 function sanitize(s: unknown, max = 200) {
   if (typeof s !== 'string') return '';
@@ -29,10 +29,16 @@ export async function POST(req: Request) {
     const orgName = sanitize(body?.orgName, 120);
     const name = sanitize(body?.name, 80);
     const phone = sanitize(body?.phone, 40);
+    const email = sanitize(body?.email, 120);
 
-    if (!type || !orgName || !name || !phone) {
-      return NextResponse.json({ ok: false, error: 'Invalid payload' }, { status: 400 });
-    }
+if (!type || !orgName || !name || !phone || !email) {
+  return NextResponse.json({ ok: false, error: 'Invalid payload' }, { status: 400 });
+}
+
+const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+if (!isValidEmail) {
+  return NextResponse.json({ ok: false, error: 'Invalid email' }, { status: 400 });
+}
 
     const subject =
       type === 'HOSPITAL'
@@ -44,6 +50,7 @@ export async function POST(req: Request) {
       `${type === 'HOSPITAL' ? '병원명' : '에이전시명'}: ${orgName}`,
       `성함: ${name}`,
       `연락처: ${phone}`,
+      `이메일: ${email}`,
       '',
       `수신: ${toEmail}`,
     ].join('\n');

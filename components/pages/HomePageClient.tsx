@@ -54,6 +54,7 @@ export default function HomePageClient({
   const [orgName, setOrgName] = React.useState('');
   const [personName, setPersonName] = React.useState('');
   const [phone, setPhone] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [submitting, setSubmitting] = React.useState(false);
   const [submitDone, setSubmitDone] = React.useState<'success' | 'error' | null>(null);
 
@@ -74,6 +75,7 @@ export default function HomePageClient({
     setOrgName('');
     setPersonName('');
     setPhone('');
+    setEmail('');
     setTypeSelectOpen(true);
   };
 
@@ -101,7 +103,7 @@ export default function HomePageClient({
   const onSubmit = async () => {
     if (!inquiryType) return;
 
-    if (!orgName.trim() || !personName.trim() || !phone.trim()) {
+    if (!orgName.trim() || !personName.trim() || !phone.trim() || !email.trim()) {
       setSubmitDone('error');
       return;
     }
@@ -137,6 +139,7 @@ export default function HomePageClient({
           orgName: orgName.trim(),
           name: personName.trim(),
           phone: phone.trim(),
+          email: email.trim(),
         }),
       });
 
@@ -545,6 +548,20 @@ export default function HomePageClient({
                 </div>
               </label>
 
+<label className="grid gap-2">
+  <div className="text-[12px] font-semibold text-slate-700">{t.emailLabel}</div>
+  <div className="flex items-center gap-3 rounded-2xl bg-[#F7FAFF] px-4 py-3 ring-1 ring-slate-900/10 focus-within:ring-[#2F7AF6]/40">
+    <Mail className="h-4 w-4 text-[#2F7AF6]" strokeWidth={2.2} />
+    <Input
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder={t.emailPlaceholder}
+      className="h-auto border-0 bg-transparent p-0 text-[14px] font-medium text-slate-900 shadow-none outline-none placeholder:text-slate-400 focus-visible:ring-0"
+    />
+  </div>
+</label>
+   
               {submitDone === 'success' && (
                 <div className="rounded-2xl bg-emerald-50 px-4 py-3 text-[13px] font-semibold text-emerald-800 ring-1 ring-emerald-200">
                   {t.successMessage}

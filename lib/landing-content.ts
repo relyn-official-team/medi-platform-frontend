@@ -98,6 +98,8 @@ export type LandingContent = {
   personPlaceholder: string;
   phoneLabel: string;
   phonePlaceholder: string;
+  emailLabel: string;
+  emailPlaceholder: string;
   successMessage: string;
   errorMessage: string;
   backButton: string;
@@ -193,6 +195,8 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
     personPlaceholder: '성함을 입력해 주세요',
     phoneLabel: '연락처',
     phonePlaceholder: '연락처를 입력해 주세요',
+    emailLabel: 'Email',
+    emailPlaceholder: '연락가능한 이메일 주소를 입력해주세요.',
     successMessage: '접수되었습니다. 담당자가 확인 후 연락드리겠습니다.',
     errorMessage: '입력값을 확인해주세요. 또는 잠시 후 다시 시도해주세요.',
     backButton: '유형 다시 선택',
@@ -331,6 +335,8 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
     personPlaceholder: 'Enter your name',
     phoneLabel: 'Contact Number',
     phonePlaceholder: 'Enter your contact number',
+    emailLabel: 'Email',
+    emailPlaceholder: 'Enter your email',
     successMessage: 'Your inquiry has been submitted. We will contact you after review.',
     errorMessage: 'Please check the input values or try again later.',
     backButton: 'Change inquiry type',
@@ -470,6 +476,8 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
     phoneLabel: '連絡先',
     phonePlaceholder: '連絡先を入力してください',
     successMessage: '送信が完了しました。確認後ご連絡いたします。',
+    emailLabel: 'E-mail',
+    emailPlaceholder: 'メールアドレスを入力してください。',
     errorMessage: '入力内容をご確認のうえ、再度お試しください。',
     backButton: '種別を再選択',
     submitButton: '送信する',
@@ -607,6 +615,8 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
     personPlaceholder: '请输入姓名',
     phoneLabel: '联系方式',
     phonePlaceholder: '请输入联系方式',
+    emailLabel: 'E-mail',
+    emailPlaceholder: '請輸入您的電子郵件地址。',
     successMessage: '已成功提交，我们确认后将与您联系。',
     errorMessage: '请检查输入内容，或稍后再试。',
     backButton: '重新选择类型',
