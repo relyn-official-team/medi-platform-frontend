@@ -16,6 +16,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RELYN",
   description: "",
+  metadataBase: new URL("https://www.relynplatform.com"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      ko: "/",
+      ja: "/ja",
+      en: "/en",
+      zh: "/zh",
+    },
+  },
 };
 
 export default function RootLayout({
@@ -25,7 +35,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="en">
+    <html lang="ko">
 
     <head>
       {/* PWA / iOS Web Push 필수 */}

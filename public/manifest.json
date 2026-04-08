@@ -1,7 +1,7 @@
 {
   "name": "RELYN",
   "short_name": "RELYN",
-  "start_url": "/",
+  "start_url": "/auth/login",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",

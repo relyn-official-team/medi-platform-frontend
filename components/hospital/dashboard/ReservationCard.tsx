@@ -275,6 +275,12 @@ const settledAmount = useMemo(() => {
   };
 }, [reservation]);
 
+const platformRateLabel = Number(
+  reservation.platformCommissionRate ??
+  hospitalSettings?.platformCommissionRate ??
+  0
+);
+
   const handleConfirm = async () => {
     await onStatusChange(reservation.id, "CONFIRMED");
     setConfirmOpen(false);
@@ -840,7 +846,7 @@ return (
         <br />
         {(isHospital || isAdmin) && (
           <>
-            <span>플랫폼 수수료: {row.platformFee.toLocaleString()}원</span>
+            <span>플랫폼 수수료: {row.platformFee.toLocaleString()}원 ({platformRateLabel}%)</span>
             <br />
           </>
         )}
@@ -1106,7 +1112,7 @@ return (
         <option value="">수수료율 선택</option>
         {availableCommissionRates.map((rate) => (
           <option key={rate} value={rate}>
-            {getDisplayedRate(rate)}%
+            {rate}%
           </option>
         ))}
       </select>
@@ -1179,15 +1185,15 @@ return (
         .join(" + ")}
     </p>
     <p>
-      플랫폼 수수료:{" "}
-      {settlementPreview.rows
-        .map((row) => `${row.platformFee.toLocaleString()}원`)
-        .join(" + ")}
-    </p>
-    <p>
       에이전시 수수료:{" "}
       {settlementPreview.rows
         .map((row) => `${row.agencyFee.toLocaleString()}원`)
+        .join(" + ")}
+    </p>
+    <p>
+      플랫폼 수수료:{" "}
+      {settlementPreview.rows
+        .map((row) => `${row.platformFee.toLocaleString()}원`)
         .join(" + ")}
     </p>
   </div>

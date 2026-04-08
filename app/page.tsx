@@ -56,7 +56,7 @@ export default function Page() {
     logo: 'https://www.relynplatform.com/relyn_logo.png',
     sameAs: [
       'https://pf.kakao.com/_XxgsAX',
-      'https://www.instagram.com/rrelynn',
+      'https://www.instagram.com/relyn.official.team/',
     ],
   };
 

@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/'],
+        allow: ['/', '/ja', '/en', '/zh'],
         disallow: [
           '/api/',
           '/auth/',
@@ -16,7 +16,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://app.relynplatform.com/sitemap.xml',
-    host: 'https://app.relynplatform.com',
+    sitemap: 'https://www.relynplatform.com/sitemap.xml',
+    host: 'https://www.relynplatform.com',
   };
 }
