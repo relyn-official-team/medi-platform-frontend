@@ -128,7 +128,7 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
   seoParagraph1:
     'RELYN은 해외환자유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다.',
   seoParagraph2:
-    '해외환자유치 과정에서 발생하는 계약, 정산, 데이터 관리 문제를 하나의 시스템으로 통합합니다.',
+    '해외환자유치 과정에서 발생하는 계약, 정산, 데이터 관리 문제를 하나의 시스템으로 통합하며,',
   seoParagraph3:
     '병원은 해외환자유치 채널을 확장하고, 에이전시는 안정적인 환자 유치 네트워크를 확보할 수 있습니다.',
     heroTitleLine1: '연결을 넘어,',

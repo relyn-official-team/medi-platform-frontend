@@ -1,5 +1,6 @@
 'use client';
 
+import { Globe } from 'lucide-react';
 import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -57,6 +58,8 @@ export default function HomePageClient({
   const [email, setEmail] = React.useState('');
   const [submitting, setSubmitting] = React.useState(false);
   const [submitDone, setSubmitDone] = React.useState<'success' | 'error' | null>(null);
+  const [langOpen, setLangOpen] = React.useState(false);
+  const [seoBannerReady, setSeoBannerReady] = React.useState(false);
 
   const trackGoogleAdsConversion = () => {
     if (typeof window === 'undefined') return;
@@ -155,6 +158,14 @@ export default function HomePageClient({
     }
   };
 
+  React.useEffect(() => {
+  const id = window.setTimeout(() => {
+    setSeoBannerReady(true);
+  }, 120);
+
+  return () => window.clearTimeout(id);
+  }, []);
+
   const marketCards = t.marketCards;
   const gapCards = t.gapCards;
   const systemCards = t.systemCards;
@@ -175,24 +186,114 @@ export default function HomePageClient({
       </div>
 
       <div className="mx-auto max-w-[1100px] px-6 py-10 lg:py-14">
+
+        <div className="mb-10">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/relyn_logo.png"
+              alt="RELYN"
+              width={120}
+              height={34}
+              className="h-[30px] w-auto"
+              priority
+            />
+          </div>
+
+          <div className="mt-6 inline-flex items-center rounded-full bg-white/70 px-4 py-2 text-xs font-medium text-blue-700 shadow-sm ring-1 ring-blue-100">
+            {t.badge}
+          </div>
+        </div>
+
+        <section className="relative mb-14 overflow-hidden rounded-[28px] px-20 py-20 text-center">
+          <div className="pointer-events-none absolute inset-0">
+  {seoBannerReady && (
+    <div className="seo-banner-track">
+      <div className="seo-banner-group">
+        <div className="seo-banner-item">
+          <Image src="/slide_banner.png" alt="" aria-hidden="true" fill className="object-contain" />
+        </div>
+        <div className="seo-banner-item">
+          <Image src="/slide_banner.png" alt="" aria-hidden="true" fill className="object-contain" />
+        </div>
+        <div className="seo-banner-item">
+          <Image src="/slide_banner.png" alt="" aria-hidden="true" fill className="object-contain" />
+        </div>
+      </div>
+      <div className="seo-banner-group" aria-hidden="true">
+        <div className="seo-banner-item">
+          <Image src="/slide_banner.png" alt="" aria-hidden="true" fill className="object-contain" />
+        </div>
+        <div className="seo-banner-item">
+          <Image src="/slide_banner.png" alt="" aria-hidden="true" fill className="object-contain" />
+        </div>
+        <div className="seo-banner-item">
+          <Image src="/slide_banner.png" alt="" aria-hidden="true" fill className="object-contain" />
+        </div>
+      </div>
+    </div>
+  )}
+          </div>
+
+          
+
+          <div className="relative z-10 mx-auto max-w-[760px] px-6">
+            <div className="inline-flex items-center rounded-full bg-[#2563eb] px-5 py-2 text-[18px] font-extrabold leading-none tracking-[-0.02em] text-white shadow-[0_10px_30px_rgba(37,99,235,0.22)]">
+              {t.seoHeading}
+            </div>
+
+  <div className="mx-auto mt-5 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(37,99,235,0)_0%,rgba(37,99,235,0.9)_50%,rgba(37,99,235,0)_100%)]" />
+
+  <div className="mx-auto mt-6 max-w-[760px] space-y-2 text-[15px] leading-8 text-neutral-700">
+    <p>{t.seoParagraph1}</p>
+    <p>{t.seoParagraph2}</p>
+    <p>{t.seoParagraph3}</p>
+  </div>
+
+  <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+    <div className="seo-point-chip">
+     <FileSignature className="h-4 w-4 text-blue-600" />
+      <span>
+        {locale === 'ko'
+          ? '계약 표준화'
+          : locale === 'en'
+          ? 'Contract Standardization'
+          : locale === 'ja'
+          ? '契約の標準化'
+          : '合同标准化'}
+      </span>
+    </div>
+    <div className="seo-point-chip">
+      <Receipt className="h-4 w-4 text-blue-600" />
+      <span>
+        {locale === 'ko'
+          ? '정산 구조화'
+          : locale === 'en'
+          ? 'Settlement Structuring'
+          : locale === 'ja'
+          ? '精算の構造化'
+          : '结算结构化'}
+      </span>
+    </div>
+    <div className="seo-point-chip">
+      <Database className="h-4 w-4 text-blue-600" />
+      <span>
+        {locale === 'ko'
+          ? '데이터 통합'
+          : locale === 'en'
+          ? 'Data Integration'
+          : locale === 'ja'
+          ? 'データ統合'
+          : '数据整合'}
+      </span>
+    </div>
+  </div>
+          </div>
+        </section>
+
         <section className="grid grid-cols-1 gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div>
-            <div className="flex items-center gap-3">
-              <Image
-                src="/relyn_logo.png"
-                alt="RELYN"
-                width={120}
-                height={34}
-                className="h-[30px] w-auto"
-                priority
-              />
-            </div>
 
-            <div className="mt-6 inline-flex items-center rounded-full bg-white/70 px-4 py-2 text-xs font-medium text-blue-700 shadow-sm ring-1 ring-blue-100">
-              {t.badge}
-            </div>
-
-            <h1 className="mt-5 text-[44px] font-black leading-[1.05] tracking-[-0.02em] text-neutral-950">
+            <h1 className="text-[44px] font-black leading-[1.05] tracking-[-0.02em] text-neutral-950">
   <span className="sr-only">
     {t.seoHeading}
   </span>
@@ -204,6 +305,7 @@ export default function HomePageClient({
             <p className="mt-5 max-w-[560px] text-sm leading-7 text-neutral-600">
               {t.heroDescription}
             </p>
+
 
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -596,6 +698,131 @@ export default function HomePageClient({
           </div>
         </DialogContent>
       </Dialog>
+
+
+      <div className="fixed bottom-5 right-4 z-50 md:bottom-6 md:right-6">
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setLangOpen((prev) => !prev)}
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0b1220] text-white shadow-[0_10px_30px_rgba(2,6,23,0.22)] hover:bg-[#0b1220]/90"
+            aria-label="Change language"
+          >
+            <Globe className="h-5 w-5" />
+          </button>
+
+          {langOpen && (
+            <div className="absolute bottom-14 right-0 w-40 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_14px_40px_rgba(2,6,23,0.16)]">
+              <Link
+                href="/"
+                className="block px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+              >
+                한국어
+              </Link>
+              <Link
+                href="/en"
+                className="block px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+              >
+                English
+              </Link>
+              <Link
+                href="/ja"
+                className="block px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+              >
+                日本語
+              </Link>
+              <Link
+                href="/zh"
+                className="block px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+              >
+                中文
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+
+
+      <style jsx global>{`
+        @keyframes seoBannerMarquee {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          100% {
+            transform: translate3d(-50%, 0, 0);
+          }
+        }
+
+        .seo-banner-track {
+          display: flex;
+          width: 240%;
+          height: 100%;
+    animation: seoBannerMarquee 28s linear infinite;
+    align-items: center;
+    margin-left: -20%;
+        }
+
+  .seo-banner-group {
+    display: flex;
+    flex: 0 0 50%;
+    width: 50%;
+    height: 100%;
+    align-items: center;
+    justify-content: space-around;
+    gap: 28px;
+          
+        }
+
+  .seo-banner-item {
+    position: relative;
+    flex: 0 0 auto;
+    width: 240px;
+    height: 240px;
+    opacity: 0.16;
+  }
+
+  .seo-point-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.72);
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgb(51 65 85);
+    box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(6px);
+  }
+
+  @media (max-width: 1024px) {
+    .seo-banner-item {
+      width: 200px;
+      height: 200px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .seo-banner-track {
+      animation: seoBannerMarquee 22s linear infinite;
+    width: 260%;
+    margin-left: -30%;
+    }
+
+    .seo-banner-group {
+      gap: 20px;
+    }
+
+    .seo-banner-item {
+      width: 140px;
+      height: 140px;
+      opacity: 0.14;
+    }
+        }
+      `}</style>
+
+
     </main>
   );
 }
