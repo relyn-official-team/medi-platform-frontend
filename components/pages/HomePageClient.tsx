@@ -204,7 +204,7 @@ export default function HomePageClient({
           </div>
         </div>
 
-        <section className="relative mb-14 overflow-hidden rounded-[28px] px-20 py-20 text-center">
+        <section className="relative mb-14 overflow-hidden rounded-[28px] px-4 py-16 text-center sm:px-20 sm:py-20">
           <div className="pointer-events-none absolute inset-0">
   {seoBannerReady && (
     <div className="seo-banner-track">
@@ -243,7 +243,7 @@ export default function HomePageClient({
 
   <div className="mx-auto mt-5 h-[3px] w-24 rounded-full bg-[linear-gradient(90deg,rgba(37,99,235,0)_0%,rgba(37,99,235,0.9)_50%,rgba(37,99,235,0)_100%)]" />
 
-  <div className="mx-auto mt-6 max-w-[760px] space-y-2 text-[15px] leading-8 text-neutral-700">
+  <div className="mx-auto mt-6 max-w-none px-1 sm:max-w-[760px] sm:px-0 space-y-2 text-[15px] leading-8 text-neutral-700">
     <p>{t.seoParagraph1}</p>
     <p>{t.seoParagraph2}</p>
     <p>{t.seoParagraph3}</p>
