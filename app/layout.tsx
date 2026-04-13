@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RELYN",
   description: "",
-  metadataBase: new URL("https://www.relynplatform.com"),
+  metadataBase: new URL("https://app.relynplatform.com"),
   alternates: {
     canonical: "/",
     languages: {

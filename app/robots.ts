@@ -13,10 +13,11 @@ export default function robots(): MetadataRoute.Robots {
           '/admin/',
           '/agency/',
           '/hospital/',
+          '/privacy',
         ],
       },
     ],
-    sitemap: 'https://www.relynplatform.com/sitemap.xml',
-    host: 'https://www.relynplatform.com',
+    sitemap: 'https://app.relynplatform.com/sitemap.xml',
+    host: 'https://app.relynplatform.com',
   };
 }

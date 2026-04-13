@@ -7,11 +7,11 @@ export const metadata: Metadata = {
   description:
     'RELYN은 해외환자 유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약, 정산, 데이터 운영을 하나의 구조로 통합합니다.',
   alternates: {
-    canonical: 'https://www.relynplatform.com/',
+    canonical: 'https://app.relynplatform.com/',
   },
   openGraph: {
     type: 'website',
-    url: 'https://www.relynplatform.com/',
+    url: 'https://app.relynplatform.com/',
     siteName: 'RELYN',
     title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
     description:
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     images: [
       {
-        url: 'https://www.relynplatform.com/og-image.png',
+        url: 'https://app.relynplatform.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'RELYN',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
     description:
       'RELYN은 해외환자 유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다.',
-    images: ['https://www.relynplatform.com/og-image.png'],
+    images: ['https://app.relynplatform.com/og-image.png'],
   },
   robots: {
     index: true,
@@ -52,8 +52,8 @@ export default function Page() {
     '@type': 'Organization',
     name: 'RELYN',
     alternateName: '렐린',
-    url: 'https://www.relynplatform.com/',
-    logo: 'https://www.relynplatform.com/relyn_logo.png',
+    url: 'https://app.relynplatform.com/',
+    logo: 'https://app.relynplatform.com/relyn_logo.png',
     sameAs: [
       'https://pf.kakao.com/_XxgsAX',
       'https://www.instagram.com/relyn.official.team/',

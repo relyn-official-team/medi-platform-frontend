@@ -11,8 +11,8 @@ export default function JaPage() {
     '@type': 'Organization',
     name: 'RELYN',
     alternateName: 'RELYN',
-    url: 'https://www.relynplatform.com/ja',
-    logo: 'https://www.relynplatform.com/relyn_logo.png',
+    url: 'https://app.relynplatform.com/ja',
+    logo: 'https://app.relynplatform.com/relyn_logo.png',
     sameAs: [
       'https://pf.kakao.com/_XxgsAX',
       'https://www.instagram.com/relyn.official.team/',

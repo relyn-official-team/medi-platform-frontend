@@ -1,4 +1,3 @@
-"use client";
 
 import * as React from "react";
 import Image from "next/image";
@@ -22,6 +21,13 @@ type Section = {
   icon: React.ElementType;
   body: React.ReactNode;
 };
+
+ export const metadata = {
+   robots: {
+     index: false,
+     follow: false,
+   },
+ };
 
 function classNames(...v: Array<string | false | null | undefined>) {
   return v.filter(Boolean).join(" ");
