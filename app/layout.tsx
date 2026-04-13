@@ -18,12 +18,13 @@ export const metadata: Metadata = {
   description: "",
   metadataBase: new URL("https://app.relynplatform.com"),
   alternates: {
-    canonical: "/",
+    canonical: "https://www.relynplatform.com/",
     languages: {
-      ko: "/",
-      ja: "/ja",
-      en: "/en",
-      zh: "/zh",
+      "ko-KR": "https://www.relynplatform.com/",
+      "en-US": "https://www.relynplatform.com/en",
+      "ja-JP": "https://www.relynplatform.com/ja",
+      "zh-CN": "https://www.relynplatform.com/zh",
+      "x-default": "https://www.relynplatform.com/",
     },
   },
 };
@@ -35,7 +36,7 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="ko">
+    <html lang="ko-KR">
 
     <head>
       {/* PWA / iOS Web Push 필수 */}

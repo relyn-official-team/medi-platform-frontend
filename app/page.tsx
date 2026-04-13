@@ -6,9 +6,6 @@ export const metadata: Metadata = {
   title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
   description:
     'RELYN은 해외환자 유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약, 정산, 데이터 운영을 하나의 구조로 통합합니다.',
-  alternates: {
-    canonical: 'https://app.relynplatform.com/',
-  },
   openGraph: {
     type: 'website',
     url: 'https://app.relynplatform.com/',
@@ -83,6 +80,13 @@ export default function Page() {
       </Script>
 
       <HomePageClient />
+      
+      {/* SEO용 내부 링크 (숨김 처리) */}
+      <div style={{ display: 'none' }}>
+        <a href="/en">English</a>
+        <a href="/ja">Japanese</a>
+        <a href="/zh">Chinese</a>
+      </div>
     </>
   );
 }
