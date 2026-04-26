@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import HomePageClient from '@/components/pages/HomePageClient';
+import { getLandingContent } from '@/lib/landing-content';
 
 export const metadata: Metadata = {
   title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
@@ -48,6 +49,25 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  const t = getLandingContent('ko');
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      ...t.faqHospital.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+      ...t.faqAgency.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    ],
+  };
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -67,6 +87,11 @@ export default function Page() {
         id="relyn-organization-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Script
+        id="relyn-faq-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       <HomePageClient />

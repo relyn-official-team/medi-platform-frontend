@@ -115,6 +115,13 @@ export type LandingContent = {
     title: string;
     desc: string;
   }>;
+
+  faqSectionLabel: string;
+  faqSectionTitle: string;
+  faqTabHospital: string;
+  faqTabAgency: string;
+  faqHospital: Array<{ q: string; a: string }>;
+  faqAgency: Array<{ q: string; a: string }>;
 };
 
 export const landingContentMap: Record<LandingLocale, LandingContent> = {
@@ -254,6 +261,55 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
         icon: PieChart,
         title: '통합 운영 시작',
         desc: '단일 대시보드에서 모든 파트너와 매출을 한눈에 관리합니다.',
+      },
+    ],
+
+    faqSectionLabel: 'FAQ',
+    faqSectionTitle: '자주 묻는 질문',
+    faqTabHospital: '병원',
+    faqTabAgency: '에이전시',
+    faqHospital: [
+      {
+        q: 'RELYN은 어떤 플랫폼인가요?',
+        a: 'RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 운영 구조를 하나의 시스템으로 제공합니다.',
+      },
+      {
+        q: '어떤 진료과목 병원이 입점되어 있나요?',
+        a: '피부과, 성형외과, 치과를 중심으로 안과, 내과, 건강검진센터까지 다양한 진료과목으로 지속 확대하고 있습니다.',
+      },
+      {
+        q: '해외환자 유치 경험이 없어도 입점이 가능한가요?',
+        a: '네, 가능합니다. RELYN은 기존 해외환자 유치 경험이 없는 병원도 쉽게 시작할 수 있도록 표준화된 계약 양식과 운영 프로세스를 제공합니다. 별도의 준비 없이 플랫폼 내에서 바로 운영을 시작할 수 있습니다.',
+      },
+      {
+        q: '수수료 구조는 어떻게 되나요?',
+        a: '수수료는 병원이 직접 설정하며, 플랫폼 내에서 투명하게 관리됩니다. 에이전시와의 수수료 협의 및 정산이 시스템 안에서 자동으로 처리되어 별도의 수작업이 필요 없습니다.',
+      },
+      {
+        q: '기존 에이전시와의 계약에 영향이 있나요?',
+        a: '기존 계약을 그대로 유지하면서 RELYN을 도입할 수 있습니다. 기존 에이전시와의 관계를 플랫폼에 등록하여 정산을 자동화하거나, 새로운 에이전시 채널을 추가하는 방식으로 활용 가능합니다.',
+      },
+      {
+        q: '어떤 나라 환자를 유치할 수 있나요?',
+        a: '국가 제한 없이 전 세계 에이전시 네트워크를 통해 다양한 국가의 환자 유치가 가능합니다. 중동, 동남아, 동아시아, CIS 등 글로벌 에이전시와의 연결을 지원합니다.',
+      },
+    ],
+    faqAgency: [
+      {
+        q: 'RELYN을 통해 어떤 병원과 연결할 수 있나요?',
+        a: '피부과, 성형외과, 치과를 포함한 다양한 진료과목의 한국 병원과 연결이 가능합니다. 또한 에이전시가 원하는 병원이 아직 입점되지 않은 경우, RELYN을 통해 해당 병원의 입점을 직접 제안하고 연결할 수 있습니다.',
+      },
+      {
+        q: '기존에 병원과 직접 계약이 되어 있는데 RELYN을 사용해야 하나요?',
+        a: '기존 계약을 유지하면서 RELYN을 통해 정산 자동화와 데이터 통합 관리의 편의성을 추가로 누릴 수 있습니다. 또한 기존에 거래하지 않던 새로운 병원과의 연결 채널을 확장하는 데도 활용할 수 있습니다.',
+      },
+      {
+        q: '수수료는 어떻게 정산되나요?',
+        a: '수수료는 병원이 설정한 구조에 따라 결정되며, 플랫폼 내에서 투명하게 확인하고 자동으로 정산됩니다. 별도의 협의 없이 시스템 안에서 처리됩니다.',
+      },
+      {
+        q: '플랫폼 이용 비용이 있나요?',
+        a: '에이전시에게는 별도의 플랫폼 이용료가 없습니다. 무료로 가입하고 바로 한국 병원과의 연결을 시작할 수 있습니다.',
       },
     ],
   },
@@ -396,6 +452,55 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
         desc: 'Manage partners and revenue from a single dashboard.',
       },
     ],
+
+    faqSectionLabel: 'FAQ',
+    faqSectionTitle: 'Frequently Asked Questions',
+    faqTabHospital: 'Hospitals',
+    faqTabAgency: 'Agencies',
+    faqHospital: [
+      {
+        q: 'What is RELYN?',
+        a: 'RELYN is a B2B platform connecting Korean hospitals seeking to attract international patients with global agencies. It provides a unified system covering contract standardization, automated settlements, and integrated data management for international patient acquisition.',
+      },
+      {
+        q: 'What medical specialties are available on the platform?',
+        a: 'The platform is continuously expanding across specialties including dermatology, plastic surgery, and dentistry, with ophthalmology, internal medicine, and health screening centers being added.',
+      },
+      {
+        q: 'Can hospitals without prior experience join?',
+        a: 'Yes. RELYN provides standardized contract templates and operational processes so hospitals without prior international patient experience can get started easily — no special preparation required.',
+      },
+      {
+        q: 'How does the commission structure work?',
+        a: 'Hospitals set their own commission rates, which are managed transparently within the platform. Commission agreements and settlements with agencies are processed automatically, eliminating manual work.',
+      },
+      {
+        q: 'Will joining RELYN affect existing agency contracts?',
+        a: 'Existing contracts remain fully intact. Hospitals can register current agency relationships on the platform to automate settlements, or use RELYN to add new agency channels alongside existing ones.',
+      },
+      {
+        q: 'Which countries can patients be attracted from?',
+        a: 'There are no country restrictions. Through our global agency network, hospitals can attract patients from anywhere in the world — including the Middle East, Southeast Asia, East Asia, CIS regions, and beyond.',
+      },
+    ],
+    faqAgency: [
+      {
+        q: 'Which hospitals can I connect with through RELYN?',
+        a: 'Agencies can connect with Korean hospitals across various specialties including dermatology, plastic surgery, and dentistry. If a desired hospital is not yet on the platform, agencies can directly propose and facilitate their onboarding through RELYN.',
+      },
+      {
+        q: 'We already have direct contracts with hospitals. Do we need RELYN?',
+        a: 'Existing contracts stay in place. RELYN adds the convenience of automated settlements and integrated data management on top of your current relationships, while also helping you expand into new hospital connections you don\'t yet have.',
+      },
+      {
+        q: 'How are commissions settled?',
+        a: 'Commissions are determined by the structure set by each hospital and processed automatically and transparently within the platform — no separate negotiations required.',
+      },
+      {
+        q: 'Is there a fee to use the platform?',
+        a: 'There is no platform fee for agencies. Sign up for free and start connecting with Korean hospitals right away.',
+      },
+    ],
   },
 
   ja: {
@@ -536,6 +641,55 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
         desc: '単一ダッシュボードで全パートナーと売上を一元管理します。',
       },
     ],
+
+    faqSectionLabel: 'FAQ',
+    faqSectionTitle: 'よくある質問',
+    faqTabHospital: '病院',
+    faqTabAgency: 'エージェンシー',
+    faqHospital: [
+      {
+        q: 'RELYNとはどのようなプラットフォームですか？',
+        a: 'RELYNは、海外患者の誘致を希望する韓国の病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。契約の標準化、精算の自動化、データの一元管理まで、海外患者誘致に必要な運営体制をひとつのシステムで提供します。',
+      },
+      {
+        q: 'どのような診療科の病院が登録されていますか？',
+        a: '皮膚科、整形外科、歯科を中心に、眼科、内科、健康診断センターなど多様な診療科へと継続的に拡大しています。',
+      },
+      {
+        q: '海外患者誘致の経験がなくても登録できますか？',
+        a: 'はい、可能です。RELYNは経験のない病院でもすぐに始められるよう、標準化された契約書式と運営プロセスを提供しています。特別な準備なしにプラットフォーム上で運営を開始できます。',
+      },
+      {
+        q: '手数料の仕組みはどうなっていますか？',
+        a: '手数料は病院が自ら設定し、プラットフォーム内で透明に管理されます。エージェンシーとの手数料交渉や精算はシステム内で自動処理されるため、手作業は不要です。',
+      },
+      {
+        q: '既存のエージェンシーとの契約に影響はありますか？',
+        a: '既存の契約を維持したままRELYNを導入できます。既存のエージェンシーとの関係をプラットフォームに登録して精算を自動化したり、新しいエージェンシーチャンネルを追加したりすることが可能です。',
+      },
+      {
+        q: 'どの国の患者を誘致できますか？',
+        a: '国の制限はなく、グローバルなエージェンシーネットワークを通じて世界中の患者を誘致できます。中東、東南アジア、東アジア、CIS地域など、幅広いグローバルエージェンシーとの連携をサポートします。',
+      },
+    ],
+    faqAgency: [
+      {
+        q: 'RELYNではどのような病院と連携できますか？',
+        a: '皮膚科、整形外科、歯科をはじめ、多様な診療科の韓国病院と連携が可能です。希望する病院がまだ登録されていない場合は、RELYNを通じてその病院の登録を直接提案・調整することもできます。',
+      },
+      {
+        q: 'すでに病院と直接契約があるのですが、RELYNを使う必要がありますか？',
+        a: '既存の契約はそのまま維持しながら、RELYNで精算の自動化やデータ一元管理の利便性を追加で享受できます。また、これまで取引のなかった新たな病院との連携チャンネルを広げることも可能です。',
+      },
+      {
+        q: '手数料の精算はどのように行われますか？',
+        a: '手数料は各病院が設定した構造に基づいて決まり、プラットフォーム内で透明に確認・自動精算されます。別途の交渉なしにシステム内で処理されます。',
+      },
+      {
+        q: 'プラットフォームの利用料はかかりますか？',
+        a: 'エージェンシーには別途の利用料はかかりません。無料で登録し、すぐに韓国の病院との連携を始めることができます。',
+      },
+    ],
   },
 
   zh: {
@@ -674,6 +828,55 @@ export const landingContentMap: Record<LandingLocale, LandingContent> = {
         icon: PieChart,
         title: '开始统一运营',
         desc: '在一个仪表盘中统一管理所有合作方与营收。',
+      },
+    ],
+
+    faqSectionLabel: 'FAQ',
+    faqSectionTitle: '常见问题',
+    faqTabHospital: '医院',
+    faqTabAgency: '代理机构',
+    faqHospital: [
+      {
+        q: 'RELYN是什么平台？',
+        a: 'RELYN是一个连接希望吸引海外患者的韩国医院与全球代理机构的B2B平台。它将合同标准化、结算自动化和数据统一管理整合为一个系统，为海外患者引流提供完整的运营架构。',
+      },
+      {
+        q: '平台上有哪些科室的医院？',
+        a: '目前以皮肤科、整形外科、口腔科为核心，同时持续扩展至眼科、内科及健康体检中心等多个科室。',
+      },
+      {
+        q: '没有海外患者引流经验也可以入驻吗？',
+        a: '当然可以。RELYN为没有海外患者引流经验的医院提供标准化合同模板和运营流程，无需特别准备，即可在平台上直接开始运营。',
+      },
+      {
+        q: '佣金结构是怎样的？',
+        a: '佣金由医院自行设定，并在平台内透明管理。与代理机构的佣金协商和结算均在系统内自动完成，无需手动处理。',
+      },
+      {
+        q: '加入RELYN会影响与现有代理机构的合同吗？',
+        a: '现有合同完全保持不变。您可以将现有代理关系注册到平台以实现结算自动化，或通过RELYN新增代理渠道，与现有合作并行运营。',
+      },
+      {
+        q: '可以吸引哪些国家的患者？',
+        a: '没有国家限制。通过全球代理网络，可以吸引来自世界各地的患者，涵盖中东、东南亚、东亚、独联体等地区的全球代理合作。',
+      },
+    ],
+    faqAgency: [
+      {
+        q: '通过RELYN可以与哪些医院合作？',
+        a: '可以与皮肤科、整形外科、口腔科等多个科室的韩国医院建立合作。如果希望合作的医院尚未入驻，代理机构也可以通过RELYN直接提议并协助该医院入驻。',
+      },
+      {
+        q: '我们已经与医院有直接合同，还需要使用RELYN吗？',
+        a: '现有合同保持不变，同时还可通过RELYN享受结算自动化和数据统一管理的便利。此外，还可借助平台拓展与尚未合作的新医院之间的连接渠道。',
+      },
+      {
+        q: '佣金如何结算？',
+        a: '佣金根据各医院设定的结构确定，并在平台内透明查看、自动结算，无需另行协商，系统内自动处理。',
+      },
+      {
+        q: '使用平台需要付费吗？',
+        a: '代理机构无需支付任何平台使用费。免费注册后即可立即开始与韩国医院建立合作。',
       },
     ],
   },

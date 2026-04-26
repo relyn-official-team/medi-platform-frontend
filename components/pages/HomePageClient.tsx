@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import LottieHero from '@/components/common/LottieHero';
+import LandingFaq from '@/components/pages/LandingFaq';
 import {
   getLandingContent,
   type LandingContent,
@@ -469,6 +470,15 @@ export default function HomePageClient({
             </div>
           </div>
         </section>
+
+        <LandingFaq
+          sectionLabel={t.faqSectionLabel}
+          sectionTitle={t.faqSectionTitle}
+          tabHospital={t.faqTabHospital}
+          tabAgency={t.faqTabAgency}
+          hospitalItems={t.faqHospital}
+          agencyItems={t.faqAgency}
+        />
 
         <section className="mt-16 text-center">
           <h3 className="text-3xl font-black tracking-[-0.02em]">
