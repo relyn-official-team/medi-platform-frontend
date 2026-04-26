@@ -17,7 +17,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://app.relynplatform.com/sitemap.xml',
-    host: 'https://app.relynplatform.com',
+    sitemap: 'https://relynplatform.com/sitemap.xml',
+    host: 'https://relynplatform.com',
   };
 }

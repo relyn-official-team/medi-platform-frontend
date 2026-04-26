@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getLandingContent, type LandingLocale } from '@/lib/landing-content';
 
-const SITE_URL = 'https://app.relynplatform.com';
+const SITE_URL = 'https://relynplatform.com';
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 export function getLandingMetadata(locale: LandingLocale): Metadata {

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: 'https://app.relynplatform.com/',
+    url: 'https://relynplatform.com/',
     siteName: 'RELYN',
     title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
     description:
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     images: [
       {
-        url: 'https://app.relynplatform.com/og-image.png',
+        url: 'https://relynplatform.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'RELYN',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
     description:
       'RELYN은 해외환자 유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다.',
-    images: ['https://app.relynplatform.com/og-image.png'],
+    images: ['https://relynplatform.com/og-image.png'],
   },
   robots: {
     index: true,
@@ -53,8 +53,8 @@ export default function Page() {
     '@type': 'Organization',
     name: 'RELYN',
     alternateName: '렐린',
-    url: 'https://app.relynplatform.com/',
-    logo: 'https://app.relynplatform.com/relyn_logo.png',
+    url: 'https://relynplatform.com/',
+    logo: 'https://relynplatform.com/relyn_logo.png',
     sameAs: [
       'https://pf.kakao.com/_XxgsAX',
       'https://www.instagram.com/relyn.official.team/',
@@ -68,20 +68,6 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-            
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=AW-17991152486"
-        strategy="afterInteractive"
-      />
-      <Script id="google-ads-gtag" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          window.gtag = window.gtag || gtag;
-          gtag('js', new Date());
-          gtag('config', 'AW-17991152486');
-        `}
-      </Script>
 
       <HomePageClient />
       

@@ -11,8 +11,8 @@ export default function EnPage() {
     '@type': 'Organization',
     name: 'RELYN',
     alternateName: 'RELYN',
-    url: 'https://app.relynplatform.com/en',
-    logo: 'https://app.relynplatform.com/relyn_logo.png',
+    url: 'https://relynplatform.com/en',
+    logo: 'https://relynplatform.com/relyn_logo.png',
     sameAs: [
       'https://pf.kakao.com/_XxgsAX',
       'https://www.instagram.com/relyn.official.team/',
@@ -26,19 +26,6 @@ export default function EnPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=AW-17991152486"
-        strategy="afterInteractive"
-      />
-      <Script id="google-ads-gtag-en" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          window.gtag = window.gtag || gtag;
-          gtag('js', new Date());
-          gtag('config', 'AW-17991152486');
-        `}
-      </Script>
 
       <HomePageClient locale="en" />
     </>

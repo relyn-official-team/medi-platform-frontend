@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
 
@@ -16,15 +17,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RELYN",
   description: "",
-  metadataBase: new URL("https://app.relynplatform.com"),
+  metadataBase: new URL("https://relynplatform.com"),
   alternates: {
-    canonical: "https://www.relynplatform.com/",
+    canonical: "https://relynplatform.com/",
     languages: {
-      "ko-KR": "https://www.relynplatform.com/",
-      "en-US": "https://www.relynplatform.com/en",
-      "ja-JP": "https://www.relynplatform.com/ja",
-      "zh-CN": "https://www.relynplatform.com/zh",
-      "x-default": "https://www.relynplatform.com/",
+      "ko-KR": "https://relynplatform.com/",
+      "en-US": "https://relynplatform.com/en",
+      "ja-JP": "https://relynplatform.com/ja",
+      "zh-CN": "https://relynplatform.com/zh",
+      "x-default": "https://relynplatform.com/",
     },
   },
 };
@@ -36,18 +37,13 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="ko-KR">
+    <html lang="ko-KR" suppressHydrationWarning>
 
     <head>
-      {/* PWA / iOS Web Push 필수 */}
       <link rel="manifest" href="/manifest.json" />
-
-      {/* iOS Web App 인식용 */}
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       <meta name="apple-mobile-web-app-title" content="RELYN" />
-
-      {/* iOS 아이콘 (없어도 동작은 하지만 권장) */}
       <link rel="apple-touch-icon" href="/relyn_logo_push.jpg" />
     </head>
 
@@ -55,6 +51,20 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
       <ClientLayout>{children}</ClientLayout>
+
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=AW-17991152486"
+        strategy="afterInteractive"
+      />
+      <Script id="google-ads-gtag" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          window.gtag = window.gtag || gtag;
+          gtag('js', new Date());
+          gtag('config', 'AW-17991152486');
+        `}
+      </Script>
       </body>
     </html>
   );
