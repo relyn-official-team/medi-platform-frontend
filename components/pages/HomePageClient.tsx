@@ -260,7 +260,9 @@ export default function HomePageClient({
           ? 'Contract Standardization'
           : locale === 'ja'
           ? '契約の標準化'
-          : '合同标准化'}
+          : locale === 'zh'
+          ? '合同标准化'
+          : 'มาตรฐานสัญญา'}
       </span>
     </div>
     <div className="seo-point-chip">
@@ -272,7 +274,9 @@ export default function HomePageClient({
           ? 'Settlement Structuring'
           : locale === 'ja'
           ? '精算の構造化'
-          : '结算结构化'}
+          : locale === 'zh'
+          ? '结算结构化'
+          : 'การชำระเงินอัตโนมัติ'}
       </span>
     </div>
     <div className="seo-point-chip">
@@ -284,7 +288,9 @@ export default function HomePageClient({
           ? 'Data Integration'
           : locale === 'ja'
           ? 'データ統合'
-          : '数据整合'}
+          : locale === 'zh'
+          ? '数据整合'
+          : 'การจัดการข้อมูล'}
       </span>
     </div>
   </div>
@@ -746,6 +752,12 @@ export default function HomePageClient({
                 className="block px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
               >
                 中文
+              </Link>
+              <Link
+                href="/th"
+                className="block px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+              >
+                ภาษาไทย
               </Link>
             </div>
           )}

@@ -25,6 +25,7 @@ export const metadata: Metadata = {
       "en-US": "https://relynplatform.com/en",
       "ja-JP": "https://relynplatform.com/ja",
       "zh-CN": "https://relynplatform.com/zh",
+      "th-TH": "https://relynplatform.com/th",
       "x-default": "https://relynplatform.com/",
     },
   },
