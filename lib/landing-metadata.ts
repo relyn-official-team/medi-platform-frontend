@@ -21,12 +21,12 @@ export function getLandingMetadata(locale: LandingLocale): Metadata {
         : 'RELYN | 国际患者引流 医院与代理合作平台',
     description:
       locale === 'ko'
-        ? 'RELYN은 해외환자 유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약, 정산, 데이터 운영을 하나의 구조로 통합합니다.'
+        ? 'RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.'
         : locale === 'en'
-        ? 'RELYN is a B2B platform connecting hospitals and global agencies for patient acquisition, integrating contracts, settlements, and data operations into one structure.'
+        ? 'RELYN is a B2B platform connecting Korean hospitals and global agencies for international patient acquisition. Contracts, settlements, and data operations — unified in one system.'
         : locale === 'ja'
-        ? 'RELYNは、海外患者誘致を目指す病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。契約・精算・データ運営を一つの構造に統合します。'
-        : 'RELYN 是连接医院与全球代理机构的 B2B 平台，将合同、结算与数据运营整合为统一结构。',
+        ? 'RELYNは、海外患者誘致を希望する韓国の病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。契約の標準化・精算の自動化・データの一元管理まで、必要な運営体制をひとつのシステムで提供します。'
+        : 'RELYN是连接韩国医院与全球代理机构的B2B平台，专注于海外患者引流。将合同标准化、结算自动化与数据统一管理整合为一个系统，为医院和代理机构提供完整的运营架构。',
 
     alternates: {
       canonical: url,
@@ -53,12 +53,12 @@ export function getLandingMetadata(locale: LandingLocale): Metadata {
           : 'RELYN | 国际患者引流 医院与代理合作平台',
       description:
         locale === 'ko'
-          ? 'RELYN은 해외환자 유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약, 정산, 데이터 운영을 하나의 구조로 통합합니다.'
+          ? 'RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.'
           : locale === 'en'
-          ? 'RELYN is a B2B platform connecting hospitals and global agencies for patient acquisition, integrating contracts, settlements, and data operations into one structure.'
+          ? 'RELYN is a B2B platform connecting Korean hospitals and global agencies for international patient acquisition. Contracts, settlements, and data operations — unified in one system.'
           : locale === 'ja'
-          ? 'RELYNは、海外患者誘致を目指す病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。契約・精算・データ運営を一つの構造に統合します。'
-          : 'RELYN 是连接医院与全球代理机构的 B2B 平台，将合同、结算与数据运营整合为统一结构。',
+          ? 'RELYNは、海外患者誘致を希望する韓国の病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。契約の標準化・精算の自動化・データの一元管理まで、必要な運営体制をひとつのシステムで提供します。'
+          : 'RELYN是连接韩国医院与全球代理机构的B2B平台，专注于海外患者引流。将合同标准化、结算自动化与数据统一管理整合为一个系统，为医院和代理机构提供完整的运营架构。',
       images: [
         {
           url: OG_IMAGE,
@@ -81,12 +81,12 @@ export function getLandingMetadata(locale: LandingLocale): Metadata {
           : 'RELYN | 国际患者引流 医院与代理合作平台',
       description:
         locale === 'ko'
-          ? 'RELYN은 해외환자 유치를 원하는 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다.'
+          ? 'RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.'
           : locale === 'en'
-          ? 'RELYN is a B2B platform connecting hospitals and global agencies for patient acquisition.'
+          ? 'RELYN is a B2B platform connecting Korean hospitals and global agencies for international patient acquisition. Contracts, settlements, and data operations — unified in one system.'
           : locale === 'ja'
-          ? 'RELYNは、海外患者誘致を目指す病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。'
-          : 'RELYN 是连接医院与全球代理机构的 B2B 平台。',
+          ? 'RELYNは、海外患者誘致を希望する韓国の病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。契約の標準化・精算の自動化・データの一元管理まで、必要な運営体制をひとつのシステムで提供します。'
+          : 'RELYN是连接韩国医院与全球代理机构的B2B平台，专注于海外患者引流。将合同标准化、结算自动化与数据统一管理整合为一个系统，为医院和代理机构提供完整的运营架构。',
       images: [OG_IMAGE],
     },
 

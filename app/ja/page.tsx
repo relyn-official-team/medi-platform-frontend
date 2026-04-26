@@ -26,6 +26,25 @@ export default function JaPage() {
     ],
   };
 
+  const serviceJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'RELYN 海外患者誘致プラットフォーム',
+    description:
+      'RELYNは、海外患者誘致を希望する韓国の病院とグローバルエージェンシーをつなぐB2Bプラットフォームです。契約の標準化・精算の自動化・データの一元管理まで、必要な運営体制をひとつのシステムで提供します。',
+    serviceType: 'International Patient Acquisition Platform',
+    provider: {
+      '@type': 'Organization',
+      name: 'RELYN',
+      url: 'https://relynplatform.com',
+    },
+    areaServed: 'Worldwide',
+    audience: [
+      { '@type': 'Audience', audienceType: '病院' },
+      { '@type': 'Audience', audienceType: 'エージェンシー' },
+    ],
+  };
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -50,6 +69,11 @@ export default function JaPage() {
         id="relyn-faq-jsonld-ja"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <Script
+        id="relyn-service-jsonld-ja"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
 
       <HomePageClient locale="ja" />

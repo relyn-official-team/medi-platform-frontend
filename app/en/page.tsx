@@ -26,6 +26,25 @@ export default function EnPage() {
     ],
   };
 
+  const serviceJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'RELYN International Patient Acquisition Platform',
+    description:
+      'RELYN is a B2B platform connecting Korean hospitals and global agencies for international patient acquisition. Contracts, settlements, and data operations — unified in one system.',
+    serviceType: 'International Patient Acquisition Platform',
+    provider: {
+      '@type': 'Organization',
+      name: 'RELYN',
+      url: 'https://relynplatform.com',
+    },
+    areaServed: 'Worldwide',
+    audience: [
+      { '@type': 'Audience', audienceType: 'Hospitals' },
+      { '@type': 'Audience', audienceType: 'Agencies' },
+    ],
+  };
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -50,6 +69,11 @@ export default function EnPage() {
         id="relyn-faq-jsonld-en"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <Script
+        id="relyn-service-jsonld-en"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
 
       <HomePageClient locale="en" />
