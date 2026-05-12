@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Search, CalendarRange, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -12,84 +13,82 @@ interface FilterProps {
   }) => void;
 }
 
-/**
- * 상단 검색/날짜 필터 바
- * - 키워드: 환자명 / 에이전시명 / 시술명
- * - 날짜: 시작일 ~ 종료일
- */
 export default function FilterBar({ onFilter }: FilterProps) {
   const [keyword, setKeyword] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   const applyFilter = () => {
-    onFilter({
-      keyword: keyword.trim(),
-      startDate,
-      endDate,
-    });
+    onFilter({ keyword: keyword.trim(), startDate, endDate });
   };
 
+  const resetFilter = () => {
+    setKeyword("");
+    setStartDate("");
+    setEndDate("");
+    onFilter({ keyword: "", startDate: "", endDate: "" });
+  };
+
+  const hasActiveFilter = keyword || startDate || endDate;
+
   return (
-    <div className="flex flex-wrap items-end justify-between gap-3">
-      {/* 좌측: 검색 + 날짜 */}
-      <div className="flex flex-1 flex-wrap gap-3">
-        <div className="min-w-[200px] flex-1">
-          <label className="mb-1 block text-xs font-medium text-gray-500">
-            검색어 (환자명 / 에이전시or병원명 / 시술)
-          </label>
-          <Input
-            placeholder="예: 홍길동 / ABC Agency / 풀페이스 지방이식"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-  onKeyDown={(e) => {
-    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-      e.preventDefault();
-      applyFilter();
-    }
-  }}
-            className="h-10"
-          />
-        </div>
-
-        <div className="flex items-end gap-2">
-          <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">
-              시작일
-            </label>
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="h-10 w-[140px]"
-            />
-          </div>
-
-          <span className="pb-2 text-gray-400">~</span>
-
-          <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">
-              종료일
-            </label>
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="h-10 w-[140px]"
-            />
-          </div>
-        </div>
+    <div className="flex flex-wrap items-end gap-2 sm:gap-3">
+      {/* 검색어 */}
+      <div className="relative min-w-[180px] flex-1">
+        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400 pointer-events-none" />
+        <Input
+          placeholder="환자명 / 에이전시명 / 시술명"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+              e.preventDefault();
+              applyFilter();
+            }
+          }}
+          className="h-9 pl-8 pr-3 text-sm rounded-xl border-gray-200 bg-white focus:border-blue-300 focus:ring-blue-100"
+        />
       </div>
 
-      {/* 우측: 버튼 */}
-      <div className="flex items-center">
+      {/* 날짜 범위 */}
+      <div className="flex items-center gap-1.5">
+        <CalendarRange className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+        <Input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="h-9 w-[130px] text-sm rounded-xl border-gray-200 bg-white focus:border-blue-300 focus:ring-blue-100"
+        />
+        <span className="text-gray-400 text-xs">~</span>
+        <Input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="h-9 w-[130px] text-sm rounded-xl border-gray-200 bg-white focus:border-blue-300 focus:ring-blue-100"
+        />
+      </div>
+
+      {/* 버튼 */}
+      <div className="flex items-center gap-2">
         <Button
-          variant="outline"
-          className="h-10 px-4"
           onClick={applyFilter}
+          size="sm"
+          className="h-9 rounded-xl bg-[#0b1220] px-4 text-[13px] font-semibold text-white hover:bg-[#0b1220]/90"
         >
-          필터 적용
+          검색
         </Button>
+
+        {hasActiveFilter && (
+          <Button
+            onClick={resetFilter}
+            size="sm"
+            variant="outline"
+            className="h-9 rounded-xl border-gray-200 px-3 text-[13px] text-gray-500 hover:bg-gray-50"
+          >
+            <X className="h-3.5 w-3.5 mr-1" />
+            초기화
+          </Button>
+        )}
       </div>
     </div>
   );

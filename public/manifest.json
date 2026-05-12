@@ -1,20 +1,23 @@
 {
-  "name": "RELYN",
+  "name": "RELYN — 해외환자 유치 플랫폼",
   "short_name": "RELYN",
+  "description": "한국 병원과 글로벌 에이전시를 연결하는 B2B 의료 플랫폼",
   "start_url": "/auth/login",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#0b1220",
+  "lang": "ko-KR",
   "icons": [
     {
       "src": "/relyn_logo_push.jpg",
       "sizes": "192x192",
-      "type": "image/jpg"
+      "type": "image/jpeg"
     },
     {
       "src": "/relyn_logo_push.jpg",
       "sizes": "512x512",
-      "type": "image/jpg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ]
 }

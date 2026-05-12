@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -13,6 +14,7 @@ import {
   LogOut,
   PanelLeftOpen,
   PanelLeftClose,
+  ShieldCheck,
 } from "lucide-react";
 
 type MenuItem =
@@ -43,7 +45,7 @@ export default function Sidebar({
   const menu: MenuItem[] = [
     { type: "link", label: "계정관리", href: "/auth/admin/accounts", icon: Users2 },
     { type: "link", label: "통계", href: "/auth/admin/agency-statistics", icon: BarChart3 },
-    { type: "link", label: "플랫폼통계", href: "/auth/admin/platform-statistics", icon: BarChart3  },
+    { type: "link", label: "플랫폼통계", href: "/auth/admin/platform-statistics", icon: BarChart3 },
     { type: "link", label: "충전관리", href: "/auth/admin/charge-requests", icon: Wallet2 },
     { type: "link", label: "에이전시 정산요청", href: "/auth/admin/payouts", icon: Wallet2 },
     { type: "link", label: "예약관리", href: "/auth/admin/reservations", icon: CalendarClock },
@@ -51,7 +53,6 @@ export default function Sidebar({
     { type: "action", label: "로그아웃", onClick: logout, icon: LogOut },
   ];
 
-  /** PC/모바일 동작 분리 */
   const handleToggle = () => {
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       onClose?.();
@@ -63,53 +64,80 @@ export default function Sidebar({
   return (
     <div
       className={cn(
-        "relative flex h-screen flex-col bg-white border-r border-gray-200 transition-all duration-300",
+        "relative flex h-screen flex-col bg-[#0b1220] transition-all duration-300",
         collapsed ? "w-16" : "w-64"
       )}
     >
-      {/* 상단 헤더 영역 */}
-      <div className="flex h-16 items-center justify-between px-3 border-b border-gray-200">
+      {/* 상단 로고 영역 */}
+      <div
+        className={cn(
+          "flex h-16 items-center border-b border-white/10",
+          collapsed ? "justify-center px-2" : "justify-between px-4"
+        )}
+      >
         {!collapsed && (
-          <span className="text-base font-semibold text-gray-900 truncate">
-            Admin
-          </span>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/relyn_logo.png"
+              alt="RELYN"
+              width={80}
+              height={22}
+              className="h-5 w-auto brightness-0 invert opacity-90"
+              priority
+            />
+            <span className="rounded-md bg-blue-600/20 px-1.5 py-0.5 text-[10px] font-bold text-blue-400 tracking-wide">
+              ADMIN
+            </span>
+          </div>
+        )}
+        {collapsed && (
+          <ShieldCheck className="h-5 w-5 text-blue-400" />
         )}
 
         <button
           type="button"
           aria-label="toggle sidebar"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/10 hover:text-white"
           onClick={handleToggle}
         >
           {collapsed ? (
-            <PanelLeftOpen className="w-4 h-4" />
+            <PanelLeftOpen className="h-4 w-4" />
           ) : (
-            <PanelLeftClose className="w-4 h-4" />
+            <PanelLeftClose className="h-4 w-4" />
           )}
         </button>
       </div>
 
       {/* 메뉴 리스트 */}
-      <nav className="flex-1 p-3 space-y-1 mt-2">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto p-2 pt-3">
         {menu.map((item) => {
           const Icon = item.icon;
 
           if (item.type === "link") {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(item.href + "/");
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
+                  "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
                   active
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    ? "bg-blue-600 text-white shadow-[0_4px_12px_rgba(37,99,235,0.4)]"
+                    : "text-white/60 hover:bg-white/10 hover:text-white"
                 )}
                 onClick={onClose}
+                title={collapsed ? item.label : undefined}
               >
-                <Icon className="w-5 h-5" />
+                {active && !collapsed && (
+                  <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-blue-200" />
+                )}
+                <Icon
+                  className={cn(
+                    "h-[18px] w-[18px] shrink-0",
+                    active ? "text-white" : "text-white/50 group-hover:text-white"
+                  )}
+                />
                 {!collapsed && <span className="truncate">{item.label}</span>}
               </Link>
             );
@@ -119,16 +147,14 @@ export default function Sidebar({
             <button
               key={item.label}
               type="button"
-              className={cn(
-                "w-full flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
-                "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-              )}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/50 transition-all hover:bg-white/10 hover:text-white"
               onClick={() => {
                 item.onClick();
                 onClose?.();
               }}
+              title={collapsed ? item.label : undefined}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="h-[18px] w-[18px] shrink-0" />
               {!collapsed && <span className="truncate">{item.label}</span>}
             </button>
           );

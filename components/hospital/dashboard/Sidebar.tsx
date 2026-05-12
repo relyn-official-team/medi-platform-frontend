@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -18,9 +19,6 @@ import {
   LogOut,
 } from "lucide-react";
 
-
-
-
 const menu = [
   { label: "예약 현황", href: "/auth/hospital/dashboard", icon: LayoutDashboard },
   { label: "채팅", href: "/auth/hospital/chat", icon: MessageCircle },
@@ -31,36 +29,31 @@ const menu = [
   { label: "알림 기능 설정", href: "/auth/hospital/notifications", icon: Bell },
 ];
 
-
 export default function Sidebar({
   collapsed,
   setCollapsed,
   onClose,
-}: { 
+}: {
   collapsed?: boolean;
   setCollapsed?: (v: boolean) => void;
   onClose?: () => void;
 }) {
-
-    const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch {}
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-
-    onClose?.(); // 모바일 사이드바 닫기
+    onClose?.();
     window.location.href = "/auth/login";
   };
+
   const pathname = usePathname();
 
-  /** PC/모바일 동작 분리 */
   const handleToggle = () => {
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
-      // 🔹 모바일: 접기 → 사이드바 닫기
       onClose?.();
     } else {
-      // 🔹 PC: 접기버튼 → 접힘/펼침
       setCollapsed?.(!collapsed);
     }
   };
@@ -68,37 +61,44 @@ export default function Sidebar({
   return (
     <div
       className={cn(
-        "relative flex h-screen flex-col bg-white border-r border-gray-200 transition-all duration-300",
+        "relative flex h-screen flex-col bg-[#0b1220] transition-all duration-300",
         collapsed ? "w-16" : "w-64"
       )}
     >
-
-      {/* 상단 헤더 영역 */}
-      <div className="flex h-16 items-center justify-between px-3 border-b border-gray-200">
-
+      {/* 상단 로고 영역 */}
+      <div
+        className={cn(
+          "flex h-16 items-center border-b border-white/10",
+          collapsed ? "justify-center px-2" : "justify-between px-4"
+        )}
+      >
         {!collapsed && (
-          <span className="text-base font-semibold text-gray-900 truncate">
-            Hospital CRM
-          </span>
+          <Image
+            src="/relyn_logo.png"
+            alt="RELYN"
+            width={90}
+            height={26}
+            className="h-6 w-auto brightness-0 invert opacity-90"
+            priority
+          />
         )}
 
-        {/* 🔹 PC/모바일 공용 버튼 (모바일에서는 닫기, PC에서는 접기) */}
         <button
           type="button"
           aria-label="toggle sidebar"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/10 hover:text-white"
           onClick={handleToggle}
         >
           {collapsed ? (
-            <PanelLeftOpen className="w-4 h-4" />
+            <PanelLeftOpen className="h-4 w-4" />
           ) : (
-            <PanelLeftClose className="w-4 h-4" />
+            <PanelLeftClose className="h-4 w-4" />
           )}
         </button>
       </div>
 
       {/* 메뉴 리스트 */}
-      <nav className="flex-1 p-3 space-y-1 mt-2">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto p-2 pt-3">
         {menu.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
@@ -108,27 +108,43 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
+                "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 active
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-blue-600 text-white shadow-[0_4px_12px_rgba(37,99,235,0.4)]"
+                  : "text-white/60 hover:bg-white/10 hover:text-white"
               )}
-              onClick={onClose} // 모바일에서 메뉴 클릭 시 자동 닫기
+              onClick={onClose}
+              title={collapsed ? item.label : undefined}
             >
-              <Icon className="w-5 h-5" />
-              {!collapsed && <span className="truncate">{item.label}</span>}
+              {/* 활성 상태 왼쪽 액센트 바 */}
+              {active && !collapsed && (
+                <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-blue-200" />
+              )}
+
+              <Icon
+                className={cn(
+                  "h-[18px] w-[18px] shrink-0 transition-transform duration-150",
+                  active ? "text-white" : "text-white/50 group-hover:text-white",
+                  collapsed && "group-hover:scale-110"
+                )}
+              />
+              {!collapsed && (
+                <span className="truncate">{item.label}</span>
+              )}
             </Link>
           );
         })}
       </nav>
-      {/* ===== Logout (Mobile & PC) ===== */}
-      <div className="border-t border-gray-200 p-3">
+
+      {/* 로그아웃 */}
+      <div className="border-t border-white/10 p-2 pb-3">
         <button
           type="button"
-         onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/50 transition-all hover:bg-white/10 hover:text-white"
+          title={collapsed ? "로그아웃" : undefined}
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="h-[18px] w-[18px] shrink-0" />
           {!collapsed && <span>로그아웃</span>}
         </button>
       </div>

@@ -15,8 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RELYN",
-  description: "RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.",
+  title: {
+    template: "%s | RELYN",
+    default: "RELYN — 해외환자 유치 병원·에이전시 B2B 플랫폼",
+  },
+  description:
+    "RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.",
   metadataBase: new URL("https://relynplatform.com"),
   alternates: {
     canonical: "https://relynplatform.com/",
@@ -28,6 +32,10 @@ export const metadata: Metadata = {
       "th-TH": "https://relynplatform.com/th",
       "x-default": "https://relynplatform.com/",
     },
+  },
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 

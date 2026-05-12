@@ -27,18 +27,17 @@ export default function MobileHeader({
     }
   };
 
-  // 아무 것도 표시할 게 없으면 렌더 자체를 안 해도 됨
   if (!title && !showBack && !right) return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 md:hidden">
+    <header className="fixed top-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-[0_1px_8px_rgba(2,6,23,0.06)] md:hidden">
       <div className="h-12 flex items-center px-4 relative">
         {/* Left */}
-        <div className="absolute left-4 flex items-center">
+        <div className="absolute left-3 flex items-center">
           {showBack && (
             <button
               onClick={handleBack}
-              className="p-1 -ml-1 text-gray-700"
+              className="flex items-center justify-center w-8 h-8 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -48,7 +47,7 @@ export default function MobileHeader({
         {/* Center */}
         <div
           className={clsx(
-            "mx-auto text-sm font-medium text-gray-900 truncate",
+            "mx-auto text-[15px] font-semibold text-gray-900 truncate",
             showBack && "pl-6",
             right && "pr-6"
           )}
@@ -57,7 +56,7 @@ export default function MobileHeader({
         </div>
 
         {/* Right */}
-        <div className="absolute right-4 flex items-center">
+        <div className="absolute right-3 flex items-center">
           {right}
         </div>
       </div>

@@ -52,7 +52,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           fixed lg:static
           inset-y-0 left-0
           z-40
-          bg-white border-r border-gray-200
           transition-transform duration-300
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
@@ -68,17 +67,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* 메인 */}
       <main className="flex-1 flex flex-col overflow-hidden relative">
         {/* 상단 바 */}
-        <div className="h-16 bg-white border-b border-gray-200 flex items-center gap-3 px-4">
+        <div className="h-14 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-[0_1px_8px_rgba(2,6,23,0.06)] flex items-center gap-3 px-4">
           <button
             type="button"
-            className="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
+            className="lg:hidden flex h-9 w-9 items-center justify-center rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="open sidebar"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="w-5 h-5" />
           </button>
 
-          <div className="text-base font-semibold text-gray-900">관리자</div>
+          <div className="text-[15px] font-semibold text-gray-900">관리자 대시보드</div>
         </div>
 
         {/* 콘텐츠 */}

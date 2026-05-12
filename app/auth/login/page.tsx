@@ -6,8 +6,8 @@ import api from "@/lib/api";
 import Image from "next/image";
 import { getToken } from "firebase/messaging";
 import { messaging } from "@/lib/firebase";
+import { Eye, EyeOff, Lock, User } from "lucide-react";
 
-// 백엔드: return res.json({ token, role: user.role });
 interface LoginResponse {
   token: string;
   role: "HOSPITAL" | "AGENCY" | "ADMIN";
@@ -18,6 +18,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,18 +35,11 @@ export default function LoginPage() {
       });
 
       const { role } = res.data;
-      // ✅ JWT는 서버에서 httpOnly 쿠키로 자동 저장됨 → 프론트에서 저장 불필요
-      //    여기서는 role 기반 라우팅만 처리하면 됨
 
-      // TODO: 로그인 성공 후 FCM 토큰 발급 및 등록
-// 🔔 FCM 토큰 발급 & 서버 등록 (실패해도 로그인 영향 없음)
- try {
-        // iOS/Safari 등에서 Notification/권한이 제한적이어도
-        // 로그인 라우팅은 반드시 진행해야 하므로 handleSubmit을 종료(return)하지 않는다.
+      try {
         if (!("Notification" in window)) {
           // skip push registration
         } else {
-
           let permission = Notification.permission;
           if (permission === "default") {
             permission = await Notification.requestPermission();
@@ -55,7 +49,6 @@ export default function LoginPage() {
           } else if (!messaging) {
             // skip
           } else {
-
             const fcmToken = await getToken(messaging, {
               vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
             });
@@ -74,11 +67,10 @@ export default function LoginPage() {
             }
           }
         }
- } catch (e) {
-   console.warn("FCM token registration skipped:", e);
- }
+      } catch (e) {
+        console.warn("FCM token registration skipped:", e);
+      }
 
-      // 역할별 라우팅
       if (role === "HOSPITAL") {
         router.replace("/auth/hospital/dashboard");
       } else if (role === "AGENCY") {
@@ -86,7 +78,6 @@ export default function LoginPage() {
       } else if (role === "ADMIN") {
         router.replace("/auth/admin/charge-requests");
       } else {
-        // 알 수 없는 역할일 경우 로그인 페이지 유지
         setError("지원하지 않는 역할입니다.");
       }
     } catch (err) {
@@ -98,69 +89,128 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-<div className="w-full max-w-md bg-white rounded-lg shadow overflow-hidden">
-  {/* 로고 */}
-{/* Card Header */}
-<div className="flex items-center justify-center h-24">
-  <Image
-    src="/relyn_logo.png"
-    alt="RELYN"
-    width={1020}
-    height={500}
-    className="max-h-20 w-auto object-contain"
-    priority
-  />
-</div>
-<form
-  onSubmit={handleSubmit}
-  className="px-8 pb-8"
->
-    <div className="space-y-4">
-        {error && (
-          <p className="text-sm text-red-600 text-center">{error}</p>
-        )}
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#f0f5ff]">
+      {/* 배경 그라디언트 */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_20%,rgba(59,130,246,0.18),transparent_55%),radial-gradient(ellipse_at_20%_70%,rgba(14,165,233,0.12),transparent_50%)]" />
+        <div
+          className="absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(2,6,23,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(2,6,23,0.06) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+      </div>
 
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
-            계정명
-          </label>
-          <input
-            type="text"
-            autoComplete="username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+      <div className="w-full max-w-sm px-4">
+        {/* 카드 */}
+        <div className="rounded-2xl bg-white/90 shadow-[0_24px_80px_rgba(2,6,23,0.14)] ring-1 ring-white/60 backdrop-blur-sm overflow-hidden">
+
+          {/* 상단 브랜드 영역 */}
+          <div className="bg-[linear-gradient(135deg,#0b1220_0%,#1a2a5e_100%)] px-8 py-8 flex flex-col items-center gap-3">
+            <Image
+              src="/relyn_logo.png"
+              alt="RELYN"
+              width={110}
+              height={32}
+              className="h-8 w-auto brightness-0 invert"
+              priority
+            />
+            <p className="text-[13px] text-blue-200 font-medium tracking-wide">
+              병원·에이전시 운영 플랫폼
+            </p>
+          </div>
+
+          {/* 폼 영역 */}
+          <form onSubmit={handleSubmit} className="px-8 py-7 space-y-5">
+            {error && (
+              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-[13px] font-medium text-red-700">
+                {error}
+              </div>
+            )}
+
+            {/* 계정명 */}
+            <div className="space-y-1.5">
+              <label className="block text-[13px] font-semibold text-gray-700">
+                계정명
+              </label>
+              <div className="relative flex items-center">
+                <User className="absolute left-3 h-4 w-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  autoComplete="username"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="이메일 또는 계정명 입력"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* 비밀번호 */}
+            <div className="space-y-1.5">
+              <label className="block text-[13px] font-semibold text-gray-700">
+                비밀번호
+              </label>
+              <div className="relative flex items-center">
+                <Lock className="absolute left-3 h-4 w-4 text-gray-400 pointer-events-none" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="비밀번호 입력"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-10 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  tabIndex={-1}
+                  aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* 로그인 버튼 */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-11 rounded-xl bg-[#0b1220] text-sm font-semibold text-white shadow-[0_8px_24px_rgba(2,6,23,0.18)] transition-all hover:bg-[#0b1220]/90 hover:shadow-[0_12px_30px_rgba(2,6,23,0.22)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="inline-flex items-center gap-2">
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  로그인 중...
+                </span>
+              ) : (
+                "로그인"
+              )}
+            </button>
+
+            {/* 안내 */}
+            <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 text-[12px] text-blue-700 leading-relaxed">
+              ※ 회원가입은 담당자와 소통을 진행해주세요.
+            </div>
+          </form>
         </div>
 
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
-            비밀번호
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full h-10 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? "로그인 중..." : "로그인"}
-        </button>
-
-        <div className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-900">
-          ※ 회원가입은 담당자와 소통을 진행해주세요. </div>
-        
-        </div>
-      </form>
+        {/* 하단 저작권 */}
+        <p className="mt-5 text-center text-[11px] text-gray-400">
+          © {new Date().getFullYear()} RELYN. All rights reserved.
+        </p>
       </div>
     </div>
   );

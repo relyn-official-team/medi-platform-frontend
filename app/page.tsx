@@ -1,55 +1,59 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import HomePageClient from '@/components/pages/HomePageClient';
 import { getLandingContent } from '@/lib/landing-content';
+import { getLandingMetadata } from '@/lib/landing-metadata';
 
 export const metadata: Metadata = {
-  title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
-  description:
-    'RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.',
-
+  ...getLandingMetadata('ko'),
   other: {
     'facebook-domain-verification': 'psqn7o0pxyhbx2y3yd26db36r77ufr',
   },
-  openGraph: {
-    type: 'website',
-    url: 'https://relynplatform.com/',
-    siteName: 'RELYN',
-    title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
-    description:
-      'RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.',
-    locale: 'ko_KR',
-    images: [
-      {
-        url: 'https://relynplatform.com/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'RELYN',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'RELYN | 해외환자 유치 병원·에이전시 연결 플랫폼',
-    description:
-      'RELYN은 해외환자 유치를 원하는 한국 병원과 글로벌 에이전시를 연결하는 B2B 플랫폼입니다. 계약 표준화, 정산 자동화, 데이터 통합 관리까지 해외환자 유치에 필요한 모든 운영 구조를 하나의 시스템으로 제공합니다.',
-    images: ['https://relynplatform.com/og-image.png'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1,
-    },
-  },
 };
+
+const SITE_URL = 'https://relynplatform.com';
 
 export default function Page() {
   const t = getLandingContent('ko');
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'RELYN',
+    alternateName: ['렐린', 'Relyn Platform'],
+    url: `${SITE_URL}/`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${SITE_URL}/relyn_logo.png`,
+      width: 200,
+      height: 60,
+    },
+    sameAs: [
+      'https://pf.kakao.com/_XxgsAX',
+      'https://www.instagram.com/relyn.official.team/',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'relyn.official.team@gmail.com',
+      availableLanguage: ['Korean', 'English'],
+    },
+  };
+
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'RELYN',
+    url: `${SITE_URL}/`,
+    inLanguage: 'ko-KR',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/auth/agency/hospitalslist?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -78,54 +82,50 @@ export default function Page() {
     provider: {
       '@type': 'Organization',
       name: 'RELYN',
-      url: 'https://relynplatform.com',
+      url: SITE_URL,
     },
     areaServed: 'Worldwide',
     audience: [
       { '@type': 'Audience', audienceType: '병원' },
       { '@type': 'Audience', audienceType: '에이전시' },
     ],
-  };
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'RELYN',
-    alternateName: '렐린',
-    url: 'https://relynplatform.com/',
-    logo: 'https://relynplatform.com/relyn_logo.png',
-    sameAs: [
-      'https://pf.kakao.com/_XxgsAX',
-      'https://www.instagram.com/relyn.official.team/',
-    ],
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'KRW',
+      description: '무료로 시작하는 해외환자 유치 플랫폼',
+    },
   };
 
   return (
     <>
-      <Script
-        id="relyn-organization-jsonld"
+      {/* JSON-LD: 서버 렌더링으로 크롤러가 즉시 읽도록 일반 script 태그 사용 */}
+      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
-      <Script
-        id="relyn-faq-jsonld"
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <Script
-        id="relyn-service-jsonld"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
 
       <HomePageClient />
-      
-      {/* SEO용 내부 링크 (숨김 처리) */}
-      <div style={{ display: 'none' }}>
-        <a href="/en">English</a>
-        <a href="/ja">Japanese</a>
-        <a href="/zh">Chinese</a>
-      </div>
+
+      {/* 다국어 페이지 내부 링크 — 시각적으로 숨기되 크롤러에는 노출 */}
+      <nav aria-label="언어 선택" className="sr-only">
+        <a href="/en">English version</a>
+        <a href="/ja">日本語版</a>
+        <a href="/zh">中文版</a>
+        <a href="/th">ภาษาไทย</a>
+      </nav>
     </>
   );
 }

@@ -530,7 +530,7 @@ export default function HomePageClient({
       </div>
 
       <Dialog open={typeSelectOpen} onOpenChange={(v) => setTypeSelectOpen(v)}>
-        <DialogContent className="max-w-[520px] !border-0 !bg-transparent !p-0 !shadow-none">
+        <DialogContent hideControls className="max-w-[520px] !border-0 !bg-transparent !p-0 !shadow-none">
           <DialogHeader className="sr-only">
             <DialogTitle>{t.typeSelectTitle}</DialogTitle>
           </DialogHeader>
@@ -595,7 +595,7 @@ export default function HomePageClient({
       </Dialog>
 
       <Dialog open={formOpen} onOpenChange={(v) => setFormOpen(v)}>
-        <DialogContent className="max-w-[520px] !border-0 !bg-transparent !p-0 !shadow-none">
+        <DialogContent hideControls className="max-w-[520px] !border-0 !bg-transparent !p-0 !shadow-none">
           <DialogHeader className="sr-only">
             <DialogTitle>
               {inquiryType === 'HOSPITAL' ? t.formTitleHospital : t.formTitleAgency}

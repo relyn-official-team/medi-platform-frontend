@@ -1,13 +1,46 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import HomePageClient from '@/components/pages/HomePageClient';
 import { getLandingMetadata } from '@/lib/landing-metadata';
 import { getLandingContent } from '@/lib/landing-content';
 
 export const metadata: Metadata = getLandingMetadata('th');
 
+const SITE_URL = 'https://relynplatform.com';
+
 export default function ThPage() {
   const t = getLandingContent('th');
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'RELYN',
+    alternateName: 'เรลิน',
+    url: `${SITE_URL}/th`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${SITE_URL}/relyn_logo.png`,
+      width: 200,
+      height: 60,
+    },
+    sameAs: [
+      'https://pf.kakao.com/_XxgsAX',
+      'https://www.instagram.com/relyn.official.team/',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'relyn.official.team@gmail.com',
+      availableLanguage: ['Korean', 'Thai'],
+    },
+  };
+
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'RELYN',
+    url: `${SITE_URL}/th`,
+    inLanguage: 'th-TH',
+  };
 
   const faqJsonLd = {
     '@context': 'https://schema.org',
@@ -36,7 +69,7 @@ export default function ThPage() {
     provider: {
       '@type': 'Organization',
       name: 'RELYN',
-      url: 'https://relynplatform.com',
+      url: SITE_URL,
     },
     areaServed: 'Worldwide',
     audience: [
@@ -45,33 +78,21 @@ export default function ThPage() {
     ],
   };
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'RELYN',
-    alternateName: 'เรลิน',
-    url: 'https://relynplatform.com/th',
-    logo: 'https://relynplatform.com/relyn_logo.png',
-    sameAs: [
-      'https://pf.kakao.com/_XxgsAX',
-      'https://www.instagram.com/relyn.official.team/',
-    ],
-  };
-
   return (
     <>
-      <Script
-        id="relyn-organization-jsonld-th"
+      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
-      <Script
-        id="relyn-faq-jsonld-th"
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <Script
-        id="relyn-service-jsonld-th"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />

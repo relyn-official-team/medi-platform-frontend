@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import api from "@/lib/api";
@@ -38,6 +38,21 @@ export default function AgencyHospitalDetailPage() {
   const [data, setData] = useState<AgencyHospitalDetail | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("전체");
   const [priceSearch, setPriceSearch] = useState("");
+
+  // 카테고리 가로 드래그 스크롤 (PC)
+  const catScrollRef = useRef<HTMLDivElement>(null);
+  const catDrag = useRef({ active: false, startX: 0, scrollLeft: 0 });
+
+  const onCatMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = catScrollRef.current;
+    if (!el) return;
+    catDrag.current = { active: true, startX: e.clientX, scrollLeft: el.scrollLeft };
+  };
+  const onCatMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!catDrag.current.active || !catScrollRef.current) return;
+    catScrollRef.current.scrollLeft = catDrag.current.scrollLeft - (e.clientX - catDrag.current.startX);
+  };
+  const onCatDragEnd = () => { catDrag.current.active = false; };
 
   useEffect(() => {
     if (!id) return;
@@ -343,94 +358,120 @@ const reservationId = res.data.reservationId;
       전체 보기</button>
    </DialogTrigger>
 
-  <DialogContent className="max-w-md sm:max-w-lg max-h-[80vh]">
-    <DialogHeader>
-      <div className="flex items-center justify-between gap-3 pr-6">
-        <DialogTitle>시술 및 가격</DialogTitle>
-        <div className="relative w-28 sm:w-36">
-          <input
-            type="text"
-            value={priceSearch}
-            onChange={(e) => setPriceSearch(e.target.value)}
-            placeholder="검색"
-            className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-xs outline-none"
-          />
-        </div>
+  <DialogContent className="!flex max-h-[90svh] max-w-md flex-col gap-0 p-0 sm:max-w-lg sm:max-h-[85vh]">
+    {/* 헤더 영역 (고정) */}
+    <div className="shrink-0 border-b border-gray-100 px-5 pb-4 pt-11 sm:pt-5">
+      <div className="flex items-center justify-between gap-3 pr-8">
+        <DialogTitle className="text-base font-semibold">시술 및 가격</DialogTitle>
+        <input
+          type="text"
+          value={priceSearch}
+          onChange={(e) => setPriceSearch(e.target.value)}
+          placeholder="시술명 검색"
+          className="w-28 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs outline-none transition focus:border-blue-300 focus:bg-white focus:ring-1 focus:ring-blue-100 sm:w-36"
+        />
       </div>
-    </DialogHeader>
 
-    <div className="mt-2 flex flex-wrap gap-2">
-      <button
-        type="button"
-        onClick={() => setSelectedCategory("전체")}
-        className={`rounded-md border px-3 py-1.5 text-xs font-medium ${
-          selectedCategory === "전체"
-            ? "bg-blue-600 text-white border-blue-600"
-            : "bg-white text-blue-600 border-blue-200"
-        }`}
-      >
-        전체
-      </button>
-
-      {pricingCategories.map((category) => (
-        <button
-          key={category}
-          type="button"
-          onClick={() => setSelectedCategory(category)}
-          className={`rounded-md border px-3 py-1.5 text-xs font-medium ${
-            selectedCategory === category
-              ? "bg-blue-600 text-white border-blue-600"
-              : "bg-white text-blue-600 border-blue-200"
-          }`}
+      {/* 카테고리 탭 — 가로 스크롤 */}
+      {pricingCategories.length > 0 && (
+        <div
+          ref={catScrollRef}
+          className="mt-3 -mx-5 flex cursor-grab select-none gap-1.5 pb-2 pt-0.5 active:cursor-grabbing"
+          style={{
+            overflowX: "auto",
+            overflowY: "hidden",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+          }}
+          onMouseDown={onCatMouseDown}
+          onMouseMove={onCatMouseMove}
+          onMouseUp={onCatDragEnd}
+          onMouseLeave={onCatDragEnd}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
         >
-          {category}
-        </button>
-      ))}
+          <button
+            type="button"
+            onClick={() => setSelectedCategory("전체")}
+            className={`shrink-0 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+              selectedCategory === "전체"
+                ? "border-blue-600 bg-blue-600 text-white"
+                : "border-gray-200 bg-white text-gray-600 hover:border-blue-200 hover:text-blue-600"
+            }`}
+          >
+            전체
+          </button>
+
+          {pricingCategories.map((category) => (
+            <button
+              key={category}
+              type="button"
+              onClick={() => setSelectedCategory(category)}
+              className={`shrink-0 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+                selectedCategory === category
+                  ? "border-blue-600 bg-blue-600 text-white"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-blue-200 hover:text-blue-600"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+
+          {/* 우측 여백 (마지막 버튼 잘림 방지) */}
+          <span className="shrink-0 w-1" aria-hidden="true" />
+        </div>
+      )}
     </div>
 
-    <div className="mt-3 space-y-3 overflow-y-auto max-h-[calc(80vh-140px)]">
-      {filteredPricingItems.map((item) => (
-        <div
-          key={item.id}
-          className="flex items-start justify-between gap-3 border-b pb-2"
-        >
-          <div className="min-w-0">
-            <div className="text-sm font-medium text-gray-900">
-              {item.procedureName}
-            </div>
-
-            {item.commissionRate != null && (
-              <div className="mt-0.5 text-xs font-medium text-blue-700">
-                수수료율 {item.commissionRate}%
-              </div>
-            )}
-
-            {item.note && (
-              <div className="text-xs text-gray-500 mt-0.5">
-                {item.note}
-              </div>
-            )}
-          </div>
-
-          <div className="text-right whitespace-nowrap">
-            {item.originalPrice != null && (
-              <div className="text-xs text-gray-400 line-through">
-                {item.originalPrice.toLocaleString()}원
-              </div>
-            )}
-            <div className="text-sm text-blue-700 font-medium">
-              {item.discountPrice != null
-                ? `${item.discountPrice.toLocaleString()}원`
-                : "-"}
-            </div>
-          </div>
-        </div>
-      ))}
-
-     {filteredPricingItems.length === 0 && (
-        <div className="py-8 text-center text-sm text-gray-400">
+    {/* 리스트 영역 (남은 공간 전부 차지 + 스크롤) */}
+    <div className="min-h-0 flex-1 overflow-y-auto px-5 py-3">
+      {filteredPricingItems.length === 0 ? (
+        <div className="py-12 text-center text-sm text-gray-400">
           검색 결과가 없습니다.
         </div>
+      ) : (
+        <ul className="divide-y divide-gray-100">
+          {filteredPricingItems.map((item) => (
+            <li
+              key={item.id}
+              className="flex items-start justify-between gap-3 py-3"
+            >
+              <div className="min-w-0">
+                <div className="text-[13px] font-medium text-gray-900">
+                  {item.procedureName}
+                </div>
+
+                {item.commissionRate != null && (
+                  <span className="mt-1 inline-flex items-center rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                    수수료율 {item.commissionRate}%
+                  </span>
+                )}
+
+                {item.note && (
+                  <div className="mt-0.5 text-[11px] text-gray-400">
+                    {item.note}
+                  </div>
+                )}
+              </div>
+
+              <div className="shrink-0 text-right">
+                {item.originalPrice != null && (
+                  <div className="text-[11px] text-gray-400 line-through">
+                    {item.originalPrice.toLocaleString()}원
+                  </div>
+                )}
+                <div className="text-[13px] font-semibold text-blue-700">
+                  {item.discountPrice != null
+                    ? `${item.discountPrice.toLocaleString()}원`
+                    : "-"}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   </DialogContent>
@@ -449,9 +490,9 @@ const reservationId = res.data.reservationId;
   <div className="text-gray-800">
     <div>{item.procedureName}</div>
     {item.commissionRate != null && (
-      <div className="mt-0.5 text-xs text-blue-700 font-medium">
+      <span className="mt-1 inline-flex items-center rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">
         수수료율 {item.commissionRate}%
-      </div>
+      </span>
     )}
   </div>
 
