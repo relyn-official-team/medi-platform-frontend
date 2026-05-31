@@ -214,7 +214,7 @@ export default function CustomerInquiryClient({
   };
 
   return (
-    <div ref={pageRef} className={`customer-inquiry-page ${notoSansKR.className}`}>
+    <div ref={pageRef} className={`customer-inquiry-page locale-${locale} ${notoSansKR.className}`}>
       {/* ── LINE Tag Base Code (이 페이지에서만 로드) ── */}
       <Script id="line-tag-base" strategy="afterInteractive">
         {`
