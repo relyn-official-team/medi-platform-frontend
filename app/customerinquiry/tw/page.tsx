@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { landingCopy } from "../copy";
 import CustomerInquiryClient from "../CustomerInquiryClient";
 
-const ja = landingCopy.ja!;
+const tw = landingCopy.tw!;
 
 export const metadata: Metadata = {
-  title: ja.meta.title,
-  description: ja.meta.description,
+  title: tw.meta.title,
+  description: tw.meta.description,
   alternates: {
-    canonical: "https://www.relynplatform.com/customerinquiry/ja",
+    canonical: "https://www.relynplatform.com/customerinquiry/tw",
     languages: {
       "ko-KR": "https://www.relynplatform.com/customerinquiry",
       "ja-JP": "https://www.relynplatform.com/customerinquiry/ja",
@@ -19,6 +19,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CustomerInquiryJaPage() {
-  return <CustomerInquiryClient locale="ja" />;
+export default function CustomerInquiryTwPage() {
+  return <CustomerInquiryClient locale="tw" />;
 }

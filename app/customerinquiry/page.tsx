@@ -13,8 +13,8 @@ export const metadata: Metadata = {
       // 향후 국가별 페이지 추가 시 아래 매핑을 확장하세요.
       "ko-KR": "https://www.relynplatform.com/customerinquiry",
       "ja-JP": "https://www.relynplatform.com/customerinquiry/ja",
-      // "zh-TW": "https://www.relynplatform.com/customerinquiry/tw",
-      // "zh-HK": "https://www.relynplatform.com/customerinquiry/hk",
+      "zh-TW": "https://www.relynplatform.com/customerinquiry/tw",
+      "zh-HK": "https://www.relynplatform.com/customerinquiry/hk",
       "x-default": "https://www.relynplatform.com/customerinquiry",
     },
   },

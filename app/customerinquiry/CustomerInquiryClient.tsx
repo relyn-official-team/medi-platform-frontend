@@ -5,35 +5,46 @@ import Image from "next/image";
 import Script from "next/script";
 import { Noto_Sans_KR } from "next/font/google";
 import { landingCopy, type Locale, type Line } from "./copy";
+import { GA_MEASUREMENT_ID, sendGaEvent } from "./ga4";
 import "./customerinquiry.css";
 
 // ── 트래킹 태그 ID (이 페이지 전용) ──
-const LINE_TAG_ID = "c14e08c0-38d4-4fee-9537-62c085fb6ea9";
+// LINE Tag ID는 locale별로 분리 (ko/ja 공통, tw/hk 전용)
+const lineTagIdByLocale: Record<Locale, string> = {
+  ko: "c14e08c0-38d4-4fee-9537-62c085fb6ea9",
+  ja: "c14e08c0-38d4-4fee-9537-62c085fb6ea9",
+  tw: "442a2877-116e-4dde-9aba-debd5ae20187",
+  hk: "e30eb299-312e-437d-967a-d7b5c5721632",
+};
 const META_PIXEL_ID = "4193423557588136";
 
-// ── locale별 전환 이벤트 값 (한국어 기존값 유지, 일본어만 분리) ──
+// ── locale별 LINE Tag 전환 type ──
+// 주의: tw/hk type 값(taiwan/hongkong)은 임시이며, 추후 광고계정 이벤트 정의에 맞춰 변경 가능.
 const lineConversionTypeByLocale: Record<Locale, string> = {
   ko: "koreadefault",
   ja: "japan",
-  tw: "koreadefault",
-  hk: "koreadefault",
+  tw: "taiwan",
+  hk: "hongkong",
 };
 const whatsappEventByLocale: Record<Locale, string> = {
   ko: "ChatStart",
   ja: "JPWA_ChatStart",
-  tw: "ChatStart",
-  hk: "ChatStart",
+  tw: "TWWA_ChatStart",
+  hk: "HKWA_ChatStart",
 };
-// LINE 클릭 시 추가로 보낼 Meta Pixel 이벤트 (일본어 페이지에만 적용)
+// LINE 클릭 시 추가로 보낼 Meta Pixel 이벤트 (ko 제외)
 const lineMetaEventByLocale: Partial<Record<Locale, string>> = {
   ja: "JPLINE_ChatStart",
+  tw: "TWLINE_ChatStart",
+  hk: "HKLINE_ChatStart",
 };
-// 문의 채널 링크 (현재 전 locale 동일, 추후 국가별 분리 가능)
+// 문의 채널 링크 (WhatsApp은 전 locale 공통, LINE은 tw/hk만 별도)
+const COMMON_WHATSAPP_URL = "https://wa.me/message/B6Y5CZ5WGIHXP1";
 const inquiryUrlsByLocale: Record<Locale, { line: string; whatsapp: string }> = {
-  ko: { line: "https://lin.ee/VlIklsv", whatsapp: "https://wa.me/message/B6Y5CZ5WGIHXP1" },
-  ja: { line: "https://lin.ee/VlIklsv", whatsapp: "https://wa.me/message/B6Y5CZ5WGIHXP1" },
-  tw: { line: "https://lin.ee/VlIklsv", whatsapp: "https://wa.me/message/B6Y5CZ5WGIHXP1" },
-  hk: { line: "https://lin.ee/VlIklsv", whatsapp: "https://wa.me/message/B6Y5CZ5WGIHXP1" },
+  ko: { line: "https://lin.ee/VlIklsv", whatsapp: COMMON_WHATSAPP_URL },
+  ja: { line: "https://lin.ee/VlIklsv", whatsapp: COMMON_WHATSAPP_URL },
+  tw: { line: "https://lin.ee/Z7o6sqt", whatsapp: COMMON_WHATSAPP_URL },
+  hk: { line: "https://lin.ee/O9uFHi7", whatsapp: COMMON_WHATSAPP_URL },
 };
 
 declare global {
@@ -87,7 +98,11 @@ export default function CustomerInquiryClient({
 }) {
   const c = landingCopy[locale] ?? landingCopy.ko!;
 
+  // GA4 집중 분석 대상 (ko 제외)
+  const isTrackedLanding = locale === "ja" || locale === "tw" || locale === "hk";
+
   // locale별 전환 이벤트/링크 값
+  const lineTagId = lineTagIdByLocale[locale] ?? lineTagIdByLocale.ko;
   const lineConversionType = lineConversionTypeByLocale[locale] ?? "koreadefault";
   const whatsappEventName = whatsappEventByLocale[locale] ?? "ChatStart";
   const lineMetaEventName = lineMetaEventByLocale[locale];
@@ -181,6 +196,48 @@ export default function CustomerInquiryClient({
     return () => io.disconnect();
   }, []);
 
+  // ── GA4 랜딩 page_view (ja/tw/hk 전용, send_page_view:false 대체) ──
+  useEffect(() => {
+    if (!isTrackedLanding) return;
+    if (typeof window === "undefined") return;
+    sendGaEvent("landing_page_view", {
+      landing_locale: locale,
+      landing_path: window.location.pathname,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+  }, [locale, isTrackedLanding]);
+
+  // ── GA4 스크롤 구간 이벤트 (25/50/75/90, 각 1회) ──
+  useEffect(() => {
+    if (!isTrackedLanding) return;
+    if (typeof window === "undefined") return;
+    const fired = new Set<number>();
+    const thresholds = [25, 50, 75, 90];
+    const getScrollPercent = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return 100;
+      return Math.min(100, Math.round((scrollTop / docHeight) * 100));
+    };
+    const handleScroll = () => {
+      const percent = getScrollPercent();
+      thresholds.forEach((threshold) => {
+        if (percent >= threshold && !fired.has(threshold)) {
+          fired.add(threshold);
+          sendGaEvent(`landing_scroll_${threshold}`, {
+            landing_locale: locale,
+            landing_path: window.location.pathname,
+            percent_scrolled: threshold,
+          });
+        }
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [locale, isTrackedLanding]);
+
   // ── 앵커/CTA 스무스 스크롤 ──
   const scrollToId = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
@@ -195,7 +252,7 @@ export default function CustomerInquiryClient({
   // ── LINE 문의 버튼 클릭: LINE Tag 전환 이벤트 (+ 일본어는 Meta Pixel 추가) ──
   const handleLineClick = () => {
     if (typeof window !== "undefined" && typeof window._lt === "function") {
-      window._lt("send", "cv", { type: lineConversionType }, [LINE_TAG_ID]);
+      window._lt("send", "cv", { type: lineConversionType }, [lineTagId]);
     }
     if (
       lineMetaEventName &&
@@ -204,6 +261,14 @@ export default function CustomerInquiryClient({
     ) {
       window.fbq("trackCustom", lineMetaEventName);
     }
+    // GA4 (ja/tw/hk 전용, 기존 LINE Tag/Meta 이벤트와 별개)
+    if (isTrackedLanding && typeof window !== "undefined") {
+      sendGaEvent("landing_line_click", {
+        landing_locale: locale,
+        landing_path: window.location.pathname,
+        channel: "line",
+      });
+    }
   };
 
   // ── WhatsApp 문의 버튼 클릭: Meta Pixel custom 이벤트 ──
@@ -211,12 +276,20 @@ export default function CustomerInquiryClient({
     if (typeof window !== "undefined" && typeof window.fbq === "function") {
       window.fbq("trackCustom", whatsappEventName);
     }
+    // GA4 (ja/tw/hk 전용)
+    if (isTrackedLanding && typeof window !== "undefined") {
+      sendGaEvent("landing_whatsapp_click", {
+        landing_locale: locale,
+        landing_path: window.location.pathname,
+        channel: "whatsapp",
+      });
+    }
   };
 
   return (
     <div ref={pageRef} className={`customer-inquiry-page locale-${locale} ${notoSansKR.className}`}>
       {/* ── LINE Tag Base Code (이 페이지에서만 로드) ── */}
-      <Script id="line-tag-base" strategy="afterInteractive">
+      <Script id={`line-tag-base-${locale}`} strategy="afterInteractive">
         {`
 (function(g,d,o){
   g._ltq=g._ltq||[];
@@ -228,9 +301,9 @@ export default function CustomerInquiryClient({
 })(window, document);
 _lt('init', {
   customerType: 'account',
-  tagId: '${LINE_TAG_ID}'
+  tagId: '${lineTagId}'
 });
-_lt('send', 'pv', ['${LINE_TAG_ID}']);
+_lt('send', 'pv', ['${lineTagId}']);
 `}
       </Script>
 
@@ -248,6 +321,23 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 fbq('init', '${META_PIXEL_ID}');
 fbq('track', 'PageView');
 `}
+      </Script>
+
+      {/* ── GA4 Google tag (base, send_page_view:false → 랜딩 전용 이벤트로 대체) ── */}
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        strategy="afterInteractive"
+      />
+      <Script id="ga4-customerinquiry-base" strategy="afterInteractive">
+        {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', '${GA_MEASUREMENT_ID}', {
+      send_page_view: false
+    });
+  `}
       </Script>
 
       <div className="cur" ref={curRef} aria-hidden />
@@ -546,7 +636,8 @@ fbq('track', 'PageView');
             </div>
             <div className="contact-card reveal">
               <div className="contact-card-top">
-                <h3>{c.form.contact.title}</h3>                <p>{c.form.contact.desc}</p>
+                <h3>{c.form.contact.title}</h3>
+                <p>{c.form.contact.desc}</p>
               </div>
               <div className="contact-card-body">
                 <a
