@@ -5,7 +5,7 @@ import Image from "next/image";
 import Script from "next/script";
 import { Noto_Sans_KR } from "next/font/google";
 import { landingCopy, type Locale, type Line } from "./copy";
-import { GA_MEASUREMENT_ID, sendGaEvent } from "./ga4";
+import { sendGaEvent } from "./ga4";
 import "./customerinquiry.css";
 
 // ── 트래킹 태그 ID (이 페이지 전용) ──
@@ -323,22 +323,8 @@ fbq('track', 'PageView');
 `}
       </Script>
 
-      {/* ── GA4 Google tag (base, send_page_view:false → 랜딩 전용 이벤트로 대체) ── */}
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        strategy="afterInteractive"
-      />
-      <Script id="ga4-customerinquiry-base" strategy="afterInteractive">
-        {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', '${GA_MEASUREMENT_ID}', {
-      send_page_view: false
-    });
-  `}
-      </Script>
+      {/* GA4 base tag는 사이트 공통 layout(app/layout.tsx)에서 1회 로드.
+          여기서는 랜딩 전용 커스텀 이벤트(landing_*)만 발송한다. */}
 
       <div className="cur" ref={curRef} aria-hidden />
       <div className="cur-r" ref={curRingRef} aria-hidden />

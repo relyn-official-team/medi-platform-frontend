@@ -74,6 +74,21 @@ export default function RootLayout({
           gtag('config', 'AW-17991152486');
         `}
       </Script>
+
+      {/* GA4 (Google Analytics) — 사이트 공통 1회 로드. / 포함 전 페이지에서 감지됨 */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-9CR46NPFK7"
+        strategy="afterInteractive"
+      />
+      <Script id="ga4-base" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          window.gtag = window.gtag || gtag;
+          gtag('js', new Date());
+          gtag('config', 'G-9CR46NPFK7');
+        `}
+      </Script>
       </body>
     </html>
   );
