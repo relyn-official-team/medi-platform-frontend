@@ -47,6 +47,50 @@ const inquiryUrlsByLocale: Record<Locale, { line: string; whatsapp: string }> = 
   hk: { line: "https://lin.ee/O9uFHi7", whatsapp: COMMON_WHATSAPP_URL },
 };
 
+// ── SEO: HTML lang (접근성/보조기술용) ──
+const htmlLangByLocale: Record<Locale, string> = {
+  ko: "ko-KR",
+  ja: "ja-JP",
+  tw: "zh-TW",
+  hk: "zh-HK",
+};
+
+// ── hero 모델컷 alt (locale별) ──
+const heroModelAltByLocale: Record<Locale, string> = {
+  ko: "customer inquiry hero model",
+  ja: "韓国美容医療の無料相談イメージ",
+  tw: "韓國醫美免費諮詢示意圖",
+  hk: "韓國醫美免費查詢示意圖",
+};
+
+// ── 구조화 데이터(JSON-LD): Service + Organization (ja/tw/hk 전용) ──
+const SERVICE_TYPE = "Korean beauty clinic consultation and booking support";
+const jsonLdByLocale: Partial<
+  Record<
+    Locale,
+    { name: string; areaServed: string; url: string; availableLanguage: string[] }
+  >
+> = {
+  ja: {
+    name: "韓国美容医療 無料相談・予約サポート",
+    areaServed: "Japan",
+    url: "https://www.relynplatform.com/customerinquiry/ja",
+    availableLanguage: ["ja", "ko"],
+  },
+  tw: {
+    name: "韓國醫美療程免費諮詢與預約協助",
+    areaServed: "Taiwan",
+    url: "https://www.relynplatform.com/customerinquiry/tw",
+    availableLanguage: ["zh-TW", "ko"],
+  },
+  hk: {
+    name: "韓國醫美療程免費查詢與預約支援",
+    areaServed: "Hong Kong",
+    url: "https://www.relynplatform.com/customerinquiry/hk",
+    availableLanguage: ["zh-HK", "ko"],
+  },
+};
+
 declare global {
   interface Window {
     _lt?: (...args: unknown[]) => void;
@@ -107,6 +151,25 @@ export default function CustomerInquiryClient({
   const whatsappEventName = whatsappEventByLocale[locale] ?? "ChatStart";
   const lineMetaEventName = lineMetaEventByLocale[locale];
   const inquiryUrls = inquiryUrlsByLocale[locale] ?? inquiryUrlsByLocale.ko;
+
+  // JSON-LD (ja/tw/hk 전용)
+  const jsonLdData = jsonLdByLocale[locale];
+  const serviceJsonLd = jsonLdData
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        name: jsonLdData.name,
+        provider: {
+          "@type": "Organization",
+          name: "RELYN",
+          url: "https://www.relynplatform.com/",
+        },
+        areaServed: jsonLdData.areaServed,
+        serviceType: SERVICE_TYPE,
+        url: jsonLdData.url,
+        availableLanguage: jsonLdData.availableLanguage,
+      }
+    : null;
 
   const pageRef = useRef<HTMLDivElement>(null);
   const curRef = useRef<HTMLDivElement>(null);
@@ -287,7 +350,11 @@ export default function CustomerInquiryClient({
   };
 
   return (
-    <div ref={pageRef} className={`customer-inquiry-page locale-${locale} ${notoSansKR.className}`}>
+    <div
+      ref={pageRef}
+      lang={htmlLangByLocale[locale]}
+      className={`customer-inquiry-page locale-${locale} ${notoSansKR.className}`}
+    >
       {/* ── LINE Tag Base Code (이 페이지에서만 로드) ── */}
       <Script id={`line-tag-base-${locale}`} strategy="afterInteractive">
         {`
@@ -325,6 +392,16 @@ fbq('track', 'PageView');
 
       {/* GA4 base tag는 사이트 공통 layout(app/layout.tsx)에서 1회 로드.
           여기서는 랜딩 전용 커스텀 이벤트(landing_*)만 발송한다. */}
+
+      {/* 구조화 데이터 JSON-LD (ja/tw/hk 전용, locale별 1회) */}
+      {serviceJsonLd && (
+        <Script
+          id={`customer-inquiry-jsonld-${locale}`}
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+        />
+      )}
 
       <div className="cur" ref={curRef} aria-hidden />
       <div className="cur-r" ref={curRingRef} aria-hidden />
@@ -366,7 +443,7 @@ fbq('track', 'PageView');
           <div className="hero-visual">
             <Image
               src="/landingsource/customerinquiry_Acut_down.png"
-              alt="customer inquiry hero model"
+              alt={heroModelAltByLocale[locale]}
               width={560}
               height={700}
               className="hero-model"

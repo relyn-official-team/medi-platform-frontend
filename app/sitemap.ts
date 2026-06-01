@@ -11,6 +11,14 @@ const HREFLANG = {
   'x-default': `${SITE_URL}/`,
 };
 
+// /customerinquiry 다국어 랜딩 (ja/tw/hk만 색인 대상, www 도메인 기준)
+const CI_URL = 'https://www.relynplatform.com';
+const CI_HREFLANG = {
+  'ja-JP': `${CI_URL}/customerinquiry/ja`,
+  'zh-TW': `${CI_URL}/customerinquiry/tw`,
+  'zh-HK': `${CI_URL}/customerinquiry/hk`,
+};
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
@@ -49,6 +57,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.9,
       alternates: { languages: HREFLANG },
+    },
+    {
+      url: `${CI_URL}/customerinquiry/ja`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: { languages: CI_HREFLANG },
+    },
+    {
+      url: `${CI_URL}/customerinquiry/tw`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: { languages: CI_HREFLANG },
+    },
+    {
+      url: `${CI_URL}/customerinquiry/hk`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: { languages: CI_HREFLANG },
     },
   ];
 }
