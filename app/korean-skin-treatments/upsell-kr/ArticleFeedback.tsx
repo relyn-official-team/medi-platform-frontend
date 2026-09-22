@@ -1,31 +1,12 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
-import { Heart, MessageCircle, X } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CONTENT_INQUIRY_MAX_LENGTH, CONTENT_INQUIRY_RECIPIENT } from "@/lib/content-inquiry";
-
-const STORAGE_KEY = "relyn:dermatology-upselling:liked:v1";
-const UPDATE_EVENT = "relyn-upsell-reaction";
-let memoryLiked = false;
-
-function subscribe(notify: () => void) {
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === STORAGE_KEY || event.key === null) notify();
-  };
-  window.addEventListener("storage", onStorage);
-  window.addEventListener(UPDATE_EVENT, notify);
-  return () => {
-    window.removeEventListener("storage", onStorage);
-    window.removeEventListener(UPDATE_EVENT, notify);
-  };
-}
-function readLiked() {
-  try { return localStorage.getItem(STORAGE_KEY) === "true"; }
-  catch { return memoryLiked; }
-}
-const serverSnapshot = () => false;
+import { getArticleReactionPage } from "@/lib/article-reaction-pages";
+import ArticleLikeButton from "./ArticleLikeButton";
 
 const feedbackCopy = {
   ko: {
@@ -60,7 +41,7 @@ const feedbackCopy = {
 export default function ArticleFeedback({ locale = "ko" }: { locale?: keyof typeof feedbackCopy }) {
   const copy = feedbackCopy[locale];
   const pagePath = usePathname();
-  const liked = useSyncExternalStore(subscribe, readLiked, serverSnapshot);
+  const reactionPage = getArticleReactionPage(pagePath);
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -109,18 +90,9 @@ export default function ArticleFeedback({ locale = "ko" }: { locale?: keyof type
     }
   }
 
-  function toggleLike() {
-    memoryLiked = !liked;
-    try { localStorage.setItem(STORAGE_KEY, String(memoryLiked)); } catch { /* Keep the in-page reaction when storage is unavailable. */ }
-    window.dispatchEvent(new Event(UPDATE_EVENT));
-  }
-
   return <Dialog open={open} onOpenChange={changeOpen}>
     <div className="article-actions" role="group" aria-label={copy.reactions}>
-      <button className="like-button" type="button" aria-pressed={liked} aria-label={liked ? copy.unlike : copy.like} onClick={toggleLike}>
-        <Heart size={22} aria-hidden="true" />
-        <span aria-live="polite" aria-atomic="true">{liked ? 1 : 0}</span>
-      </button>
+      {reactionPage && <ArticleLikeButton key={reactionPage} page={reactionPage} locale={locale} />}
       <DialogTrigger asChild>
         <button className="ask-button" type="button"><MessageCircle size={20} aria-hidden="true" /><span>{copy.ask}</span></button>
       </DialogTrigger>
