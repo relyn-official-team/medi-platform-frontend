@@ -1,0 +1,35 @@
+/* Taiwan Chinese typography. Keep overrides scoped during client navigation. */
+.skin-guide.tw-guide{--relyn-font:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;word-break:normal;overflow-wrap:break-word;line-break:strict}
+.skin-guide.tw-guide .article-header h1{letter-spacing:-.035em;text-wrap:balance}
+.skin-guide.tw-guide .article-prose,.skin-guide.tw-guide .article-prose h2{letter-spacing:0;line-height:1.95}
+.skin-guide.tw-guide .article-prose h2{line-height:1.6;text-wrap:balance}
+.skin-guide.tw-guide .article-meta a,.skin-guide.tw-guide .article-footer a{color:#155dfb;text-underline-offset:3px}
+.skin-guide.tw-guide .quick-answer{color:#27374d;font-size:17px;line-height:1.95;margin:0 0 18px}
+.skin-guide.tw-guide .quick-answer strong{color:#114bbc}
+.skin-guide.tw-guide .notebook dt{flex-basis:3em}
+.skin-guide.tw-guide .comparison-wrap{overflow-x:auto;margin:24px 0 34px;border:1px solid #dce5f3;border-radius:12px;background:white}
+.skin-guide.tw-guide .comparison-table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.8;text-align:left}
+.skin-guide.tw-guide .comparison-table caption{text-align:left;padding:18px 20px;font-weight:750;color:#114bbc}
+.skin-guide.tw-guide .comparison-table th,.skin-guide.tw-guide .comparison-table td{vertical-align:top;padding:14px 18px;border-top:1px solid #dce5f3}
+.skin-guide.tw-guide .comparison-table thead{background:#eaf1ff}
+.skin-guide.tw-guide .comparison-table tbody th{width:23%;font-weight:700}
+.skin-guide.tw-guide .article-prose .source-reference{font-size:13px;color:#61728b;line-height:1.85}
+.skin-guide.tw-guide .source-reference a{text-decoration:underline;text-underline-offset:3px}
+.skin-guide.tw-guide .social-card h2{letter-spacing:-.025em;font-size:8.5cqw}
+.skin-guide.tw-guide .cover-card h2{font-size:12cqw;line-height:1.3}
+.skin-guide.tw-guide .quote-card h2{font-size:12cqw;line-height:1.3}
+.skin-guide.tw-guide .card-copy,.skin-guide.tw-guide .card-checks li,.skin-guide.tw-guide .card-dl dd{letter-spacing:0}
+.skin-guide.tw-guide .card-top,.skin-guide.tw-guide .card-bottom{font-size:clamp(10px,2.7cqw,12px)}
+.skin-guide.tw-guide .card-steps p{font-size:clamp(14px,3.3cqw,17px)}
+.upsell-question-dialog[lang="zh-TW"]{font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;word-break:normal;line-break:strict}
+@media(max-width:600px){
+  .skin-guide.tw-guide .article-header h1{font-size:29px;line-height:1.55}
+  .skin-guide.tw-guide .article-prose{line-height:2}
+  .skin-guide.tw-guide .quick-answer{font-size:16px}
+  .skin-guide.tw-guide .comparison-table{font-size:14px}
+  .skin-guide.tw-guide .comparison-table th,.skin-guide.tw-guide .comparison-table td{padding:12px}
+  .skin-guide.tw-guide .comparison-table tbody th{width:25%}
+}
+@media(max-width:360px){
+  .skin-guide.tw-guide .slide{min-height:390px}
+}

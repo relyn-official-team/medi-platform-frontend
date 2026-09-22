@@ -521,6 +521,11 @@ export default function HomePageClient({
               {t.footerSeoText}
             </div>
             <div className="mt-2">
+              {locale === 'ko' && (
+                <Link href="/korean-skin-treatments/upsell-kr" className="mr-4 font-semibold text-blue-600 hover:underline">
+                  피부과 추가 시술 권유·견적 상담 가이드
+                </Link>
+              )}
               <Link href="/privacy" className="font-semibold text-blue-600 hover:underline">
                 {t.footerPrivacy}
               </Link>

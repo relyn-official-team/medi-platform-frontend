@@ -1,4 +1,8 @@
 import type { MetadataRoute } from 'next';
+import { ARTICLE_IMAGES, ARTICLE_URL } from './korean-skin-treatments/upsell-kr/article';
+import { ARTICLE_IMAGES as TW_IMAGES, ARTICLE_URL as TW_URL } from './korean-skin-treatments/upsell-tw/article';
+import { ARTICLE_IMAGES as JP_IMAGES, ARTICLE_URL as JP_URL } from './korean-skin-treatments/upsell-jp/article';
+import { SKIN_GUIDE_LANGUAGES } from '@/lib/skin-guide-locales';
 
 const SITE_URL = 'https://relynplatform.com';
 
@@ -23,6 +27,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   return [
+    {
+      url: ARTICLE_URL,
+      images: ARTICLE_IMAGES.map((image) => image.url),
+      alternates: { languages: SKIN_GUIDE_LANGUAGES },
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: TW_URL,
+      images: TW_IMAGES.map((image) => image.url),
+      alternates: { languages: SKIN_GUIDE_LANGUAGES },
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: JP_URL,
+      images: JP_IMAGES.map((image) => image.url),
+      alternates: { languages: SKIN_GUIDE_LANGUAGES },
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
     {
       url: `${SITE_URL}/`,
       lastModified: now,
