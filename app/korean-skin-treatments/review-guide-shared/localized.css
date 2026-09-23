@@ -1,0 +1,20 @@
+/* Keep the approved Korean layout; adapt only language-specific text metrics. */
+.review-localized[lang="zh-TW"]{--relyn-font:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif}
+.review-localized[lang="ja-JP"]{--relyn-font:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif}
+.skin-guide.review-localized{word-break:normal;overflow-wrap:break-word;line-break:strict}
+.review-localized .article-header h1,.review-localized .article-prose h2{word-break:normal;letter-spacing:-.02em}
+.review-localized .article-prose{letter-spacing:0;line-height:2}
+.review-localized .article-meta{flex-wrap:wrap;gap:8px 20px}
+.review-localized .breadcrumb{flex-wrap:wrap;row-gap:6px}
+.review-localized .breadcrumb-title{min-width:0}
+.review-localized .review-definition p>span{letter-spacing:0}
+.review-localized .relyn-footer nav{flex-wrap:wrap;row-gap:12px}
+.review-localized.review-cards .rc-content h2{word-break:normal;letter-spacing:-.035em;font-size:6.2cqw}
+.review-localized.review-cards .rc-cover h2{font-size:6.2cqw}
+.review-localized.review-cards .rc-content>p,.review-localized.review-cards .rc-callout>p,.review-localized.review-cards .rc-info-list p{letter-spacing:0}
+.review-localized.review-cards .rc-content h3{letter-spacing:-.025em}
+.review-localized.review-cards .rc-closing-quote>strong{font-size:5.3cqw;letter-spacing:-.025em}
+.upsell-question-dialog[lang="zh-TW"]{font-family:"PingFang TC","Microsoft JhengHei",system-ui,sans-serif;word-break:normal;line-break:strict}
+.upsell-question-dialog[lang="ja-JP"]{font-family:"Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;word-break:normal;line-break:strict}
+@media(max-width:600px){.review-localized .post-heading h1{font-size:12px;line-height:1.6}.review-localized .article-header h1{font-size:28px;line-height:1.6}.review-localized .article-prose h2{font-size:23px;line-height:1.6}.review-localized .view-switch a{padding:8px}.review-localized .guide-label{font-size:11px}.review-localized .review-source-link{overflow-wrap:anywhere}}
+@media(max-width:380px){.review-localized .guide-label,.review-localized .brand-divider{display:none}}

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/app/korean-skin-treatments/shared/GuideImage";
 import Link from "next/link";
 import ArticleFeedback from "../upsell-kr/ArticleFeedback";
 import { GuideFooter, GuideHeader, GuideToc } from "./GuideChrome";
@@ -21,7 +21,7 @@ export default function TaiwanUpsellArticlePage() {
             <p className="article-category">韓國醫美・諮詢筆記</p>
             <h1 id="article-title">{ARTICLE_TITLE}</h1>
             <p className="article-subtitle">從加價推銷到實際需求，<br />看懂療程建議、現場報價與套票的差別。</p>
-            <div className="article-meta"><span>RELYN · 給台灣旅客的赴韓諮詢指南</span><Link href={SKIN_GUIDE_PATHS["ko-KR"]} hrefLang="ko-KR" lang="ko">한국어 원문</Link></div>
+            <div className="article-meta"><span>RELYN · 給台灣旅客的赴韓諮詢指南</span><Link prefetch={false} href={SKIN_GUIDE_PATHS["ko-KR"]} hrefLang="ko-KR" lang="ko">한국어 원문</Link></div>
           </header>
           <aside className="reading-note" aria-label="先看重點">
             <p className="note-heading">被推薦加做療程，先記住這三件事</p>
@@ -107,7 +107,7 @@ export default function TaiwanUpsellArticlePage() {
             <p>本文由 RELYN 提供，依韓文諮詢筆記整理為台灣繁體中文版。內容為一般諮詢與費用比較資訊，不是個別診斷；適合的療程與是否合併施作，請與醫師討論。</p>
             <p>文中個案保留其來源限制；圖片為 AI 生成的示意情境，並非實際患者或療效照片。</p>
             <div className="article-tags"><span>#韓國皮膚科</span><span>#韓國醫美</span><span>#醫美諮詢</span><span>#療程報價</span></div>
-            <Link className="end-link" href={`${ARTICLE_PATH}/cards`}>用 10 張圖卡再看一次重點 →</Link>
+            <Link prefetch={false} className="end-link" href={`${ARTICLE_PATH}/cards`}>用 10 張圖卡再看一次重點 →</Link>
           </footer>
         </article>
       </main>

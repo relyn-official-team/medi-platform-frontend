@@ -18,8 +18,8 @@ export default function JaPage() {
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/relyn_logo.png`,
-      width: 200,
-      height: 60,
+      width: 1024,
+      height: 358,
     },
     sameAs: [
       'https://pf.kakao.com/_XxgsAX',

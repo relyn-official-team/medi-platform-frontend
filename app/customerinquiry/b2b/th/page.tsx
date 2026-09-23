@@ -9,7 +9,7 @@ const KOREAN_URL = "https://www.relynplatform.com/customerinquiry/b2b";
 const CANONICAL_URL = `${KOREAN_URL}/th`;
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: {
     canonical: CANONICAL_URL,

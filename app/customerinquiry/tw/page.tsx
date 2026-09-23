@@ -6,7 +6,7 @@ const DESCRIPTION =
   "RELYN 為台灣顧客提供韓國醫美與皮膚科療程免費諮詢，包含拉提、肉毒、玻尿酸填充、水光針、肌膚管理與預約協助。";
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: {
     canonical: "https://www.relynplatform.com/customerinquiry/tw",

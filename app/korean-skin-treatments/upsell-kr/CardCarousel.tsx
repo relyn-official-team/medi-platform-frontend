@@ -8,7 +8,7 @@ const carouselCopy = {
   "ja-JP": { role: "カルーセル", label: "韓国の美容皮膚科カウンセリングガイド、10枚のカード", previous: "前のカード", next: "次のカード", select: "カードを選ぶ", goTo: (number: number) => `${number}枚目のカードへ`, hint: "左右にスワイプ、または矢印で読み進められます。" },
 };
 
-export default function CardCarousel({ children, locale = "ko" }: { children: ReactNode; locale?: keyof typeof carouselCopy }) {
+export default function CardCarousel({ children, locale = "ko", label }: { children: ReactNode; locale?: keyof typeof carouselCopy; label?: string }) {
   const copy = carouselCopy[locale];
   const trackRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef(0);
@@ -55,7 +55,7 @@ export default function CardCarousel({ children, locale = "ko" }: { children: Re
   }, []);
 
   return <>
-    <div ref={trackRef} className="card-track" id="card-track" role="region" aria-roledescription={copy.role} aria-label={copy.label} tabIndex={0} onKeyDown={event => {
+    <div ref={trackRef} className="card-track" id="card-track" role="region" aria-roledescription={copy.role} aria-label={label ?? copy.label} tabIndex={0} onKeyDown={event => {
       if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
       event.preventDefault();
       navigate(event.key === "Home" ? 0 : event.key === "End" ? count - 1 : currentRef.current + (event.key === "ArrowRight" ? 1 : -1));

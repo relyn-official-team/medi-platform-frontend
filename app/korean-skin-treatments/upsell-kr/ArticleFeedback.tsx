@@ -4,7 +4,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { CONTENT_INQUIRY_MAX_LENGTH, CONTENT_INQUIRY_RECIPIENT } from "@/lib/content-inquiry";
+import { CONTENT_INQUIRY_MAX_LENGTH, CONTENT_INQUIRY_RECIPIENT } from "@/lib/content-inquiry-config";
 import { getArticleReactionPage } from "@/lib/article-reaction-pages";
 import ArticleLikeButton from "./ArticleLikeButton";
 

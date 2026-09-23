@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/app/korean-skin-treatments/shared/GuideImage";
 import ArticleFeedback from "../../upsell-kr/ArticleFeedback";
 import CardCarousel from "../../upsell-kr/CardCarousel";
 import { GuideFooter, GuideHeader } from "../GuideChrome";
@@ -64,7 +64,7 @@ export default function TaiwanUpsellCardsPage() {
           <ul className="card-checks"><li>知道為什麼適合自己嗎？</li><li>了解效果、限制與風險嗎？</li><li>比較過劑量、範圍與費用嗎？</li><li>給自己足夠時間考慮了嗎？</li></ul><p className="last-line">充分提問，<br />照自己的步調決定。</p><div className="card-bottom"><span>諮詢前，可以再看一次。</span><span>✓</span></div>
         </div></section>
       </CardCarousel>
-      <div className="post-caption"><p><strong>被推薦加做療程，記住這件事。</strong><br />不想接受，可以拒絕。<br />問清楚原因、比較報價，再做決定。</p><Link href={ARTICLE_PATH}>閱讀完整文章與常見問題 →</Link><p className="caption-tags">#韓國皮膚科 #韓國醫美 #醫美諮詢 #療程報價</p><p className="caption-note">本文提供一般諮詢資訊。療程適合與否，請由醫師評估。圖片為 AI 生成示意圖，並非患者或療效照片。</p></div>
+      <div className="post-caption"><p><strong>被推薦加做療程，記住這件事。</strong><br />不想接受，可以拒絕。<br />問清楚原因、比較報價，再做決定。</p><Link prefetch={false} href={ARTICLE_PATH}>閱讀完整文章與常見問題 →</Link><p className="caption-tags">#韓國皮膚科 #韓國醫美 #醫美諮詢 #療程報價</p><p className="caption-note">本文提供一般諮詢資訊。療程適合與否，請由醫師評估。圖片為 AI 生成示意圖，並非患者或療效照片。</p></div>
     </main>
     <GuideFooter cards /><ArticleFeedback locale="zh-TW" />
   </div>;

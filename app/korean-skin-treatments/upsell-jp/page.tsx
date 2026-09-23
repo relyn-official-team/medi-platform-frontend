@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/app/korean-skin-treatments/shared/GuideImage";
 import Link from "next/link";
 import ArticleFeedback from "../upsell-kr/ArticleFeedback";
 import { GuideFooter, GuideHeader, GuideToc } from "./GuideChrome";
@@ -21,7 +21,7 @@ export default function JapaneseUpsellArticlePage() {
             <p className="article-category">韓国美容医療・カウンセリングノート</p>
             <h1 id="article-title">{ARTICLE_TITLE}</h1>
             <p className="article-subtitle">勧められた施術は、自分に必要？<br />提案の理由と、見積もり・コース料金を確かめるために。</p>
-            <div className="article-meta"><span>RELYN · 日本から渡韓する方へ</span><Link href={SKIN_GUIDE_PATHS["ko-KR"]} hrefLang="ko-KR">韓国語の原文</Link></div>
+            <div className="article-meta"><span>RELYN · 日本から渡韓する方へ</span><Link prefetch={false} href={SKIN_GUIDE_PATHS["ko-KR"]} hrefLang="ko-KR">韓国語の原文</Link></div>
           </header>
           <aside className="reading-note" aria-label="先に知っておきたい要点">
             <p className="note-heading">追加施術を勧められたら、まずこの3つ</p>
@@ -107,7 +107,7 @@ export default function JapaneseUpsellArticlePage() {
             <p>RELYNが提供する、韓国語のカウンセリングノートをもとにした日本語版です。一般的な相談・料金比較の情報であり、個別の診断ではありません。適した施術や併用については、診察を受けたうえで医師に相談してください。</p>
             <p>事例は出典の確認範囲を明記しています。画像はAIで生成したイメージであり、実際の患者や施術効果の写真ではありません。</p>
             <div className="article-tags"><span>#韓国美容皮膚科</span><span>#美容医療</span><span>#カウンセリング</span><span>#見積もり比較</span></div>
-            <Link className="end-link" href={`${ARTICLE_PATH}/cards`}>10枚のカードで要点を振り返る →</Link>
+            <Link prefetch={false} className="end-link" href={`${ARTICLE_PATH}/cards`}>10枚のカードで要点を振り返る →</Link>
           </footer>
         </article>
       </main>

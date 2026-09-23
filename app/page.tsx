@@ -24,8 +24,8 @@ export default function Page() {
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/relyn_logo.png`,
-      width: 200,
-      height: 60,
+      width: 1024,
+      height: 358,
     },
     sameAs: [
       'https://pf.kakao.com/_XxgsAX',
@@ -45,14 +45,6 @@ export default function Page() {
     name: 'RELYN',
     url: `${SITE_URL}/`,
     inLanguage: 'ko-KR',
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/auth/agency/hospitalslist?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
   };
 
   const faqJsonLd = {
@@ -118,14 +110,6 @@ export default function Page() {
       />
 
       <HomePageClient />
-
-      {/* 다국어 페이지 내부 링크 — 시각적으로 숨기되 크롤러에는 노출 */}
-      <nav aria-label="언어 선택" className="sr-only">
-        <a href="/en">English version</a>
-        <a href="/ja">日本語版</a>
-        <a href="/zh">中文版</a>
-        <a href="/th">ภาษาไทย</a>
-      </nav>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/app/korean-skin-treatments/shared/GuideImage";
 import ArticleFeedback from "../../upsell-kr/ArticleFeedback";
 import CardCarousel from "../../upsell-kr/CardCarousel";
 import { GuideFooter, GuideHeader } from "../GuideChrome";
@@ -53,7 +53,7 @@ export default function JapaneseUpsellCardsPage() {
           <div className="card-top"><span>支払う前に、もう一度</span><span>10 / 10</span></div><h2>自分の肌のことは、<br /><em>納得してから選ぶ。</em></h2><ul className="card-checks"><li>自分に必要な理由を聞きましたか？</li><li>効果・限界・リスクを確認しましたか？</li><li>量・範囲・料金を比較しましたか？</li><li>考える時間は十分にありましたか？</li></ul><p className="last-line">質問は十分に。<br />決断は、自分のペースで。</p><div className="card-bottom"><span>相談前に、もう一度読んでみてください。</span><span>✓</span></div>
         </div></section>
       </CardCarousel>
-      <div className="post-caption"><p><strong>追加施術を勧められたら、思い出して。</strong><br />希望しない施術は、断って構いません。<br />理由を聞き、見積もりを比べてから決めましょう。</p><Link href={ARTICLE_PATH}>事例と詳しい説明・よくある質問を読む →</Link><p className="caption-tags">#韓国美容皮膚科 #美容医療 #カウンセリング #見積もり比較</p><p className="caption-note">一般的な相談のための情報です。適した施術は医師に確認してください。画像はAIで生成したイメージであり、患者や施術効果の写真ではありません。</p></div>
+      <div className="post-caption"><p><strong>追加施術を勧められたら、思い出して。</strong><br />希望しない施術は、断って構いません。<br />理由を聞き、見積もりを比べてから決めましょう。</p><Link prefetch={false} href={ARTICLE_PATH}>事例と詳しい説明・よくある質問を読む →</Link><p className="caption-tags">#韓国美容皮膚科 #美容医療 #カウンセリング #見積もり比較</p><p className="caption-note">一般的な相談のための情報です。適した施術は医師に確認してください。画像はAIで生成したイメージであり、患者や施術効果の写真ではありません。</p></div>
     </main>
     <GuideFooter cards /><ArticleFeedback locale="ja-JP" />
   </div>;

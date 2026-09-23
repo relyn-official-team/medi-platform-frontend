@@ -6,7 +6,7 @@ const DESCRIPTION =
   "韓国の美容皮膚科・リフトアップ・ボトックス・ヒアルロン酸・スキンブースターを検討中の方向けに、日本語で無料相談と予約サポートを行います。";
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: {
     canonical: "https://www.relynplatform.com/customerinquiry/ja",

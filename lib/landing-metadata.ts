@@ -54,7 +54,7 @@ export function getLandingMetadata(locale: LandingLocale): Metadata {
   const description = DESCRIPTIONS[locale];
 
   return {
-    title,
+    title: { absolute: title },
     description,
     keywords: KEYWORDS[locale],
 
@@ -75,6 +75,7 @@ export function getLandingMetadata(locale: LandingLocale): Metadata {
           url: OG_IMAGE,
           width: 1200,
           height: 630,
+          type: 'image/png',
           alt: OG_ALT[locale],
         },
       ],

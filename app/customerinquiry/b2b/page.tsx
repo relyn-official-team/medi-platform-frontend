@@ -9,7 +9,7 @@ const CANONICAL_URL = "https://www.relynplatform.com/customerinquiry/b2b";
 const THAI_URL = `${CANONICAL_URL}/th`;
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: {
     canonical: CANONICAL_URL,

@@ -28,6 +28,5 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: 'https://relynplatform.com/sitemap.xml',
-    host: 'https://relynplatform.com',
   };
 }
