@@ -13,6 +13,11 @@ const nextConfig = {
 
   async headers() {
     return [
+      // Login, hospital, agency and admin workspaces stay out of search results.
+      ...["/auth/:path*", "/admin/:path*", "/dashboard/:path*"].map((source) => ({
+        source,
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      })),
       // 보안 헤더 — 전체 경로
       {
         source: "/(.*)",

@@ -4,6 +4,7 @@ import { ARTICLE_IMAGES as TW_IMAGES, ARTICLE_URL as TW_URL } from './korean-ski
 import { ARTICLE_IMAGES as JP_IMAGES, ARTICLE_URL as JP_URL } from './korean-skin-treatments/upsell-jp/article';
 import { SKIN_GUIDE_LANGUAGES } from '@/lib/skin-guide-locales';
 import { REVIEW_GUIDE_LANGUAGES } from '@/lib/review-guide-locales';
+import { SERVICE_DIRECTORY_URL } from '@/lib/public-navigation';
 
 const SITE_URL = 'https://relynplatform.com';
 
@@ -33,6 +34,7 @@ const B2B_HREFLANG = {
 export default function sitemap(): MetadataRoute.Sitemap {
   // 실제 콘텐츠 수정일을 관리하기 전에는 빌드 시각을 lastModified로 사용하지 않는다.
   return [
+    { url: SERVICE_DIRECTORY_URL, changeFrequency: 'monthly', priority: 0.7 },
     ...Object.values(REVIEW_GUIDE_LANGUAGES).map(url => ({ url, changeFrequency: 'monthly' as const, priority: 0.7, alternates: { languages: REVIEW_GUIDE_LANGUAGES } })),
     {
       url: ARTICLE_URL,

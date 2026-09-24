@@ -6,6 +6,7 @@ import Script from "next/script";
 import { Noto_Sans_KR } from "next/font/google";
 import { landingCopy, type Locale, type Line } from "./copy";
 import { sendGaEvent } from "./ga4";
+import { ConsultationNavigation } from "@/components/common/PublicResourceLinks";
 import "./customerinquiry.css";
 
 // ── 트래킹 태그 ID (이 페이지 전용) ──
@@ -731,6 +732,7 @@ fbq('track', 'PageView');
       </section>
 
       {/* FOOTER */}
+      <ConsultationNavigation locale={locale} />
       <footer className="ci-footer">
         <div className="ft-txt">{c.footer.copyright}</div>
         <div className="ft-links">

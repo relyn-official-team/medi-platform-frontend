@@ -1,3 +1,4 @@
+import { GuideServiceLinks } from "@/components/common/PublicResourceLinks";
 import Image from "@/app/korean-skin-treatments/shared/GuideImage";
 import Link from "next/link";
 import { ARTICLE_PATH, ARTICLE_TITLE, ARTICLE_SECTIONS } from "./article";
@@ -33,7 +34,8 @@ export function GuideToc() {
 export function GuideFooter({ cards = false }: { cards?: boolean }) {
   return <footer className="relyn-footer">
     <div><Link prefetch={false} className="footer-wordmark" href="/">RELYN</Link><p>RELYN · 韓國公司名稱：<span lang="ko">주식회사 렐린</span><br />韓國營業登記號碼：299-03-03608</p></div>
-    <nav aria-label="RELYN 與語言選擇">
+    <nav aria-label="RELYN 與語言選擇"><GuideServiceLinks locale="tw" />
+      <Link prefetch={false} href="/korean-skin-treatments/review-guide-tw">韓國醫美心得閱讀指南</Link>
       <Link prefetch={false} href={`${SKIN_GUIDE_PATHS["ko-KR"]}${cards ? "/cards" : ""}`} hrefLang="ko-KR" lang="ko">한국어</Link>
       <Link prefetch={false} href={`${SKIN_GUIDE_PATHS["ja-JP"]}${cards ? "/cards" : ""}`} hrefLang="ja-JP" lang="ja">日本語</Link>
       <Link prefetch={false} href="/">關於 RELYN ↗</Link><Link prefetch={false} href="/privacy">隱私權政策（韓文）</Link>

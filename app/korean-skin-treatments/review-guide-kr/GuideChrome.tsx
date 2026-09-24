@@ -1,3 +1,4 @@
+import { GuideServiceLinks } from "@/components/common/PublicResourceLinks";
 import Image from "@/app/korean-skin-treatments/shared/GuideImage";
 import Link from "next/link";
 import { ARTICLE_PATH, SECTIONS } from "./article";
@@ -21,5 +22,5 @@ export function GuideToc() {
 }
 
 export function GuideFooter() {
-  return <footer className="relyn-footer"><div><Link prefetch={false} className="footer-wordmark" href="/">RELYN</Link><p>주식회사 렐린 · 대표이사 장기석 · 사업자등록번호 299-03-03608</p></div><nav aria-label="안내"><Link prefetch={false} href="/korean-skin-treatments/upsell-kr">추가 시술·견적 가이드</Link><Link prefetch={false} href="/privacy">개인정보처리방침</Link></nav></footer>;
+  return <footer className="relyn-footer"><div><Link prefetch={false} className="footer-wordmark" href="/">RELYN</Link><p>주식회사 렐린 · 대표이사 장기석 · 사업자등록번호 299-03-03608</p></div><nav aria-label="안내"><GuideServiceLinks locale="ko" /><Link prefetch={false} href="/korean-skin-treatments/upsell-kr">추가 시술·견적 가이드</Link><Link prefetch={false} href="/privacy">개인정보처리방침</Link></nav></footer>;
 }

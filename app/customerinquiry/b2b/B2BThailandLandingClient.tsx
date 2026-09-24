@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Noto_Sans_KR, Noto_Sans_Thai } from "next/font/google";
 import { sendGaEvent } from "../ga4";
+import { ConsultationNavigation } from "@/components/common/PublicResourceLinks";
 import * as koreanContent from "./content-ko";
 import * as thaiContent from "./content";
 import "./b2b-landing.css";
@@ -415,6 +416,7 @@ export default function B2BThailandLandingClient({
       </main>
 
       <footer className="th-footer">
+        <ConsultationNavigation locale={locale} employee />
         <div className="th-container th-footer-inner">
           <div className="th-footer-brand">
             <Image src="/relyn_logo.png" alt="RELYN" width={100} height={35} />

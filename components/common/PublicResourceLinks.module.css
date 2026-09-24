@@ -1,0 +1,22 @@
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 24px;
+  padding: 24px 20px;
+  border-top: 1px solid #29364b;
+  background: #071225;
+  color: #dce5f2;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.navigation a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.navigation a:hover {
+  color: #fff;
+}

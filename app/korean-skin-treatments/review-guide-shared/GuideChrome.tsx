@@ -1,3 +1,4 @@
+import { GuideServiceLinks } from "@/components/common/PublicResourceLinks";
 import Image from "@/app/korean-skin-treatments/shared/GuideImage";
 import Link from "next/link";
 import type { TranslatedReviewLocale } from "@/lib/review-guide-locales";
@@ -25,5 +26,5 @@ export function GuideToc({ locale }: { locale: TranslatedReviewLocale }) {
 
 export function GuideFooter({ locale }: { locale: TranslatedReviewLocale }) {
   const { copy: { ui }, relatedPath } = getLocalizedReview(locale);
-  return <footer className="relyn-footer"><div><Link prefetch={false} className="footer-wordmark" href="/">RELYN</Link><p>{ui.company}</p></div><nav aria-label={ui.footerNav}><Link prefetch={false} href={relatedPath}>{ui.related}</Link><Link prefetch={false} href="/privacy">{ui.privacy}</Link></nav></footer>;
+  return <footer className="relyn-footer"><div><Link prefetch={false} className="footer-wordmark" href="/">RELYN</Link><p>{ui.company}</p></div><nav aria-label={ui.footerNav}><GuideServiceLinks locale={locale === "ja-JP" ? "ja" : "tw"} /><Link prefetch={false} href={relatedPath}>{ui.related}</Link><Link prefetch={false} href="/privacy">{ui.privacy}</Link></nav></footer>;
 }

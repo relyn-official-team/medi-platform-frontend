@@ -26,6 +26,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import LottieHero from '@/components/common/LottieHero';
 import LandingFaq from '@/components/pages/LandingFaq';
+import { ServiceDirectoryLink } from '@/components/common/PublicResourceLinks';
 import {
   getLandingContent,
   type LandingContent,
@@ -41,6 +42,18 @@ declare global {
 type InquiryType = 'HOSPITAL' | 'AGENCY';
 
 const GOOGLE_ADS_SEND_TO = 'AW-17991152486/4dzyCIKP3oUcEObm7IJD';
+
+const LANDING_LANGUAGES = [
+  { locale: 'ko', href: '/', lang: 'ko-KR', label: '한국어' },
+  { locale: 'en', href: '/en', lang: 'en-US', label: 'English' },
+  { locale: 'ja', href: '/ja', lang: 'ja-JP', label: '日本語' },
+  { locale: 'zh', href: '/zh', lang: 'zh-CN', label: '简体中文' },
+  { locale: 'th', href: '/th', lang: 'th-TH', label: 'ภาษาไทย' },
+] as const;
+
+const LANGUAGE_NAV_LABEL: Record<LandingLocale, string> = {
+  ko: '언어 선택', en: 'Languages', ja: '言語を選択', zh: '选择语言', th: 'เลือกภาษา',
+};
 
 export default function HomePageClient({
   locale = 'ko',
@@ -173,7 +186,7 @@ export default function HomePageClient({
   const onboardingCards = t.onboardingCards;
 
   return (
-    <main className="min-h-screen bg-[#f6f9ff] text-neutral-900">
+    <main lang={t.htmlLang} className="min-h-screen bg-[#f6f9ff] text-neutral-900">
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(59,130,246,0.10),transparent_45%),radial-gradient(circle_at_20%_30%,rgba(14,165,233,0.08),transparent_40%),radial-gradient(circle_at_70%_65%,rgba(99,102,241,0.08),transparent_40%)]" />
         <div
@@ -520,12 +533,22 @@ export default function HomePageClient({
             <div className="mt-3 text-[11px] text-neutral-400">
               {t.footerSeoText}
             </div>
-            <div className="mt-2">
-              {locale === 'ko' && (
-                <Link href="/korean-skin-treatments/upsell-kr" className="mr-4 font-semibold text-blue-600 hover:underline">
-                  피부과 추가 시술 권유·견적 상담 가이드
+            <nav aria-label={LANGUAGE_NAV_LABEL[locale]} className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs">
+              {LANDING_LANGUAGES.map((language) => (
+                <Link
+                  key={language.locale}
+                  href={language.href}
+                  hrefLang={language.lang}
+                  lang={language.lang}
+                  aria-current={locale === language.locale ? 'page' : undefined}
+                  className="font-semibold text-blue-700 underline-offset-4 hover:underline aria-[current=page]:underline"
+                >
+                  {language.label}
                 </Link>
-              )}
+              ))}
+            </nav>
+            <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-2">
+              <ServiceDirectoryLink locale={locale} className="font-semibold text-blue-600 hover:underline" />
               <Link href="/privacy" className="font-semibold text-blue-600 hover:underline">
                 {t.footerPrivacy}
               </Link>
